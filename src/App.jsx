@@ -4,6 +4,7 @@ import Nav from './components/Nav.jsx'
 import Footer from './components/Footer.jsx'
 import WaFab from './components/WaFab.jsx'
 import PromoBar from './components/PromoBar.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 import Home from './pages/Home.jsx'
 import Catalog from './pages/Catalog.jsx'
 import Cart from './pages/Cart.jsx'
@@ -18,7 +19,7 @@ function ScrollToTop() {
 
 export default function App() {
   return (
-    <>
+    <ErrorBoundary>
       <ScrollToTop />
       <PromoBar />
       <Nav />
@@ -29,10 +30,11 @@ export default function App() {
           <Route path="/carrito" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/personalizar" element={<Personalize />} />
+          <Route path="/completar-datos" element={<Personalize />} />
         </Routes>
       </main>
       <Footer />
       <WaFab />
-    </>
+    </ErrorBoundary>
   )
 }

@@ -1,6 +1,38 @@
 export const WA_NUMBER = '5491139126543'
 export const waLink = (msg) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`
 
+// --- Datos de pago (transferencia) -------------------------------------
+// Completá con tus datos reales antes de publicar. Se muestran tal cual
+// en el checkout, con botón de copiar.
+export const BANK_DATA = {
+  alias: 'veintidos.pagos', // TODO: reemplazar por tu alias real
+  cbu: '0000000000000000000000', // TODO: reemplazar por tu CBU real
+  titular: 'Nombre Apellido', // TODO: titular de la cuenta
+}
+
+// --- Google Sheets (formulario post-compra) ---------------------------
+// URL del Web App de Google Apps Script (Implementar > Nueva implementación >
+// Aplicación web, acceso "Cualquier usuario"). Ver GOOGLE_APPS_SCRIPT.md en
+// la raíz del proyecto para el código listo para pegar en script.google.com.
+export const GOOGLE_SHEETS_URL =
+  'https://script.google.com/macros/s/TU_SCRIPT_ID_ACA/exec' // TODO: reemplazar
+
+// Tamaño máximo aceptado para el comprobante (en MB) antes de convertir a base64.
+export const MAX_COMPROBANTE_MB = 5
+
+
+// Datos para el pago por transferencia. Reemplazar por los reales.
+export const bankInfo = {
+  alias: 'veintidos.pagos',
+  cbu: '0000003100000000000000',
+  titular: 'Pablo Daniel Coria',
+  cuit: '20-00000000-0',
+}
+
+// URL del Google Apps Script (Web App) que recibe el formulario post-compra
+// y lo agrega como fila a una Google Sheet. Ver /GOOGLE_SHEETS_SETUP.md
+export const GAS_WEBHOOK_URL = import.meta.env.VITE_GAS_WEBHOOK_URL || ''
+
 export const categories = [
   {
     slug: 'boda',

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Reveal, { Stagger, staggerItem } from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
@@ -19,6 +19,9 @@ export default function Catalog() {
   const [activePlan, setActivePlan] = useState('Standard')
   const { add } = useCart()
   const [added, setAdded] = useState(null)
+  const timeoutRef = useRef(null)
+
+  useEffect(() => () => clearTimeout(timeoutRef.current), [])
 
   const toggleCat = (cat) =>
     setActiveCats((prev) => (prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]))
@@ -31,7 +34,8 @@ export default function Catalog() {
   const handleAdd = (p) => {
     add(p)
     setAdded(p.id)
-    setTimeout(() => setAdded(null), 1400)
+    clearTimeout(timeoutRef.current)
+    timeoutRef.current = setTimeout(() => setAdded(null), 1400)
   }
 
   return (

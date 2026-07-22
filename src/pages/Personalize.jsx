@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Icon from '../components/Icon.jsx'
-import { waLink } from '../data/site.js'
+import { waLink, GOOGLE_SHEETS_URL, MAX_COMPROBANTE_MB } from '../data/site.js'
 
 const stepDefs = [
   { key: 'hosts', label: 'Datos', icon: 'person' },
   { key: 'event', label: 'Evento', icon: 'event' },
   { key: 'extras', label: 'Contenido', icon: 'auto_awesome' },
+  { key: 'proof', label: 'Comprobante', icon: 'receipt_long' },
 ]
 
 const initialData = {
@@ -25,38 +27,103 @@ const initialData = {
   videoLink: '',
 }
 
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result) // incluye "data:<mime>;base64,...."
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 export default function Personalize() {
+  const location = useLocation()
+  const orderRef = location.state?.orderRef || ''
+  const cartSummary = location.state?.cartSummary || []
+
   const [step, setStep] = useState(0)
   const [data, setData] = useState(initialData)
-  const [done, setDone] = useState(false)
+  const [file, setFile] = useState(null)
+  const [fileError, setFileError] = useState('')
+  const [status, setStatus] = useState('idle') // idle | sending | done | error
+  const fileInputRef = useRef(null)
 
   const update = (field) => (e) => setData((d) => ({ ...d, [field]: e.target.value }))
 
   const next = () => setStep((s) => Math.min(s + 1, stepDefs.length - 1))
   const back = () => setStep((s) => Math.max(s - 1, 0))
 
-  const handleSubmit = (e) => {
+  const handleFile = (e) => {
+    const f = e.target.files?.[0]
+    setFileError('')
+    if (!f) return
+    if (f.size > MAX_COMPROBANTE_MB * 1024 * 1024) {
+      setFileError(`El archivo pesa más de ${MAX_COMPROBANTE_MB}MB. Subí una versión más liviana.`)
+      setFile(null)
+      return
+    }
+    setFile(f)
+  }
+
+  const summaryMsg = () => `Hola! Ya transferí y quiero confirmar mi invitación.
+Referencia: ${orderRef || '-'}
+Anfitriones: ${data.names || '-'}
+Evento: ${data.eventType} — ${data.date || 'fecha a definir'}
+Lugar: ${data.venue || '-'}
+${file ? 'Adjunto el comprobante en este mismo chat.' : 'Te mando el comprobante a continuación.'}`
+
+  const submitToSheets = async () => {
+    if (!GOOGLE_SHEETS_URL || GOOGLE_SHEETS_URL.includes('TU_SCRIPT_ID_ACA')) {
+      // Todavía no se configuró el Web App de Apps Script — no rompemos el flujo,
+      // simplemente no intentamos el envío y dejamos que el usuario confirme por WhatsApp.
+      return
+    }
+    setStatus('sending')
+    try {
+      const comprobanteBase64 = file ? await fileToBase64(file) : null
+      const payload = {
+        orderRef,
+        cartSummary: cartSummary.map((i) => ({ name: i.name, plan: i.plan, price: i.price, qty: i.qty || 1 })),
+        ...data,
+        comprobanteNombre: file?.name || '',
+        comprobanteBase64,
+      }
+      // Apps Script no siempre responde con headers CORS legibles desde el navegador,
+      // por eso usamos no-cors: el request se envía igual, solo no podemos leer la respuesta.
+      await fetch(GOOGLE_SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+      })
+      setStatus('done')
+    } catch (err) {
+      console.error('Error enviando a Google Sheets:', err)
+      setStatus('error')
+    }
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (step < stepDefs.length - 1) {
       next()
       return
     }
-    setDone(true)
+    await submitToSheets()
   }
 
-  const summary = `Hola! Quiero mi invitación digital.
-Anfitriones: ${data.names || '-'}
-Evento: ${data.eventType} — ${data.date || 'fecha a definir'}
-Lugar: ${data.venue || '-'}`
+  const finished = status === 'done' || status === 'error'
 
   return (
     <div className="wrap py-12 md:py-20 flex flex-col items-center">
       <header className="text-center mb-16 max-w-2xl">
         <h1 className="font-serif text-headline-lg md:text-display text-primary mb-4">
-          Formulario de personalización
+          Completá los datos de tu invitación
         </h1>
         <p className="font-sans text-onSurfaceVariant italic">
-          Cargá los datos de tu evento. Con esta información armamos tu invitación a medida.
+          {orderRef
+            ? `Pedido ${orderRef} — cargá los datos de tu evento y subí el comprobante de la transferencia.`
+            : 'Cargá los datos de tu evento. Con esta información armamos tu invitación a medida.'}
         </p>
         <div className="ornament mt-6 text-lg">
           <span>✦</span><span>✦</span><span>✦</span>
@@ -71,7 +138,7 @@ Lugar: ${data.venue || '-'}`
             <button
               key={s.key}
               onClick={() => i < step && setStep(i)}
-              className="flex flex-col items-center gap-3 bg-background px-4 group"
+              className="flex flex-col items-center gap-3 bg-background px-3 group"
             >
               <motion.div
                 animate={{
@@ -97,6 +164,17 @@ Lugar: ${data.venue || '-'}`
           <div className="aspect-[3/4] rounded-xl border border-outlineVariant/30 sticky top-32 overflow-hidden bg-gradient-to-br from-[#2a392e] to-[#152419] flex items-end p-6">
             <p className="text-white font-serif italic">Diseñando cada detalle con vos.</p>
           </div>
+          {cartSummary.length > 0 && (
+            <div className="bg-surfaceContainer p-6 rounded-xl space-y-3">
+              <h3 className="font-serif text-headline-md text-primary text-lg">Tu pedido</h3>
+              {cartSummary.map((it) => (
+                <div key={it.id} className="flex justify-between text-sm font-sans text-onSurfaceVariant">
+                  <span>{it.name}</span>
+                  <span>x{it.qty || 1}</span>
+                </div>
+              ))}
+            </div>
+          )}
           <div className="bg-surfaceContainer p-6 rounded-xl space-y-4">
             <h3 className="font-serif text-headline-md text-primary">¿Necesitás ayuda?</h3>
             <p className="font-sans text-onSurfaceVariant text-sm">
@@ -115,7 +193,7 @@ Lugar: ${data.venue || '-'}`
 
         <form className="md:col-span-8" onSubmit={handleSubmit}>
           <AnimatePresence mode="wait">
-            {!done ? (
+            {!finished ? (
               <motion.div
                 key={step}
                 initial={{ opacity: 0, x: 24 }}
@@ -133,11 +211,11 @@ Lugar: ${data.venue || '-'}`
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="flex flex-col gap-2">
                         <label className="field-label">Nombres completos</label>
-                        <input className="field-input-boxed" placeholder="Ej: María & Federico" value={data.names} onChange={update('names')} />
+                        <input className="field-input-boxed" placeholder="Ej: María & Federico" value={data.names} onChange={update('names')} required />
                       </div>
                       <div className="flex flex-col gap-2">
                         <label className="field-label">WhatsApp de contacto</label>
-                        <input className="field-input-boxed" placeholder="+54 11 ..." value={data.whatsapp} onChange={update('whatsapp')} />
+                        <input className="field-input-boxed" placeholder="+54 11 ..." value={data.whatsapp} onChange={update('whatsapp')} required />
                       </div>
                       <div className="md:col-span-2 flex flex-col gap-2">
                         <label className="field-label">Email para confirmaciones</label>
@@ -226,14 +304,54 @@ Lugar: ${data.venue || '-'}`
                   </section>
                 )}
 
+                {step === 3 && (
+                  <section className="space-y-6">
+                    <div className="flex items-center gap-4">
+                      <Icon name="receipt_long" className="text-secondary" />
+                      <h2 className="font-serif text-headline-md text-primary">Comprobante de pago</h2>
+                    </div>
+                    <p className="font-sans text-onSurfaceVariant text-sm">
+                      Subí una foto o captura de pantalla de la transferencia. Aceptamos JPG, PNG o PDF, hasta{' '}
+                      {MAX_COMPROBANTE_MB}MB.
+                    </p>
+
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className="border-2 border-dashed border-outlineVariant rounded-xl p-10 flex flex-col items-center justify-center gap-3 hover:bg-surfaceContainerHigh transition-colors cursor-pointer text-center"
+                    >
+                      <Icon name={file ? 'check_circle' : 'cloud_upload'} className={`text-4xl ${file ? 'text-secondary' : 'text-outline'}`} />
+                      <span className="font-sans text-label text-onSurfaceVariant">
+                        {file ? file.name : 'TOCÁ PARA SUBIR EL COMPROBANTE'}
+                      </span>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*,application/pdf"
+                        onChange={handleFile}
+                        className="hidden"
+                      />
+                    </div>
+                    {fileError && <p className="text-error text-sm font-sans">{fileError}</p>}
+                    {!file && (
+                      <p className="text-onSurfaceVariant text-xs font-sans italic">
+                        Si preferís, también podés mandarnos el comprobante directo por WhatsApp al confirmar.
+                      </p>
+                    )}
+                  </section>
+                )}
+
                 <div className="pt-6 flex flex-col md:flex-row gap-4 items-center justify-end">
                   {step > 0 && (
                     <button type="button" onClick={back} className="text-onSurfaceVariant font-sans text-label px-8 py-4 hover:text-primary transition-colors">
                       Atrás
                     </button>
                   )}
-                  <button type="submit" className="w-full md:w-auto btn-primary px-12 py-4">
-                    {step < stepDefs.length - 1 ? 'Siguiente paso' : 'Enviar formulario'}
+                  <button type="submit" disabled={status === 'sending'} className="w-full md:w-auto btn-primary px-12 py-4 disabled:opacity-60">
+                    {status === 'sending'
+                      ? 'Enviando...'
+                      : step < stepDefs.length - 1
+                      ? 'Siguiente paso'
+                      : 'Enviar y confirmar'}
                   </button>
                 </div>
               </motion.div>
@@ -249,11 +367,12 @@ Lugar: ${data.venue || '-'}`
                 </div>
                 <h2 className="font-serif text-headline-lg text-primary">¡Datos recibidos!</h2>
                 <p className="font-sans text-onSurfaceVariant max-w-md mx-auto">
-                  Confirmá el envío por WhatsApp y en menos de 72hs hábiles vas a tener la primera versión de tu
-                  invitación.
+                  {status === 'error'
+                    ? 'Guardamos tus datos localmente pero hubo un problema enviándolos automáticamente. Confirmá por WhatsApp para que no se pierda nada — te respondemos en el día.'
+                    : 'Ya quedaron registrados. Confirmá por WhatsApp (y adjuntá el comprobante ahí si no lo subiste arriba) y arrancamos con el diseño.'}
                 </p>
                 <a
-                  href={waLink(summary)}
+                  href={waLink(summaryMsg())}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 btn-primary px-10 py-4"

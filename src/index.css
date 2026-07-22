@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    @apply bg-background text-onSurface antialiased;
+    font-family: 'Montserrat', sans-serif;
+  }
+  ::selection {
+    @apply bg-secondaryContainer text-onSurface;
+  }
+}
+
+@layer components {
+  .icon {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+  }
+  .icon-fill {
+    font-variation-settings: 'FILL' 1;
+  }
+
+  .wrap {
+    @apply mx-auto max-w-container px-mobile md:px-gutter;
+  }
+
+  .ornament {
+    @apply flex items-center justify-center gap-2 text-promoGold;
+  }
+
+  .field-label {
+    @apply block font-sans text-label uppercase tracking-widest text-onSurfaceVariant mb-2;
+  }
+  .field-input {
+    @apply w-full bg-surface border-b border-outline py-2 font-sans text-primary placeholder:text-outlineVariant focus:outline-none focus:border-primary transition-colors;
+  }
+  .field-input-boxed {
+    @apply w-full bg-surface border border-outlineVariant p-4 rounded-xl font-sans focus:outline-none focus:border-primary transition-colors;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-onPrimary rounded-full font-sans font-bold transition-all hover:opacity-90 active:scale-95;
+  }
+  .btn-outline {
+    @apply border border-outline rounded-full font-sans font-semibold transition-all hover:bg-surfaceContainer;
+  }
+}

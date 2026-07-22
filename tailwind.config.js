@@ -1,0 +1,56 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,jsx}'],
+  theme: {
+    extend: {
+      colors: {
+        primary: '#182317',
+        primaryContainer: '#2d392b',
+        primaryFixed: '#d9e7d2',
+        onPrimary: '#ffffff',
+        secondary: '#52634d',
+        secondaryContainer: '#d2e5ca',
+        secondaryFixed: '#d5e8cc',
+        tertiary: '#152419',
+        tertiaryContainer: '#2a392e',
+        background: '#fbf9f4',
+        creamSurface: '#F2EFE9',
+        surface: '#fbf9f4',
+        surfaceContainer: '#f0eee9',
+        surfaceContainerLow: '#f5f3ee',
+        surfaceContainerHigh: '#eae8e3',
+        surfaceContainerHighest: '#e4e2dd',
+        surfaceVariant: '#e4e2dd',
+        onSurface: '#1b1c19',
+        onSurfaceVariant: '#444842',
+        outline: '#747871',
+        outlineVariant: '#c4c8bf',
+        promoGold: '#C5A059',
+        whatsapp: '#25D366',
+        error: '#ba1a1a',
+      },
+      fontFamily: {
+        serif: ['"Playfair Display"', 'serif'],
+        sans: ['Montserrat', 'sans-serif'],
+      },
+      spacing: {
+        gutter: '24px',
+        mobile: '16px',
+        section: '80px',
+      },
+      maxWidth: {
+        container: '1200px',
+      },
+      fontSize: {
+        'display-mobile': ['36px', { lineHeight: '1.2', fontWeight: '700' }],
+        display: ['56px', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '700' }],
+        'headline-lg-mobile': ['28px', { lineHeight: '1.2', fontWeight: '600' }],
+        'headline-lg': ['40px', { lineHeight: '1.2', fontWeight: '600' }],
+        'headline-md': ['24px', { lineHeight: '1.3', fontWeight: '600' }],
+        'body-lg': ['18px', { lineHeight: '1.6', fontWeight: '400' }],
+        label: ['12px', { lineHeight: '1', letterSpacing: '0.1em', fontWeight: '600' }],
+      },
+    },
+  },
+  plugins: [],
+}

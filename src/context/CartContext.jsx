@@ -1,10 +1,9 @@
 import { createContext, useContext, useState, useMemo } from 'react'
-import { cartItems as seed } from '../data/site.js'
 
 const CartContext = createContext(null)
 
 export function CartProvider({ children }) {
-  const [items, setItems] = useState(seed)
+  const [items, setItems] = useState([])
 
   const add = (product) => {
     setItems((prev) => {

@@ -6,16 +6,14 @@ import { products } from '../data/site.js'
 import { useCart } from '../context/CartContext.jsx'
 
 const categoryLabels = {
-  boda: 'Casamientos',
-  'xv-anos': 'Quince Años',
-  bautismo: 'Bautismos',
-  cumpleanos: 'Cumpleaños',
+  boda: 'Boda',
+  'xv-anos': 'Cumple XV',
 }
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 
 export default function Catalog() {
-  const [activeCats, setActiveCats] = useState(['boda'])
+  const [activeCats, setActiveCats] = useState(['boda', 'xv-anos'])
   const [activePlan, setActivePlan] = useState('Standard')
   const { add } = useCart()
   const [added, setAdded] = useState(null)
@@ -77,7 +75,7 @@ export default function Catalog() {
           <div>
             <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Plan</h3>
             <div className="space-y-2">
-              {['Básico', 'Standard', 'Premium'].map((plan) => (
+              {['Básica', 'Standard', 'Premium'].map((plan) => (
                 <label key={plan} className="flex items-center gap-3 cursor-pointer group">
                   <input
                     type="radio"

@@ -11,16 +11,28 @@ import Cart from './pages/Cart.jsx'
 import Checkout from './pages/Checkout.jsx'
 import Personalize from './pages/Personalize.jsx'
 
-function ScrollToTop() {
-  const { pathname } = useLocation()
-  useEffect(() => window.scrollTo(0, 0), [pathname])
+function ScrollManager() {
+  const { pathname, hash } = useLocation()
+  useEffect(() => {
+    if (hash) {
+      // Esperamos un tick a que la sección de destino ya esté en el DOM
+      // (importante cuando venimos navegando desde otra página, no solo
+      // haciendo scroll dentro de Home).
+      const t = setTimeout(() => {
+        const el = document.getElementById(hash.replace('#', ''))
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 60)
+      return () => clearTimeout(t)
+    }
+    window.scrollTo(0, 0)
+  }, [pathname, hash])
   return null
 }
 
 export default function App() {
   return (
     <ErrorBoundary>
-      <ScrollToTop />
+      <ScrollManager />
       <PromoBar />
       <Nav />
       <main>

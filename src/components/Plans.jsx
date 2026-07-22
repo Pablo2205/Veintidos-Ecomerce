@@ -43,6 +43,9 @@ export default function Plans() {
                 <p className={`font-sans mt-2 italic ${p.variant === 'dark' ? 'text-primaryFixed/70' : 'text-onSurfaceVariant'}`}>
                   {p.tagline}
                 </p>
+                <p className={`font-serif text-3xl mt-4 ${p.variant === 'dark' ? 'text-white' : 'text-primary'}`}>
+                  ${p.price.toLocaleString('es-AR')}
+                </p>
               </div>
               <ul className="space-y-4 mb-12 flex-grow">
                 {p.items.map((it, i) => (
@@ -58,7 +61,7 @@ export default function Plans() {
                 ))}
               </ul>
               <a
-                href={waLink(`Hola! Quiero consultar el precio del plan ${p.name.toUpperCase()} para mi evento.`)}
+                href={waLink(`Hola! Quiero el plan ${p.name.toUpperCase()} ($${p.price.toLocaleString('es-AR')}) para mi evento.`)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`w-full py-4 rounded-full text-center font-bold font-sans transition-all ${
@@ -69,7 +72,7 @@ export default function Plans() {
                     : 'border border-outline text-primary hover:bg-surfaceContainer'
                 }`}
               >
-                Consultar precio
+                Elegir este plan
               </a>
             </motion.div>
           ))}
@@ -77,16 +80,17 @@ export default function Plans() {
 
         <Reveal delay={0.15} className="text-center mt-12">
           <p className="font-sans text-onSurfaceVariant text-sm">
-            ¿Querés algo que no está en ningún plan? También hacemos{' '}
+            ¿Querés algo que no está en ningún plan? También hacemos diseños 100% a medida, con
+            funciones especiales creadas para tu evento —{' '}
             <a
-              href={waLink('Hola! Quiero cotizar una invitación 100% a medida.')}
+              href={waLink('Hola! Quiero consultar el precio de un diseño 100% a medida.')}
               target="_blank"
               rel="noopener noreferrer"
               className="text-secondary underline font-semibold"
             >
-              diseños 100% a medida
+              consultar precio
             </a>
-            , con funciones especiales creadas para tu evento.
+            .
           </p>
         </Reveal>
       </div>

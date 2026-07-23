@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Icon from './Icon.jsx'
+import LogoMark from './LogoMark.jsx'
 import { useCart } from '../context/CartContext.jsx'
 
 const links = [
@@ -18,8 +19,11 @@ export default function Nav() {
   return (
     <header className="bg-background border-b border-outlineVariant/30 sticky top-[48px] z-50 h-20">
       <nav className="wrap flex items-center justify-between h-full">
-        <Link to="/" className="font-serif text-headline-md md:text-headline-lg font-bold tracking-tight text-primary">
-          veinti<span className="text-secondary">dós</span>
+        <Link to="/" className="flex items-center gap-2.5">
+          <LogoMark className="w-9 h-9 md:w-10 md:h-10 flex-shrink-0" />
+          <span className="font-serif text-headline-md md:text-headline-lg font-bold tracking-tight text-primary">
+            veinti<span className="text-secondary">dós</span>
+          </span>
         </Link>
 
         <div className="hidden md:flex items-center gap-8">

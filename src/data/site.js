@@ -121,7 +121,7 @@ export const faqs = [
   },
   {
     q: '¿Qué diferencia hay entre los planes?',
-    a: 'Básica: lo esencial — cuenta regresiva, fecha, lugar, mapa, confirmación por WhatsApp y sección de regalos.\n\nStandard: suma música, galería de fotos, dress code, tips para invitados, agendar la fecha y QR para imprimir.\n\nPremium: agrega panel de confirmaciones en tiempo real, sugerencia de canciones, álbum compartido, video y personalización avanzada.',
+    a: 'Básica: lo esencial — cuenta regresiva, fecha, lugar, mapa, confirmación por WhatsApp y sección de regalos. Standard: suma música, galería de fotos, dress code, tips para invitados, agendar la fecha y QR para imprimir. Premium: agrega panel de confirmaciones en tiempo real, sugerencia de canciones, álbum compartido, video y personalización avanzada.',
   },
   {
     q: '¿Puedo personalizar el diseño?',

@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom'
+import LogoMark from './LogoMark.jsx'
 
 export default function Footer() {
   return (
     <footer className="bg-surfaceContainer border-t border-outlineVariant/20 py-section">
       <div className="wrap grid grid-cols-1 md:grid-cols-4 gap-gutter">
         <div className="md:col-span-1 space-y-4">
-          <div className="font-serif text-headline-lg text-primary font-bold">
-            veinti<span className="text-secondary">dós</span>
+          <div className="flex items-center gap-2.5">
+            <LogoMark className="w-9 h-9 flex-shrink-0" />
+            <span className="font-serif text-headline-lg text-primary font-bold">
+              veinti<span className="text-secondary">dós</span>
+            </span>
           </div>
           <p className="font-sans text-sm text-onSurfaceVariant max-w-xs">
             Invitaciones digitales de autor. Creamos experiencias digitales que marcan el inicio de tus mejores
@@ -37,8 +41,7 @@ export default function Footer() {
         <div>
           <h5 className="font-sans text-label text-primary uppercase tracking-widest mb-6">Pagos</h5>
           <div className="flex flex-wrap gap-3 text-sm font-sans text-onSurfaceVariant">
-            <span className="px-3 py-1 border border-outlineVariant rounded">Mercado Pago</span>
-            <span className="px-3 py-1 border border-outlineVariant rounded">Transferencia</span>
+            <span className="px-3 py-1 border border-outlineVariant rounded">Transferencia bancaria</span>
           </div>
         </div>
       </div>

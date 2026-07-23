@@ -43,11 +43,9 @@ export default function Plans() {
                 <p className={`font-sans mt-2 italic ${p.variant === 'dark' ? 'text-primaryFixed/70' : 'text-onSurfaceVariant'}`}>
                   {p.tagline}
                 </p>
-                <p className={`font-serif text-3xl mt-4 ${p.variant === 'dark' ? 'text-white' : 'text-primary'}`}>
-                  ${p.price.toLocaleString('es-AR')}
-                </p>
               </div>
-              <ul className="space-y-4 mb-12 flex-grow">
+
+              <ul className="space-y-4 mb-10 flex-grow">
                 {p.items.map((it, i) => (
                   <li
                     key={it}
@@ -60,38 +58,43 @@ export default function Plans() {
                   </li>
                 ))}
               </ul>
-              <a
-                href={waLink(`Hola! Quiero el plan ${p.name.toUpperCase()} ($${p.price.toLocaleString('es-AR')}) para mi evento.`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`w-full py-4 rounded-full text-center font-bold font-sans transition-all ${
-                  p.variant === 'dark'
-                    ? 'bg-promoGold text-primary hover:opacity-90'
-                    : p.variant === 'highlight'
-                    ? 'bg-primary text-onPrimary hover:bg-primaryContainer'
-                    : 'border border-outline text-primary hover:bg-surfaceContainer'
-                }`}
-              >
-                Elegir este plan
-              </a>
+
+              {/* Precio al final, sin botón */}
+              <div className={`pt-6 border-t ${p.variant === 'dark' ? 'border-white/15' : 'border-outlineVariant'}`}>
+                <span className={`block font-sans text-label uppercase tracking-widest mb-1 ${p.variant === 'dark' ? 'text-primaryFixed/70' : 'text-onSurfaceVariant'}`}>
+                  Precio
+                </span>
+                <p className={`font-serif text-4xl ${p.variant === 'dark' ? 'text-white' : 'text-primary'}`}>
+                  ${p.price.toLocaleString('es-AR')}
+                </p>
+              </div>
             </motion.div>
           ))}
         </Stagger>
 
-        <Reveal delay={0.15} className="text-center mt-12">
-          <p className="font-sans text-onSurfaceVariant text-sm">
-            ¿Querés algo que no está en ningún plan? También hacemos diseños 100% a medida, con
-            funciones especiales creadas para tu evento —{' '}
+        {/* Diseño 100% a medida — destacado */}
+        <Reveal delay={0.15} className="mt-14">
+          <div className="max-w-3xl mx-auto rounded-2xl border-2 border-dashed border-promoGold bg-creamSurface px-8 py-10 text-center">
+            <p className="font-sans text-label text-promoGold uppercase tracking-widest mb-3">
+              ✦ A tu medida ✦
+            </p>
+            <h3 className="font-serif text-headline-md text-primary mb-3">
+              ¿Querés algo que no está en ningún plan?
+            </h3>
+            <p className="font-sans text-onSurfaceVariant text-base max-w-xl mx-auto mb-8">
+              También hacemos diseños 100% a medida, con funciones especiales creadas
+              específicamente para tu evento.
+            </p>
             <a
-              href={waLink('Hola! Quiero consultar el precio de un diseño 100% a medida.')}
+              href={waLink('Hola! Quiero cotizar un diseño 100% a medida para mi evento.')}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-secondary underline font-semibold"
+              className="inline-flex items-center gap-2 bg-primary text-onPrimary px-10 py-4 rounded-full font-sans font-bold hover:bg-primaryContainer transition-all"
             >
-              consultar precio
+              <Icon name="chat" filled className="text-whatsapp" />
+              Cotizar por WhatsApp
             </a>
-            .
-          </p>
+          </div>
         </Reveal>
       </div>
     </section>

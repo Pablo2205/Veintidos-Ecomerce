@@ -1,5 +1,5 @@
 import { waLink } from '../data/site.js'
-import Icon from './Icon.jsx'
+import WhatsAppIcon from './WhatsAppIcon.jsx'
 
 export default function WaFab() {
   return (
@@ -11,7 +11,7 @@ export default function WaFab() {
       className="group fixed bottom-8 right-8 z-[70]"
     >
       <div className="relative flex items-center gap-3 bg-whatsapp text-white p-4 rounded-full shadow-lg group-hover:pr-6 transition-all duration-300">
-        <Icon name="chat" filled />
+        <WhatsAppIcon className="w-6 h-6 flex-shrink-0" />
         <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 whitespace-nowrap font-sans font-bold text-sm">
           Chateá con nosotros
         </span>

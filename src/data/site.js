@@ -20,6 +20,39 @@ export const GOOGLE_SHEETS_URL =
 // Tamaño máximo aceptado para el comprobante (en MB) antes de convertir a base64.
 export const MAX_COMPROBANTE_MB = 5
 
+// --- Promo del banner superior -------------------------------------------
+// Puramente de marketing (texto del banner). No modifica ningún precio real.
+export const PROMO_PERCENT = 30
+export const currentMonthLabel = () => {
+  const mes = new Date().toLocaleDateString('es-AR', { month: 'long' })
+  return mes.charAt(0).toUpperCase() + mes.slice(1)
+}
+
+// --- Precio "tachado" ------------------------------------------------------
+// Todos los precios que se muestran (planes, catálogo, carrito, checkout)
+// son el precio real que se cobra. Para mostrar un precio tachado más alto
+// arriba (sensación de descuento), multiplicamos por este factor SOLO para
+// mostrar — nunca se usa para cobrar.
+const STRIKETHROUGH_FACTOR = 1.15
+export const originalPrice = (price) => Math.round((price * STRIKETHROUGH_FACTOR) / 10) * 10
+
+// --- Colores para el filtro del catálogo ---------------------------------
+// Paleta de swatches seleccionables. "hex" es lo que se pinta en el círculo;
+// "border" (opcional) se usa en colores muy claros (blanco, beige) para que
+// el círculo no se pierda contra el fondo.
+export const productColors = [
+  { key: 'verde', label: 'Verde', hex: '#5C7A52' },
+  { key: 'azul', label: 'Azul', hex: '#2050E0' },
+  { key: 'marron', label: 'Marrón', hex: '#8A6B4F' },
+  { key: 'beige', label: 'Beige', hex: '#E4D9C3', border: '#C9BA9C' },
+  { key: 'rosa', label: 'Rosa', hex: '#E8A0BB' },
+  { key: 'naranja', label: 'Naranja', hex: '#E2803F' },
+  { key: 'amarillo', label: 'Amarillo', hex: '#E8C547' },
+  { key: 'blanco', label: 'Blanco', hex: '#FFFFFF', border: '#D8D8D8' },
+  { key: 'celeste', label: 'Celeste', hex: '#7FC7E8' },
+]
+
+
 // --- Eventos disponibles -------------------------------------------------
 // Solo estos dos tipos de evento están habilitados en todo el sitio
 // (Home, Catálogo, formulario). Para sumar uno nuevo, agregalo acá y
@@ -148,11 +181,13 @@ export const faqs = [
 // --- Catálogo — productos de ejemplo ---------------------------------
 // Reemplazar por tus diseños reales. "category" tiene que ser "boda" o
 // "xv-anos" (son los únicos eventos habilitados, ver `categories` arriba).
+// "color" es la clave de `productColors` de arriba — placeholder por ahora,
+// se van a redefinir cuando llegue el detalle real de cada demo.
 export const products = [
-  { id: 1, name: 'Invitación Boda — Elegante', category: 'boda', plan: 'Standard', price: 78000, gradient: 'from-[#8FB996] to-[#3C5F41]' },
-  { id: 2, name: 'Invitación Boda — Campo', category: 'boda', plan: 'Básica', price: 56000, gradient: 'from-[#C9BE9A] to-[#8A7B4F]' },
-  { id: 3, name: 'XV Años — Boliche Disco', category: 'xv-anos', plan: 'Premium', price: 88000, gradient: 'from-[#3B2F55] to-[#1B1230]', badge: 'Nuevo' },
-  { id: 4, name: 'Boda — Tela Minimalista', category: 'boda', plan: 'Standard', price: 78000, gradient: 'from-[#D9D4C4] to-[#A69C82]' },
-  { id: 5, name: 'XV Años — Noche Esmeralda', category: 'xv-anos', plan: 'Standard', price: 78000, gradient: 'from-[#1F3D2C] to-[#0D1F16]' },
-  { id: 6, name: 'Invitación Boda — Fotografía', category: 'boda', plan: 'Premium', price: 88000, gradient: 'from-[#4A2F1E] to-[#2A1810]' },
+  { id: 1, name: 'Invitación Boda — Elegante', category: 'boda', plan: 'Standard', price: 78000, color: 'verde', gradient: 'from-[#8FB996] to-[#3C5F41]' },
+  { id: 2, name: 'Invitación Boda — Campo', category: 'boda', plan: 'Básica', price: 56000, color: 'marron', gradient: 'from-[#C9BE9A] to-[#8A7B4F]' },
+  { id: 3, name: 'XV Años — Boliche Disco', category: 'xv-anos', plan: 'Premium', price: 88000, color: 'rosa', gradient: 'from-[#3B2F55] to-[#1B1230]', badge: 'Nuevo' },
+  { id: 4, name: 'Boda — Tela Minimalista', category: 'boda', plan: 'Standard', price: 78000, color: 'beige', gradient: 'from-[#D9D4C4] to-[#A69C82]' },
+  { id: 5, name: 'XV Años — Noche Esmeralda', category: 'xv-anos', plan: 'Standard', price: 78000, color: 'verde', gradient: 'from-[#1F3D2C] to-[#0D1F16]' },
+  { id: 6, name: 'Invitación Boda — Fotografía', category: 'boda', plan: 'Premium', price: 88000, color: 'marron', gradient: 'from-[#4A2F1E] to-[#2A1810]' },
 ]

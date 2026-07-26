@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import { useCart } from '../context/CartContext.jsx'
-import { BANK_DATA } from '../data/site.js'
+import { BANK_DATA, originalPrice } from '../data/site.js'
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 
@@ -111,27 +111,38 @@ export default function Checkout() {
               <h3 className="font-serif text-headline-md text-primary">Resumen del pedido</h3>
 
               <div className="space-y-6">
-                {items.map((item) => (
-                  <div key={item.id} className="flex gap-4 items-start">
-                    <div
-                      className={`w-20 h-28 rounded-lg flex-shrink-0 bg-gradient-to-br ${
-                        item.gradient || 'from-secondaryContainer to-primaryContainer'
-                      }`}
-                    />
-                    <div className="flex-1">
-                      <p className="font-bold text-primary font-sans">{item.name}</p>
-                      <p className="text-label text-onSurfaceVariant mt-1 font-sans">{item.plan}</p>
-                      <p className="text-primary mt-2 font-semibold font-sans">
-                        {money(item.price * (item.qty || 1))}
-                      </p>
+                {items.map((item) => {
+                  const qty = item.qty || 1
+                  return (
+                    <div key={item.id} className="flex gap-4 items-start">
+                      <div
+                        className={`w-20 h-28 rounded-lg flex-shrink-0 bg-gradient-to-br ${
+                          item.gradient || 'from-secondaryContainer to-primaryContainer'
+                        }`}
+                      />
+                      <div className="flex-1">
+                        <p className="font-bold text-primary font-sans">{item.name}</p>
+                        <p className="text-label text-onSurfaceVariant mt-1 font-sans">{item.plan}</p>
+                        <p className="mt-2 font-sans">
+                          <span className="line-through text-onSurfaceVariant/50 text-xs mr-2">
+                            {money(originalPrice(item.price) * qty)}
+                          </span>
+                          <span className="text-primary font-semibold">{money(item.price * qty)}</span>
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
 
               <div className="pt-6 border-t border-outlineVariant/30 flex justify-between items-end">
                 <p className="font-bold text-primary font-sans">Total a transferir</p>
-                <p className="font-serif text-headline-lg text-primary">{money(subtotal)}</p>
+                <div className="text-right">
+                  <p className="text-xs font-sans line-through text-onSurfaceVariant/50">
+                    {money(items.reduce((sum, i) => sum + originalPrice(i.price) * (i.qty || 1), 0))}
+                  </p>
+                  <p className="font-serif text-headline-lg text-primary">{money(subtotal)}</p>
+                </div>
               </div>
 
               <p className="text-center text-[11px] text-onSurfaceVariant px-2 font-sans">

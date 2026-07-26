@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import Reveal, { Stagger, staggerItem } from './Reveal.jsx'
 import Icon from './Icon.jsx'
+import PriceTag from './PriceTag.jsx'
+import WhatsAppButton from './WhatsAppButton.jsx'
 import { plans, waLink } from '../data/site.js'
 
 export default function Plans() {
@@ -16,60 +18,58 @@ export default function Plans() {
         </Reveal>
 
         <Stagger className="grid grid-cols-1 lg:grid-cols-3 gap-8" gap={0.12}>
-          {plans.map((p) => (
-            <motion.div
-              key={p.name}
-              variants={staggerItem}
-              className={`rounded-2xl p-8 flex flex-col relative transition-all ${
-                p.variant === 'highlight'
-                  ? 'bg-white border-2 border-secondary scale-105 z-20 shadow-xl'
-                  : p.variant === 'dark'
-                  ? 'bg-primaryContainer text-white border border-primary'
-                  : 'bg-white border border-outlineVariant hover:border-secondary'
-              }`}
-            >
-              {p.highlight && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-white px-4 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase font-sans">
-                  {p.highlight}
+          {plans.map((p) => {
+            const dark = p.variant === 'dark'
+            return (
+              <motion.div
+                key={p.name}
+                variants={staggerItem}
+                className={`rounded-2xl p-8 flex flex-col relative transition-all ${
+                  p.variant === 'highlight'
+                    ? 'bg-white border-2 border-secondary scale-105 z-20 shadow-xl'
+                    : dark
+                    ? 'bg-primaryContainer text-white border border-primary'
+                    : 'bg-white border border-outlineVariant hover:border-secondary'
+                }`}
+              >
+                {p.highlight && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-white px-4 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase font-sans">
+                    {p.highlight}
+                  </div>
+                )}
+                <div className="mb-8">
+                  <span className={`font-sans text-label uppercase tracking-widest ${dark ? 'text-secondaryFixed' : 'text-secondary'}`}>
+                    Plan
+                  </span>
+                  <h3 className={`font-serif text-headline-lg mt-2 ${dark ? 'text-white' : 'text-primary'}`}>
+                    {p.name}
+                  </h3>
+                  <p className={`font-sans mt-2 italic ${dark ? 'text-primaryFixed/70' : 'text-onSurfaceVariant'}`}>
+                    {p.tagline}
+                  </p>
                 </div>
-              )}
-              <div className="mb-8">
-                <span className={`font-sans text-label uppercase tracking-widest ${p.variant === 'dark' ? 'text-secondaryFixed' : 'text-secondary'}`}>
-                  Plan
-                </span>
-                <h3 className={`font-serif text-headline-lg mt-2 ${p.variant === 'dark' ? 'text-white' : 'text-primary'}`}>
-                  {p.name}
-                </h3>
-                <p className={`font-sans mt-2 italic ${p.variant === 'dark' ? 'text-primaryFixed/70' : 'text-onSurfaceVariant'}`}>
-                  {p.tagline}
-                </p>
-              </div>
 
-              <ul className="space-y-4 mb-10 flex-grow">
-                {p.items.map((it, i) => (
-                  <li
-                    key={it}
-                    className={`flex items-center gap-3 font-sans text-sm ${
-                      p.variant === 'dark' ? (i === 0 ? 'text-primaryFixed/70 font-semibold' : 'text-white') : 'text-onSurfaceVariant'
-                    } ${i === 0 && p.variant !== 'plain' ? 'font-semibold' : ''}`}
-                  >
-                    <Icon name={i === 0 && p.variant !== 'plain' ? 'add' : 'check'} className="scale-75 text-secondary" />
-                    <span>{it}</span>
-                  </li>
-                ))}
-              </ul>
+                <ul className="space-y-4 mb-10 flex-grow">
+                  {p.items.map((it, i) => (
+                    <li
+                      key={it}
+                      className={`flex items-center gap-3 font-sans text-sm ${
+                        dark ? (i === 0 ? 'text-primaryFixed/70 font-semibold' : 'text-white') : 'text-onSurfaceVariant'
+                      } ${i === 0 && p.variant !== 'plain' ? 'font-semibold' : ''}`}
+                    >
+                      <Icon name={i === 0 && p.variant !== 'plain' ? 'add' : 'check'} className="scale-75 text-secondary" />
+                      <span>{it}</span>
+                    </li>
+                  ))}
+                </ul>
 
-              {/* Precio al final, sin botón */}
-              <div className={`pt-6 border-t ${p.variant === 'dark' ? 'border-white/15' : 'border-outlineVariant'}`}>
-                <span className={`block font-sans text-label uppercase tracking-widest mb-1 ${p.variant === 'dark' ? 'text-primaryFixed/70' : 'text-onSurfaceVariant'}`}>
-                  Precio
-                </span>
-                <p className={`font-serif text-4xl ${p.variant === 'dark' ? 'text-white' : 'text-primary'}`}>
-                  ${p.price.toLocaleString('es-AR')}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+                {/* Precio al final: tachado arriba, real abajo — sin mencionar el % */}
+                <div className={`pt-6 border-t ${dark ? 'border-white/15' : 'border-outlineVariant'}`}>
+                  <PriceTag price={p.price} dark={dark} />
+                </div>
+              </motion.div>
+            )
+          })}
         </Stagger>
 
         {/* Diseño 100% a medida — destacado */}
@@ -85,15 +85,12 @@ export default function Plans() {
               También hacemos diseños 100% a medida, con funciones especiales creadas
               específicamente para tu evento.
             </p>
-            <a
+            <WhatsAppButton
               href={waLink('Hola! Quiero cotizar un diseño 100% a medida para mi evento.')}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-primary text-onPrimary px-10 py-4 rounded-full font-sans font-bold hover:bg-primaryContainer transition-all"
+              className="px-10 py-4 text-base"
             >
-              <Icon name="chat" filled className="text-whatsapp" />
               Cotizar por WhatsApp
-            </a>
+            </WhatsAppButton>
           </div>
         </Reveal>
       </div>

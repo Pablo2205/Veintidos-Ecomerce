@@ -2,6 +2,8 @@ import { useState, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Icon from '../components/Icon.jsx'
+import WhatsAppIcon from '../components/WhatsAppIcon.jsx'
+import WhatsAppButton from '../components/WhatsAppButton.jsx'
 import { waLink, GOOGLE_SHEETS_URL, MAX_COMPROBANTE_MB } from '../data/site.js'
 
 const stepDefs = [
@@ -186,7 +188,7 @@ ${file ? 'Adjunto el comprobante en este mismo chat.' : 'Te mando el comprobante
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-whatsapp font-sans text-label hover:underline"
             >
-              <Icon name="chat" /> WhatsApp concierge
+              <WhatsAppIcon className="w-4 h-4" /> WhatsApp concierge
             </a>
           </div>
         </aside>
@@ -371,14 +373,9 @@ ${file ? 'Adjunto el comprobante en este mismo chat.' : 'Te mando el comprobante
                     ? 'Guardamos tus datos localmente pero hubo un problema enviándolos automáticamente. Confirmá por WhatsApp para que no se pierda nada — te respondemos en el día.'
                     : 'Ya quedaron registrados. Confirmá por WhatsApp (y adjuntá el comprobante ahí si no lo subiste arriba) y arrancamos con el diseño.'}
                 </p>
-                <a
-                  href={waLink(summaryMsg())}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 btn-primary px-10 py-4"
-                >
-                  <Icon name="chat" filled /> Confirmar por WhatsApp
-                </a>
+                <WhatsAppButton href={waLink(summaryMsg())} className="mx-auto px-10 py-4 text-base">
+                  Confirmar por WhatsApp
+                </WhatsAppButton>
               </motion.div>
             )}
           </AnimatePresence>

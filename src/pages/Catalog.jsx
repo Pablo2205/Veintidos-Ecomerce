@@ -1,8 +1,9 @@
 import { useMemo, useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import Reveal, { Stagger, staggerItem } from '../components/Reveal.jsx'
+import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
-import { products } from '../data/site.js'
+import WhatsAppButton from '../components/WhatsAppButton.jsx'
+import { products, productColors, originalPrice, waLink } from '../data/site.js'
 import { useCart } from '../context/CartContext.jsx'
 
 const categoryLabels = {
@@ -10,11 +11,17 @@ const categoryLabels = {
   'xv-anos': 'Cumple XV',
 }
 
+const planOptions = ['Todos', 'Básica', 'Standard', 'Premium']
+
+// Colores donde el ✓ tiene que verse oscuro por el contraste del swatch.
+const LIGHT_SWATCHES = new Set(['blanco', 'beige', 'amarillo', 'celeste'])
+
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 
 export default function Catalog() {
   const [activeCats, setActiveCats] = useState(['boda', 'xv-anos'])
-  const [activePlan, setActivePlan] = useState('Standard')
+  const [activeColors, setActiveColors] = useState([])
+  const [activePlan, setActivePlan] = useState('Todos')
   const { add } = useCart()
   const [added, setAdded] = useState(null)
   const timeoutRef = useRef(null)
@@ -24,10 +31,21 @@ export default function Catalog() {
   const toggleCat = (cat) =>
     setActiveCats((prev) => (prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]))
 
-  const filtered = useMemo(
-    () => products.filter((p) => (activeCats.length ? activeCats.includes(p.category) : true)),
-    [activeCats]
-  )
+  const toggleColor = (color) =>
+    setActiveColors((prev) => (prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]))
+
+  // Filtro corregido: categoría y color son "cualquiera de los marcados"
+  // (si no hay ninguno marcado, no filtra por esa dimensión salvo categoría,
+  // que si se desmarcan todas no debería mostrar nada). El plan ahora sí
+  // filtra de verdad — antes el radio no hacía nada.
+  const filtered = useMemo(() => {
+    return products.filter((p) => {
+      const categoryMatch = activeCats.includes(p.category)
+      const colorMatch = activeColors.length === 0 || activeColors.includes(p.color)
+      const planMatch = activePlan === 'Todos' || p.plan === activePlan
+      return categoryMatch && colorMatch && planMatch
+    })
+  }, [activeCats, activeColors, activePlan])
 
   const handleAdd = (p) => {
     add(p)
@@ -73,9 +91,44 @@ export default function Catalog() {
           </div>
 
           <div>
+            <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Color</h3>
+            <div className="flex flex-wrap gap-3">
+              {productColors.map((c) => {
+                const active = activeColors.includes(c.key)
+                return (
+                  <button
+                    key={c.key}
+                    type="button"
+                    onClick={() => toggleColor(c.key)}
+                    aria-label={c.label}
+                    aria-pressed={active}
+                    title={c.label}
+                    className={`relative w-8 h-8 rounded-full transition-transform ${
+                      active ? 'scale-110 ring-2 ring-primary ring-offset-2 ring-offset-background' : 'hover:scale-105'
+                    }`}
+                    style={{
+                      backgroundColor: c.hex,
+                      border: c.border ? `1.5px solid ${c.border}` : '1px solid rgba(0,0,0,0.08)',
+                    }}
+                  >
+                    {active && (
+                      <span className="absolute inset-0 flex items-center justify-center">
+                        <Icon
+                          name="check"
+                          className={`text-sm ${LIGHT_SWATCHES.has(c.key) ? 'text-primary' : 'text-white'}`}
+                        />
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          <div>
             <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Plan</h3>
             <div className="space-y-2">
-              {['Básica', 'Standard', 'Premium'].map((plan) => (
+              {planOptions.map((plan) => (
                 <label key={plan} className="flex items-center gap-3 cursor-pointer group">
                   <input
                     type="radio"
@@ -94,70 +147,93 @@ export default function Catalog() {
 
           <div className="pt-8 border-t border-outlineVariant/30">
             <p className="font-sans text-label text-primary mb-4 uppercase tracking-widest">¿Buscás algo único?</p>
-            <a
-              href="https://wa.me/5491139126543?text=Hola!%20Quiero%20cotizar%20un%20dise%C3%B1o%20personalizado."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-center border border-secondary text-secondary py-3 rounded-full font-sans text-label uppercase hover:bg-secondary hover:text-white transition-all"
+            <WhatsAppButton
+              href={waLink('Hola! Quiero cotizar un diseño personalizado.')}
+              className="w-full py-3 text-sm"
+              iconClassName="w-4 h-4"
             >
               Diseño personalizado
-            </a>
+            </WhatsAppButton>
           </div>
         </aside>
 
         {/* Grid */}
         <div className="flex-grow">
-          <Stagger className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-12 gap-x-gutter" gap={0.06}>
-            {filtered.map((p) => (
-              <motion.div key={p.id} variants={staggerItem} className="group">
-                <div className={`relative aspect-[3/4] overflow-hidden rounded-xl bg-gradient-to-br ${p.gradient} mb-4 flex items-center justify-center`}>
-                  <span className="font-serif italic text-white/90 text-lg px-4 text-center">{p.name}</span>
-                  {p.badge && (
-                    <span className="absolute top-4 left-4 bg-promoGold text-white font-sans text-[10px] px-3 py-1 rounded-full uppercase tracking-widest">
-                      {p.badge}
-                    </span>
-                  )}
-                  <span className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm text-primary py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                    Ver demo
-                  </span>
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-sans text-label text-primary uppercase">{p.name}</h3>
-                    <p className="font-sans text-xs text-onSurfaceVariant mt-1">Sugerido: Plan {p.plan}</p>
-                  </div>
-                  <p className="font-sans text-label text-primary">{money(p.price)}</p>
-                </div>
-                <button
-                  onClick={() => handleAdd(p)}
-                  className="w-full mt-4 flex items-center justify-center gap-2 border border-outlineVariant py-2 rounded-full font-sans text-label uppercase text-onSurfaceVariant hover:border-primary hover:text-primary transition-all"
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-12 gap-x-gutter">
+            <AnimatePresence mode="popLayout" initial={false}>
+              {filtered.map((p) => (
+                <motion.div
+                  key={p.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  className="group"
                 >
-                  <AnimatePresence mode="wait" initial={false}>
-                    {added === p.id ? (
-                      <motion.span
-                        key="ok"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="flex items-center gap-2 text-secondary"
-                      >
-                        <Icon name="check" className="text-sm" /> Agregado
-                      </motion.span>
-                    ) : (
-                      <motion.span key="add" className="flex items-center gap-2" exit={{ opacity: 0 }}>
-                        <Icon name="shopping_cart" className="text-sm" /> Agregar al carrito
-                      </motion.span>
+                  <div className={`relative aspect-[3/4] overflow-hidden rounded-xl bg-gradient-to-br ${p.gradient} mb-4 flex items-center justify-center`}>
+                    <span className="font-serif italic text-white/90 text-lg px-4 text-center">{p.name}</span>
+                    {p.badge && (
+                      <span className="absolute top-4 left-4 bg-promoGold text-white font-sans text-[10px] px-3 py-1 rounded-full uppercase tracking-widest">
+                        {p.badge}
+                      </span>
                     )}
-                  </AnimatePresence>
-                </button>
-              </motion.div>
-            ))}
-          </Stagger>
+                    <span className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm text-primary py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                      Ver demo
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-sans text-label text-primary uppercase">{p.name}</h3>
+                      <p className="font-sans text-xs text-onSurfaceVariant mt-1">Sugerido: Plan {p.plan}</p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <span className="block text-[11px] font-sans line-through text-onSurfaceVariant/60">
+                        {money(originalPrice(p.price))}
+                      </span>
+                      <span className="font-sans text-label text-primary">{money(p.price)}</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleAdd(p)}
+                    className="w-full mt-4 flex items-center justify-center gap-2 border border-outlineVariant py-2 rounded-full font-sans text-label uppercase text-onSurfaceVariant hover:border-primary hover:text-primary transition-all"
+                  >
+                    <AnimatePresence mode="wait" initial={false}>
+                      {added === p.id ? (
+                        <motion.span
+                          key="ok"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="flex items-center gap-2 text-secondary"
+                        >
+                          <Icon name="check" className="text-sm" /> Agregado
+                        </motion.span>
+                      ) : (
+                        <motion.span key="add" className="flex items-center gap-2" exit={{ opacity: 0 }}>
+                          <Icon name="shopping_cart" className="text-sm" /> Agregar al carrito
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
 
           {filtered.length === 0 && (
-            <p className="text-center text-onSurfaceVariant font-sans py-20">
-              No hay demos para esta combinación de filtros todavía — consultanos por WhatsApp.
-            </p>
+            <Reveal className="text-center py-20">
+              <p className="text-onSurfaceVariant font-sans mb-6">
+                No hay demos para esta combinación de filtros todavía.
+              </p>
+              <WhatsAppButton
+                href={waLink('Hola! Estaba buscando una invitación con un filtro específico y no encontré demos. ¿Me ayudan?')}
+                className="mx-auto px-8 py-3 text-sm"
+                iconClassName="w-4 h-4"
+              >
+                Consultar por WhatsApp
+              </WhatsAppButton>
+            </Reveal>
           )}
         </div>
       </div>

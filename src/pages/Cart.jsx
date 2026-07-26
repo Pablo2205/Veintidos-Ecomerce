@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import { useCart } from '../context/CartContext.jsx'
+import { originalPrice } from '../data/site.js'
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 
@@ -12,8 +13,13 @@ export default function Cart() {
   const [promo, setPromo] = useState('')
   const [applied, setApplied] = useState(false)
 
-  const discount = applied ? Math.round(subtotal * 0.1) : 0
-  const total = subtotal - discount
+  const originalSubtotal = useMemo(
+    () => items.reduce((sum, i) => sum + originalPrice(i.price) * (i.qty || 1), 0),
+    [items]
+  )
+
+  const promoDiscount = applied ? Math.round(subtotal * 0.1) : 0
+  const total = subtotal - promoDiscount
 
   return (
     <div className="wrap py-12 md:py-20 flex flex-col md:flex-row gap-gutter">
@@ -29,41 +35,49 @@ export default function Cart() {
 
         <div className="space-y-6 mt-10">
           <AnimatePresence initial={false}>
-            {items.map((item) => (
-              <motion.div
-                key={item.id}
-                layout
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: -20, transition: { duration: 0.2 } }}
-                className="flex flex-col md:flex-row gap-6 p-6 bg-surfaceContainerLow rounded-xl border border-outlineVariant/20"
-              >
-                <div className={`w-full md:w-28 h-36 rounded-lg flex-shrink-0 bg-gradient-to-br ${item.gradient || 'from-secondaryContainer to-primaryContainer'}`} />
-                <div className="flex-grow flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-serif text-headline-md text-primary">{item.name}</h3>
-                      <p className="text-label font-sans text-secondary uppercase tracking-widest mt-1">{item.plan}</p>
-                    </div>
-                    <button onClick={() => remove(item.id)} className="text-onSurfaceVariant hover:text-error transition-colors" aria-label="Quitar">
-                      <Icon name="delete" />
-                    </button>
-                  </div>
-                  <div className="mt-4 md:mt-0 flex justify-between items-end">
-                    <div className="flex items-center border border-outlineVariant rounded-full px-3 py-1">
-                      <button onClick={() => setQty(item.id, (item.qty || 1) - 1)} className="text-onSurfaceVariant hover:text-primary px-1">
-                        −
-                      </button>
-                      <span className="mx-4 font-bold text-primary font-sans">{item.qty || 1}</span>
-                      <button onClick={() => setQty(item.id, (item.qty || 1) + 1)} className="text-onSurfaceVariant hover:text-primary px-1">
-                        +
+            {items.map((item) => {
+              const qty = item.qty || 1
+              return (
+                <motion.div
+                  key={item.id}
+                  layout
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -20, transition: { duration: 0.2 } }}
+                  className="flex flex-col md:flex-row gap-6 p-6 bg-surfaceContainerLow rounded-xl border border-outlineVariant/20"
+                >
+                  <div className={`w-full md:w-28 h-36 rounded-lg flex-shrink-0 bg-gradient-to-br ${item.gradient || 'from-secondaryContainer to-primaryContainer'}`} />
+                  <div className="flex-grow flex flex-col justify-between">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-serif text-headline-md text-primary">{item.name}</h3>
+                        <p className="text-label font-sans text-secondary uppercase tracking-widest mt-1">{item.plan}</p>
+                      </div>
+                      <button onClick={() => remove(item.id)} className="text-onSurfaceVariant hover:text-error transition-colors" aria-label="Quitar">
+                        <Icon name="delete" />
                       </button>
                     </div>
-                    <span className="font-serif text-headline-md text-primary">{money(item.price * (item.qty || 1))}</span>
+                    <div className="mt-4 md:mt-0 flex justify-between items-end">
+                      <div className="flex items-center border border-outlineVariant rounded-full px-3 py-1">
+                        <button onClick={() => setQty(item.id, qty - 1)} className="text-onSurfaceVariant hover:text-primary px-1">
+                          −
+                        </button>
+                        <span className="mx-4 font-bold text-primary font-sans">{qty}</span>
+                        <button onClick={() => setQty(item.id, qty + 1)} className="text-onSurfaceVariant hover:text-primary px-1">
+                          +
+                        </button>
+                      </div>
+                      <div className="text-right">
+                        <span className="block text-xs font-sans line-through text-onSurfaceVariant/60">
+                          {money(originalPrice(item.price) * qty)}
+                        </span>
+                        <span className="font-serif text-headline-md text-primary">{money(item.price * qty)}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              )
+            })}
           </AnimatePresence>
 
           {items.length === 0 && (
@@ -118,15 +132,25 @@ export default function Cart() {
               <div className="space-y-4 pt-6 border-t border-outlineVariant/30 font-sans">
                 <div className="flex justify-between text-onSurfaceVariant">
                   <span>Subtotal ({items.length} items)</span>
-                  <span>{money(subtotal)}</span>
+                  <span className="flex items-center gap-2">
+                    <span className="line-through text-onSurfaceVariant/50 text-xs">{money(originalSubtotal)}</span>
+                    {money(subtotal)}
+                  </span>
                 </div>
-                <div className="flex justify-between text-onSurfaceVariant">
-                  <span>Descuentos</span>
-                  <span className={applied ? 'text-secondary' : ''}>{applied ? `-${money(discount)}` : '$0'}</span>
-                </div>
+                {applied && (
+                  <div className="flex justify-between text-onSurfaceVariant">
+                    <span>Código de descuento</span>
+                    <span className="text-secondary">-{money(promoDiscount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between items-baseline pt-4 border-t border-outlineVariant/30">
                   <span className="font-bold text-primary">Total</span>
-                  <span className="font-serif text-headline-md text-primary">{money(total)}</span>
+                  <div className="text-right">
+                    <span className="block text-xs font-sans line-through text-onSurfaceVariant/50">
+                      {money(originalSubtotal - promoDiscount)}
+                    </span>
+                    <span className="font-serif text-headline-md text-primary">{money(total)}</span>
+                  </div>
                 </div>
               </div>
 

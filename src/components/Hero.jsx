@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { waLink } from '../data/site.js'
+import WhatsAppButton from './WhatsAppButton.jsx'
 import demoBoda from '../assets/demo-boda.png'
 
 const item = {
@@ -31,14 +32,12 @@ export default function Hero() {
             confirmación y música — todo en un link.
           </motion.p>
           <motion.div variants={item} className="flex flex-col sm:flex-row gap-4">
-            <a
+            <WhatsAppButton
               href={waLink('Hola! Quiero información sobre las invitaciones digitales.')}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary px-8 py-4 text-center"
+              className="px-8 py-4 text-base justify-center"
             >
               Consultar por WhatsApp
-            </a>
+            </WhatsAppButton>
             <Link to="/catalogo" className="btn-outline px-8 py-4 text-center">
               Ver demos reales
             </Link>

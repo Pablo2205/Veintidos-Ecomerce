@@ -1,5 +1,5 @@
 import Reveal from './Reveal.jsx'
-import Icon from './Icon.jsx'
+import WhatsAppButton from './WhatsAppButton.jsx'
 import { waLink } from '../data/site.js'
 
 export default function CtaFinal() {
@@ -14,15 +14,13 @@ export default function CtaFinal() {
             Contanos qué vas a festejar y te respondemos en el día con demos, asesoramiento y precios. Sin
             compromiso.
           </p>
-          <a
+          <WhatsAppButton
             href={waLink('Hola! Quiero mi invitación digital. Les cuento sobre mi evento:')}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-4 bg-primary text-onPrimary px-12 py-5 rounded-full font-sans font-bold text-lg hover:bg-primaryContainer transition-all"
+            className="px-12 py-5 text-lg"
+            iconClassName="w-6 h-6"
           >
-            <Icon name="chat" filled className="text-whatsapp text-3xl" />
             Pedir mi invitación
-          </a>
+          </WhatsAppButton>
         </Reveal>
       </div>
     </section>

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Reveal, { Stagger, staggerItem } from './Reveal.jsx'
+import WhatsAppButton from './WhatsAppButton.jsx'
 import { categories, waLink } from '../data/site.js'
 
 const gradients = [
@@ -40,14 +41,13 @@ export default function Categories() {
                 <h3 className="font-serif text-headline-md text-primary mb-2">{c.name}</h3>
                 <p className="text-onSurfaceVariant font-sans text-sm mb-6 leading-relaxed">{c.desc}</p>
                 <div className="flex gap-4">
-                  <a
+                  <WhatsAppButton
                     href={waLink(`Hola! Quiero una invitación digital para ${c.name}. ¿Me pasan info y precios?`)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 bg-primary text-onPrimary py-3 rounded-full text-center text-label font-sans font-semibold hover:bg-primaryContainer transition-colors"
+                    className="flex-1 py-3 text-sm"
+                    iconClassName="w-4 h-4"
                   >
                     WhatsApp
-                  </a>
+                  </WhatsAppButton>
                   <Link
                     to="/catalogo"
                     className="flex-1 border border-outline py-3 rounded-full text-center text-label font-sans font-semibold hover:bg-white transition-colors"

@@ -1,17 +1,12 @@
 import { Link } from 'react-router-dom'
-import LogoMark from './LogoMark.jsx'
+import logoWordmark from '../assets/logo-wordmark.png'
 
 export default function Footer() {
   return (
     <footer className="bg-surfaceContainer border-t border-outlineVariant/20 py-section">
       <div className="wrap grid grid-cols-1 md:grid-cols-4 gap-gutter">
         <div className="md:col-span-1 space-y-4">
-          <div className="flex items-center gap-2.5">
-            <LogoMark className="w-9 h-9 flex-shrink-0" />
-            <span className="font-serif text-headline-lg text-primary font-bold">
-              veinti<span className="text-secondary">dós</span>
-            </span>
-          </div>
+          <img src={logoWordmark} alt="veintidós" className="h-9 w-auto" />
           <p className="font-sans text-sm text-onSurfaceVariant max-w-xs">
             Invitaciones digitales de autor. Creamos experiencias digitales que marcan el inicio de tus mejores
             momentos.

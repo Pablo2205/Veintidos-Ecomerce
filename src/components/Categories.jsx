@@ -32,7 +32,7 @@ export default function Categories() {
             <motion.div
               key={c.slug}
               variants={staggerItem}
-              className="group relative overflow-hidden rounded-xl bg-surfaceContainerLow p-2 transition-all hover:bg-surfaceContainer"
+              className="group relative overflow-hidden rounded-xl bg-surfaceContainerLow p-2 border border-transparent transition-all hover:bg-surfaceContainer hover:border-promoGold/40"
             >
               <div className={`aspect-[4/5] overflow-hidden rounded-lg mb-6 bg-gradient-to-br ${gradients[i % gradients.length]} flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.03]`}>
                 <span className="font-serif italic text-2xl text-white/90 px-6 text-center">{c.name}</span>

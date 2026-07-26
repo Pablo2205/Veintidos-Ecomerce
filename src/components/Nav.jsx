@@ -28,17 +28,19 @@ export default function Nav() {
             <NavLink
               key={href}
               to={href}
-              className="font-sans text-label text-onSurfaceVariant hover:text-primary transition-colors"
+              className="relative font-sans text-label text-onSurfaceVariant hover:text-primary transition-colors group py-1"
             >
               {label}
+              <span className="absolute left-0 -bottom-0.5 w-0 h-[2px] bg-promoGold transition-all duration-300 group-hover:w-full" />
             </NavLink>
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Carrito — visible siempre, también en mobile (antes solo aparecía en desktop) */}
           <Link
             to="/carrito"
-            className="hidden md:flex items-center justify-center p-2 rounded-full hover:bg-primaryContainer/10 transition-all relative"
+            className="flex items-center justify-center p-2 rounded-full hover:bg-primaryContainer/10 transition-all relative"
             aria-label="Carrito"
           >
             <Icon name="shopping_cart" className="text-primary" />
@@ -50,7 +52,7 @@ export default function Nav() {
           </Link>
           <Link
             to="/personalizar"
-            className="hidden md:inline-flex items-center gap-2 bg-primary text-onPrimary px-6 py-3 rounded-full font-sans text-label hover:opacity-90 transition-all active:scale-95"
+            className="hidden md:inline-flex items-center gap-2 bg-primary text-onPrimary px-6 py-3 rounded-full font-sans text-label border border-transparent hover:border-promoGold hover:opacity-90 transition-all active:scale-95"
           >
             Quiero la mía
           </Link>

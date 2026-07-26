@@ -171,7 +171,7 @@ export default function Catalog() {
                   transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                   className="group"
                 >
-                  <div className={`relative aspect-[3/4] overflow-hidden rounded-xl bg-gradient-to-br ${p.gradient} mb-4 flex items-center justify-center`}>
+                  <div className={`relative aspect-[3/4] overflow-hidden rounded-xl bg-gradient-to-br ${p.gradient} mb-4 flex items-center justify-center ring-1 ring-transparent group-hover:ring-2 group-hover:ring-promoGold transition-all`}>
                     <span className="font-serif italic text-white/90 text-lg px-4 text-center">{p.name}</span>
                     {p.badge && (
                       <span className="absolute top-4 left-4 bg-promoGold text-white font-sans text-[10px] px-3 py-1 rounded-full uppercase tracking-widest">

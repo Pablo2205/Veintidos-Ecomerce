@@ -6,11 +6,11 @@ import { faqs } from '../data/site.js'
 
 function Item({ q, a, open, onToggle }) {
   return (
-    <div className="bg-surfaceContainerLow rounded-2xl overflow-hidden">
+    <div className={`bg-surfaceContainerLow rounded-2xl overflow-hidden border transition-colors ${open ? 'border-promoGold/60' : 'border-transparent'}`}>
       <button onClick={onToggle} className="flex w-full justify-between items-center p-6 text-left" aria-expanded={open}>
         <h4 className="font-serif text-headline-md text-primary text-lg pr-4">{q}</h4>
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.25 }}>
-          <Icon name="expand_more" className="text-secondary flex-shrink-0" />
+          <Icon name="expand_more" className={`flex-shrink-0 transition-colors ${open ? 'text-promoGold' : 'text-secondary'}`} />
         </motion.span>
       </button>
       <AnimatePresence initial={false}>

@@ -18,8 +18,12 @@ export default function HowItWorks() {
 
         <Stagger className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
           {steps.map(([title, desc], i) => (
-            <motion.div key={title} variants={staggerItem} className="flex gap-6">
-              <div className="flex-shrink-0 w-12 h-12 bg-primary text-onPrimary rounded-full flex items-center justify-center font-serif text-xl">
+            <motion.div
+              key={title}
+              variants={staggerItem}
+              className="flex gap-6 p-4 -m-4 rounded-2xl transition-colors hover:bg-secondaryContainer/20 group"
+            >
+              <div className="flex-shrink-0 w-12 h-12 bg-primary text-onPrimary rounded-full flex items-center justify-center font-serif text-xl ring-2 ring-transparent group-hover:ring-promoGold transition-all">
                 {i + 1}
               </div>
               <div>

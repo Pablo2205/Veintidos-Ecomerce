@@ -7,7 +7,7 @@ export const waLink = (msg) => `https://wa.me/${WA_NUMBER}?text=${encodeURICompo
 export const BANK_DATA = {
   alias: 'veintidos.pagos', // TODO: reemplazar por tu alias real
   cbu: '0000000000000000000000', // TODO: reemplazar por tu CBU real
-  titular: 'Nombre Apellido', // TODO: titular de la cuenta
+  titular: 'Pablo Daniel Coria',
 }
 
 // --- Google Sheets (formulario post-compra) ---------------------------
@@ -53,7 +53,33 @@ export const productColors = [
 ]
 
 
-// --- Eventos disponibles -------------------------------------------------
+// --- Ranking de planes -----------------------------------------------
+// Se usa en el formulario post-compra para mostrar solo los campos que
+// tienen sentido según el plan comprado (ej. "dress code" no aplica a
+// Básica, "video de bienvenida" es solo de Premium).
+export const PLAN_RANK = { Básica: 1, Standard: 2, Premium: 3 }
+
+// --- Tipos de evento del FORMULARIO post-compra --------------------------
+// Distinto de `categories` (que son los eventos del Home/Catálogo). Acá van
+// las opciones del <select> "Tipo de evento" en Personalize.jsx.
+export const eventTypeOptions = ['Boda', 'Cumple XV', 'Otro']
+
+// Qué preguntas mostrar en el paso "Contenido especial" del formulario,
+// según el plan comprado — no tiene sentido pedir dress code o playlist si
+// el plan Básica no las incluye. Ver `plans` más abajo para el detalle de
+// qué trae cada uno.
+export const planFeatureFlags = (planName) => {
+  const rank = PLAN_RANK[planName] || PLAN_RANK.Standard
+  return {
+    dressCode: rank >= PLAN_RANK.Standard,
+    playlist: rank >= PLAN_RANK.Standard,
+    gallery: rank >= PLAN_RANK.Standard,
+    video: rank >= PLAN_RANK.Premium,
+    customization: rank >= PLAN_RANK.Premium,
+  }
+}
+
+
 // Solo estos dos tipos de evento están habilitados en todo el sitio
 // (Home, Catálogo, formulario). Para sumar uno nuevo, agregalo acá y
 // también como opción en el <select> de src/pages/Personalize.jsx.

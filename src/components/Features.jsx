@@ -24,12 +24,12 @@ export default function Features() {
             <motion.div
               key={title}
               variants={staggerItem}
-              className={`p-8 rounded-2xl flex flex-col items-center text-center transition-transform duration-300 hover:-translate-y-1 ${
+              className={`p-8 rounded-2xl flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-1 border border-transparent hover:border-promoGold/50 ${
                 i % 2 === 0 ? 'bg-creamSurface' : 'bg-secondaryFixed/30'
               }`}
             >
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm">
-                <Icon name={icon} className="text-primary" />
+              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm ring-1 ring-transparent group-hover:ring-promoGold">
+                <Icon name={icon} className="text-secondary" />
               </div>
               <h3 className="font-serif text-headline-md text-primary mb-3">{title}</h3>
               <p className="text-onSurfaceVariant font-sans text-sm">{desc}</p>

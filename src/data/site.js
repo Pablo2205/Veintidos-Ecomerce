@@ -24,7 +24,8 @@ export const BANK_DATA = {
 // Aplicación web, acceso "Cualquier usuario"). Ver GOOGLE_APPS_SCRIPT.md en
 // la raíz del proyecto para el código listo para pegar en script.google.com.
 export const GOOGLE_SHEETS_URL =
-  'https://script.google.com/macros/s/AKfycbztSaKg1DbB_PUejMRfQ7BnNY4rURaX2DkEDmTgRxYhbAyQox0O9vTTVh9nh_0_AQg/exec'
+ // 'https://script.google.com/macros/s/AKfycbztSaKg1DbB_PUejMRfQ7BnNY4rURaX2DkEDmTgRxYhbAyQox0O9vTTVh9nh_0_AQg/exec'
+  'https://script.google.com/macros/s/AKfycbzh0eGdHDB3RPUASdPAwiSP1yQSkUi1EvSgFiN379g3Ec8F75HAIf8RMGtXDiGH-a0/exec'
 
 // Tamaño máximo aceptado para el comprobante (en MB) antes de convertir a base64.
 export const MAX_COMPROBANTE_MB = 5

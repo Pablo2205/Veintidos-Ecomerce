@@ -97,13 +97,13 @@ export const categories = [
     slug: 'boda',
     name: 'Boda',
     desc: 'Románticas y elegantes, con cronograma del día, dress code y datos para regalos.',
-    image: '/images/BODA.jpeg',
+    image: '/images/BODA.jpg',
   },
   {
     slug: 'xv-anos',
     name: 'Cumple XV',
     desc: 'Diseños llenos de magia y brillo para una noche que se recuerda toda la vida.',
-    image: '/images/XV.jpeg',
+    image: '/images/XV.jpg',
   },
 ]
 

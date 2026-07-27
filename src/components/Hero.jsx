@@ -36,7 +36,7 @@ export default function Hero() {
               href={waLink('Hola! Quiero información sobre las invitaciones digitales.')}
               className="px-8 py-4 text-base justify-center"
             >
-              Consultar por WhatsApp
+              Consultar
             </WhatsAppButton>
             <Link to="/catalogo" className="btn-outline px-8 py-4 text-center">
               Ver demos 

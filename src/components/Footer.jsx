@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="md:col-span-1 space-y-4">
           <img src={logoWordmark} alt="veintidós — invitaciones digitales" className="h-14 w-auto" />
           <p className="font-sans text-sm text-onSurfaceVariant max-w-xs">
-            Invitaciones digitales de autor. Creamos experiencias digitales que marcan el inicio de tus mejores
+            Invitaciones digitales de autor. Creamos experiencias que marcan el inicio de tus mejores
             momentos.
           </p>
         </div>
@@ -68,7 +68,7 @@ export default function Footer() {
       </div>
       <div className="wrap mt-16 pt-8 border-t border-outlineVariant/10 text-center">
         <p className="font-sans text-label text-onSurfaceVariant opacity-60">
-          © 2026 veintidós · Hecho con ♥ en Buenos Aires
+          © 2026 veintidós · Diseñado y desarrollado por CR Studio
         </p>
       </div>
     </footer>

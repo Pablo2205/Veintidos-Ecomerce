@@ -20,13 +20,16 @@ export default function Nav() {
 
   return (
     <header className="bg-background border-b border-outlineVariant/30 sticky top-[48px] z-50">
-      {/* Fila 1: logo grande y centrado — carrito + menú a la derecha */}
-      <div className="wrap relative flex items-center justify-center h-24 md:h-28">
-        <Link to="/" className="flex items-center">
-          <img src={logoWordmark} alt="veintidós" className="h-11 md:h-14 w-auto" />
+      {/* Fila 1: logo centrado de verdad — grid de 3 columnas en vez de position:
+          absolute, así el logo se centra respecto al espacio disponible real y
+          nunca se superpone con el carrito/menú, sea cual sea su ancho. */}
+      <div className="wrap grid grid-cols-[1fr_auto_1fr] items-center h-24 md:h-28">
+        <div />
+        <Link to="/" className="flex items-center justify-self-center">
+          <img src={logoWordmark} alt="veintidós" className="h-10 sm:h-11 md:h-14 w-auto" />
         </Link>
 
-        <div className="absolute right-4 md:right-6 flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center justify-self-end gap-1 sm:gap-2">
           <Link
             to="/carrito"
             className="flex items-center justify-center p-2 rounded-full hover:bg-primaryContainer/10 transition-all relative"

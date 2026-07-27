@@ -34,7 +34,41 @@ Mensaje: ${form.message || '-'}`
   return (
     <div className="wrap py-16 md:py-24">
       <Reveal>
-        <h1 className="font-serif text-display-mobile md:text-display text-primary mb-14">Contacto</h1>
+        <h1 className="font-serif text-display-mobile md:text-display text-primary mb-6">Contacto</h1>
+      </Reveal>
+
+      {/* Redes — debajo del título, arriba de todo lo demás */}
+      <Reveal delay={0.03} className="mb-14">
+        <p className="font-sans text-label text-primary uppercase tracking-widest mb-4">Seguinos</p>
+        <div className="flex items-center gap-3">
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="w-11 h-11 rounded-full bg-secondaryContainer/50 flex items-center justify-center text-secondary hover:bg-secondary hover:text-white transition-colors"
+          >
+            <SocialIcon name="instagram" className="w-5 h-5" />
+          </a>
+          <a
+            href={FACEBOOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            className="w-11 h-11 rounded-full bg-secondaryContainer/50 flex items-center justify-center text-secondary hover:bg-secondary hover:text-white transition-colors"
+          >
+            <SocialIcon name="facebook" className="w-5 h-5" />
+          </a>
+          <a
+            href={TIKTOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok"
+            className="w-11 h-11 rounded-full bg-promoGold/10 flex items-center justify-center text-primary hover:bg-promoGold hover:text-white transition-colors"
+          >
+            <SocialIcon name="tiktok" className="w-5 h-5" />
+          </a>
+        </div>
       </Reveal>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-14">
@@ -87,48 +121,6 @@ Mensaje: ${form.message || '-'}`
             >
               Escribir por WhatsApp
             </WhatsAppButton>
-          </div>
-
-          <div className="pt-6 border-t border-outlineVariant/30">
-            <p className="font-sans text-label text-primary uppercase tracking-widest mb-4">Seguinos</p>
-            <div className="flex items-center gap-3">
-              <a
-                href={waLink('Hola! Te escribo desde la web de veintidós.')}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className="w-11 h-11 rounded-full bg-whatsapp/10 flex items-center justify-center text-whatsapp hover:bg-whatsapp hover:text-white transition-colors"
-              >
-                <WhatsAppIcon className="w-5 h-5" />
-              </a>
-              <a
-                href={INSTAGRAM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="w-11 h-11 rounded-full bg-secondaryContainer/50 flex items-center justify-center text-secondary hover:bg-secondary hover:text-white transition-colors"
-              >
-                <SocialIcon name="instagram" className="w-5 h-5" />
-              </a>
-              <a
-                href={FACEBOOK_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-                className="w-11 h-11 rounded-full bg-secondaryContainer/50 flex items-center justify-center text-secondary hover:bg-secondary hover:text-white transition-colors"
-              >
-                <SocialIcon name="facebook" className="w-5 h-5" />
-              </a>
-              <a
-                href={TIKTOK_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="TikTok"
-                className="w-11 h-11 rounded-full bg-promoGold/10 flex items-center justify-center text-primary hover:bg-promoGold hover:text-white transition-colors"
-              >
-                <SocialIcon name="tiktok" className="w-5 h-5" />
-              </a>
-            </div>
           </div>
         </Reveal>
 

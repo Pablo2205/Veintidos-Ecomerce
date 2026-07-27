@@ -6,7 +6,6 @@ import { useCart } from '../context/CartContext.jsx'
 import logoWordmark from '../assets/brand/veintidos-logo-on-light-wordmark-only.png'
 
 const links = [
-  ['/', 'Inicio'],
   ['/catalogo', 'Demos'],
   ['/#eventos', 'Eventos'],
   ['/#planes', 'Planes'],

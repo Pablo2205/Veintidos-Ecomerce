@@ -90,6 +90,24 @@ páginas que lo usan — no hay que tocar los componentes para cambios de conten
 4. En `src/pages/Catalog.jsx`, agregá la entrada al objeto `categoryLabels` al principio del
    archivo.
 
+### Subir las fotos de "¿Qué vas a festejar?" (Home)
+
+Las tarjetas de Boda y Cumple XV en la Home ya están conectadas a dos archivos que
+todavía no existen — apenas los subas, aparecen solos, sin tocar código:
+
+1. Poné los archivos en `public/images/`, con estos nombres **exactos**:
+   - `public/images/BODA.jpeg`
+   - `public/images/XV.jpeg`
+2. Volvé a buildear/deployar.
+
+Specs recomendadas: proporción **4:5** (vertical), ~1200×1500px, idealmente bajo 400KB
+cada una (comprimí con TinyPNG si pesan más). Mientras los archivos no estén subidos, la
+tarjeta sigue mostrando el degradé de color de siempre — no se rompe ni muestra un ícono
+de imagen rota (hay un fallback automático en `src/components/Categories.jsx`).
+
+Para sumar la foto de un evento nuevo, agregás el campo `image: '/images/LOARCHIVO.jpeg'`
+al objeto correspondiente en `categories` (ver el punto anterior).
+
 ### Cambiar/agregar productos del catálogo
 
 En `products` (dentro de `src/data/site.js`), cada producto es:
@@ -98,7 +116,9 @@ En `products` (dentro de `src/data/site.js`), cada producto es:
 ```
 Hoy las tarjetas usan un degradé de color en vez de foto real. Para usar fotos reales hay que
 cambiar el bloque de la tarjeta en `src/pages/Catalog.jsx` (el `<div className="... bg-gradient-to-br ...">`)
-por una etiqueta `<img src={p.image} />`, y agregar el campo `image` a cada producto.
+por una etiqueta `<img src={p.image} />`, y agregar el campo `image` a cada producto — mismo
+criterio que las fotos de categorías de arriba (poné el archivo en `public/images/` y
+referencialo como `/images/archivo.jpeg`).
 
 ---
 

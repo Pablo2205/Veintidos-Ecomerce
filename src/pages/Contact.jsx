@@ -3,7 +3,16 @@ import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import WhatsAppIcon from '../components/WhatsAppIcon.jsx'
 import WhatsAppButton from '../components/WhatsAppButton.jsx'
-import { WA_NUMBER, CONTACT_EMAIL, CONTACT_LOCATION, waLink } from '../data/site.js'
+import SocialIcon from '../components/SocialIcon.jsx'
+import {
+  WA_NUMBER,
+  CONTACT_EMAIL,
+  CONTACT_LOCATION,
+  INSTAGRAM_URL,
+  FACEBOOK_URL,
+  TIKTOK_URL,
+  waLink,
+} from '../data/site.js'
 
 const initialForm = { name: '', email: '', phone: '', message: '' }
 
@@ -78,6 +87,48 @@ Mensaje: ${form.message || '-'}`
             >
               Escribir por WhatsApp
             </WhatsAppButton>
+          </div>
+
+          <div className="pt-6 border-t border-outlineVariant/30">
+            <p className="font-sans text-label text-primary uppercase tracking-widest mb-4">Seguinos</p>
+            <div className="flex items-center gap-3">
+              <a
+                href={waLink('Hola! Te escribo desde la web de veintidós.')}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="w-11 h-11 rounded-full bg-whatsapp/10 flex items-center justify-center text-whatsapp hover:bg-whatsapp hover:text-white transition-colors"
+              >
+                <WhatsAppIcon className="w-5 h-5" />
+              </a>
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="w-11 h-11 rounded-full bg-secondaryContainer/50 flex items-center justify-center text-secondary hover:bg-secondary hover:text-white transition-colors"
+              >
+                <SocialIcon name="instagram" className="w-5 h-5" />
+              </a>
+              <a
+                href={FACEBOOK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="w-11 h-11 rounded-full bg-secondaryContainer/50 flex items-center justify-center text-secondary hover:bg-secondary hover:text-white transition-colors"
+              >
+                <SocialIcon name="facebook" className="w-5 h-5" />
+              </a>
+              <a
+                href={TIKTOK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok"
+                className="w-11 h-11 rounded-full bg-promoGold/10 flex items-center justify-center text-primary hover:bg-promoGold hover:text-white transition-colors"
+              >
+                <SocialIcon name="tiktok" className="w-5 h-5" />
+              </a>
+            </div>
           </div>
         </Reveal>
 

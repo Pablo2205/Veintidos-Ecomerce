@@ -3,6 +3,13 @@ export const waLink = (msg) => `https://wa.me/${WA_NUMBER}?text=${encodeURICompo
 export const CONTACT_EMAIL = 'hola@veintidos.ar'
 export const CONTACT_LOCATION = 'Buenos Aires, Argentina'
 
+// --- Redes sociales --------------------------------------------------------
+// Instagram ya es el real (el mismo que estaba en el footer). Facebook y
+// TikTok son placeholders — reemplazalos por tus URLs reales antes de publicar.
+export const INSTAGRAM_URL = 'https://instagram.com/veintidos.invitaciones'
+export const FACEBOOK_URL = 'https://facebook.com/veintidos.invitaciones' // TODO: reemplazar por tu página real
+export const TIKTOK_URL = 'https://tiktok.com/@veintidos.invitaciones' // TODO: reemplazar por tu usuario real
+
 // --- Datos de pago (transferencia) -------------------------------------
 // Completá con tus datos reales antes de publicar. Se muestran tal cual
 // en el checkout, con botón de copiar.
@@ -90,11 +97,13 @@ export const categories = [
     slug: 'boda',
     name: 'Boda',
     desc: 'Románticas y elegantes, con cronograma del día, dress code y datos para regalos.',
+    image: '/images/BODA.jpeg',
   },
   {
     slug: 'xv-anos',
     name: 'Cumple XV',
     desc: 'Diseños llenos de magia y brillo para una noche que se recuerda toda la vida.',
+    image: '/images/XV.jpeg',
   },
 ]
 

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import SocialIcon from './SocialIcon.jsx'
-import logoWordmark from '../assets/logo-wordmark.png'
+import logoWordmark from '../assets/brand/veintidos-logo-on-light.png'
 import { CONTACT_EMAIL, CONTACT_LOCATION, INSTAGRAM_URL, FACEBOOK_URL, TIKTOK_URL } from '../data/site.js'
 
 export default function Footer() {
@@ -8,7 +8,7 @@ export default function Footer() {
     <footer className="bg-surfaceContainer border-t border-outlineVariant/20 py-section">
       <div className="wrap grid grid-cols-1 md:grid-cols-4 gap-gutter">
         <div className="md:col-span-1 space-y-4">
-          <img src={logoWordmark} alt="veintidós" className="h-9 w-auto" />
+          <img src={logoWordmark} alt="veintidós — invitaciones digitales" className="h-14 w-auto" />
           <p className="font-sans text-sm text-onSurfaceVariant max-w-xs">
             Invitaciones digitales de autor. Creamos experiencias digitales que marcan el inicio de tus mejores
             momentos.

@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Icon from './Icon.jsx'
 import { useCart } from '../context/CartContext.jsx'
-import logoWordmark from '../assets/logo-wordmark.png'
+import logoWordmark from '../assets/brand/veintidos-logo-on-light-wordmark-only.png'
 
 const links = [
   ['/', 'Inicio'],
@@ -18,28 +18,16 @@ export default function Nav() {
   const [open, setOpen] = useState(false)
   const { items } = useCart()
   const count = items.reduce((n, i) => n + (i.qty || 1), 0)
+
   return (
-    <header className="bg-background border-b border-outlineVariant/30 sticky top-[48px] z-50 h-20">
-      <nav className="wrap flex items-center justify-between h-full">
+    <header className="bg-background border-b border-outlineVariant/30 sticky top-[48px] z-50">
+      {/* Fila 1: logo grande y centrado — carrito + menú a la derecha */}
+      <div className="wrap relative flex items-center justify-center h-24 md:h-28">
         <Link to="/" className="flex items-center">
-          <img src={logoWordmark} alt="veintidós" className="h-8 md:h-9 w-auto" />
+          <img src={logoWordmark} alt="veintidós" className="h-11 md:h-14 w-auto" />
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
-          {links.map(([href, label]) => (
-            <NavLink
-              key={href}
-              to={href}
-              className="relative font-sans text-label text-onSurfaceVariant hover:text-primary transition-colors group py-1"
-            >
-              {label}
-              <span className="absolute left-0 -bottom-0.5 w-0 h-[2px] bg-promoGold transition-all duration-300 group-hover:w-full" />
-            </NavLink>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Carrito — visible siempre, también en mobile (antes solo aparecía en desktop) */}
+        <div className="absolute right-4 md:right-6 flex items-center gap-1 sm:gap-2">
           <Link
             to="/carrito"
             className="flex items-center justify-center p-2 rounded-full hover:bg-primaryContainer/10 transition-all relative"
@@ -52,18 +40,33 @@ export default function Nav() {
               </span>
             )}
           </Link>
-          <Link
-            to="/personalizar"
-            className="hidden md:inline-flex items-center gap-2 bg-primary text-onPrimary px-6 py-3 rounded-full font-sans text-label border border-transparent hover:border-promoGold hover:opacity-90 transition-all active:scale-95"
-          >
-            Quiero la mía
-          </Link>
-          <button className="md:hidden text-primary" aria-label="Abrir menú" onClick={() => setOpen((v) => !v)}>
+          <button className="md:hidden text-primary p-2" aria-label="Abrir menú" onClick={() => setOpen((v) => !v)}>
             <Icon name={open ? 'close' : 'menu'} />
           </button>
         </div>
+      </div>
+
+      {/* Fila 2: navegación centrada — solo desktop */}
+      <nav className="hidden md:flex items-center justify-center gap-8 border-t border-outlineVariant/20 py-3.5">
+        {links.map(([href, label]) => (
+          <NavLink
+            key={href}
+            to={href}
+            className="relative font-sans text-label text-onSurfaceVariant hover:text-primary transition-colors group py-1"
+          >
+            {label}
+            <span className="absolute left-0 -bottom-0.5 w-0 h-[2px] bg-promoGold transition-all duration-300 group-hover:w-full" />
+          </NavLink>
+        ))}
+        <Link
+          to="/personalizar"
+          className="inline-flex items-center gap-2 bg-primary text-onPrimary px-6 py-2 rounded-full font-sans text-label border border-transparent hover:border-promoGold hover:opacity-90 transition-all active:scale-95 -my-1"
+        >
+          Quiero la mía
+        </Link>
       </nav>
 
+      {/* Menú mobile */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -71,7 +74,7 @@ export default function Nav() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.22 }}
-            className="md:hidden overflow-hidden bg-background border-b border-outlineVariant/30"
+            className="md:hidden overflow-hidden bg-background border-t border-outlineVariant/30"
           >
             <div className="wrap py-4 flex flex-col gap-1">
               {links.map(([href, label]) => (

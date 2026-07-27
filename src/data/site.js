@@ -1,6 +1,6 @@
 export const WA_NUMBER = '5491139126543'
 export const waLink = (msg) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`
-export const CONTACT_EMAIL = 'veintidos@gmail.com.ar'
+export const CONTACT_EMAIL = 'hola@veintidos.ar'
 export const CONTACT_LOCATION = 'Buenos Aires, Argentina'
 
 // --- Redes sociales --------------------------------------------------------
@@ -97,13 +97,13 @@ export const categories = [
     slug: 'boda',
     name: 'Boda',
     desc: 'Románticas y elegantes, con cronograma del día, dress code y datos para regalos.',
-    image: '/images/BODA.jpg',
+    image: '/images/BODA.jpeg',
   },
   {
     slug: 'xv-anos',
     name: 'Cumple XV',
     desc: 'Diseños llenos de magia y brillo para una noche que se recuerda toda la vida.',
-    image: '/images/XV.jpg',
+    image: '/images/XV.jpeg',
   },
 ]
 

@@ -1,6 +1,6 @@
 export const WA_NUMBER = '5491139126543'
 export const waLink = (msg) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`
-export const CONTACT_EMAIL = 'hola@veintidos.ar'
+export const CONTACT_EMAIL = 'veintidos.invitaciones@gmail.com'
 export const CONTACT_LOCATION = 'Buenos Aires, Argentina'
 
 // --- Redes sociales --------------------------------------------------------
@@ -24,8 +24,7 @@ export const BANK_DATA = {
 // Aplicación web, acceso "Cualquier usuario"). Ver GOOGLE_APPS_SCRIPT.md en
 // la raíz del proyecto para el código listo para pegar en script.google.com.
 export const GOOGLE_SHEETS_URL =
- // 'https://script.google.com/macros/s/AKfycbztSaKg1DbB_PUejMRfQ7BnNY4rURaX2DkEDmTgRxYhbAyQox0O9vTTVh9nh_0_AQg/exec'
-  'https://script.google.com/macros/s/AKfycbzh0eGdHDB3RPUASdPAwiSP1yQSkUi1EvSgFiN379g3Ec8F75HAIf8RMGtXDiGH-a0/exec'
+  'https://script.google.com/macros/s/AKfycbwFETRaVmLso9lF6Sbe5l7tg7tMG-XQeu47n-jmRBUneernqXbN9CHjiR47WSWvdpw/exec'
 
 // Tamaño máximo aceptado para el comprobante (en MB) antes de convertir a base64.
 export const MAX_COMPROBANTE_MB = 5

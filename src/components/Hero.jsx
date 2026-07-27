@@ -21,7 +21,7 @@ export default function Hero() {
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
         >
           <motion.span variants={item} className="inline-block font-sans text-label text-secondary tracking-widest mb-4 uppercase">
-            Invitaciones digitales web
+            Invitaciones digitales
           </motion.span>
           <motion.h1 variants={item} className="font-serif text-display-mobile md:text-display text-primary mb-6">
             Cada fiesta empieza con <br />
@@ -39,7 +39,7 @@ export default function Hero() {
               Consultar por WhatsApp
             </WhatsAppButton>
             <Link to="/catalogo" className="btn-outline px-8 py-4 text-center">
-              Ver demos reales
+              Ver demos 
             </Link>
           </motion.div>
           <motion.div variants={item} className="mt-12 flex items-center gap-8 border-t border-outlineVariant/30 pt-8">

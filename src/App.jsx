@@ -10,6 +10,7 @@ import Catalog from './pages/Catalog.jsx'
 import Cart from './pages/Cart.jsx'
 import Checkout from './pages/Checkout.jsx'
 import Personalize from './pages/Personalize.jsx'
+import Contact from './pages/Contact.jsx'
 
 function ScrollManager() {
   const { pathname, hash } = useLocation()
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/personalizar" element={<Personalize />} />
           <Route path="/completar-datos" element={<Personalize />} />
+          <Route path="/contacto" element={<Contact />} />
         </Routes>
       </main>
       <Footer />

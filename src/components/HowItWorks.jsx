@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
 import Reveal, { Stagger, staggerItem } from './Reveal.jsx'
+import Icon from './Icon.jsx'
+import WhatsAppIcon from './WhatsAppIcon.jsx'
 import { steps } from '../data/site.js'
 
 export default function HowItWorks() {
@@ -16,20 +18,24 @@ export default function HowItWorks() {
           </div>
         </Reveal>
 
-        <Stagger className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
-          {steps.map(([title, desc], i) => (
+        <Stagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" gap={0.08}>
+          {steps.map(([icon, caption], i) => (
             <motion.div
-              key={title}
+              key={caption}
               variants={staggerItem}
-              className="flex gap-6 p-4 -m-4 rounded-2xl transition-colors hover:bg-secondaryContainer/20 group"
+              whileHover={{ y: -4 }}
+              className="bg-primaryContainer rounded-2xl p-7 flex flex-col items-center text-center gap-4 border border-transparent hover:border-promoGold transition-colors"
             >
-              <div className="flex-shrink-0 w-12 h-12 bg-primary text-onPrimary rounded-full flex items-center justify-center font-serif text-xl ring-2 ring-transparent group-hover:ring-promoGold transition-all">
-                {i + 1}
+              <div className="w-14 h-14 rounded-full border-2 border-promoGold flex items-center justify-center flex-shrink-0">
+                <span className="font-serif text-lg text-promoGold">{i + 1}</span>
               </div>
-              <div>
-                <h3 className="font-serif text-headline-md text-primary mb-3">{title}</h3>
-                <p className="text-onSurfaceVariant font-sans">{desc}</p>
+              <div className="w-9 h-9 flex items-center justify-center text-white/80">
+                {icon === 'whatsapp' ? <WhatsAppIcon className="w-7 h-7" /> : <Icon name={icon} className="text-2xl" />}
               </div>
+              <p className="font-sans text-sm font-semibold uppercase tracking-wide text-white leading-snug">
+                <span className="text-promoGold mr-1">→</span>
+                {caption}
+              </p>
             </motion.div>
           ))}
         </Stagger>

@@ -241,7 +241,7 @@ ${file ? 'Adjunto el comprobante en este mismo chat.' : 'Te mando el comprobante
                         <div className="flex flex-col gap-2 md:col-span-2">
                           <label className="field-label">Plan elegido</label>
                           <select className="field-input-boxed" value={data.plan} onChange={update('plan')}>
-                            <option>Básica</option>
+                            <option>Essential</option>
                             <option>Standard</option>
                             <option>Premium</option>
                           </select>

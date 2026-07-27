@@ -11,7 +11,7 @@ const categoryLabels = {
   'xv-anos': 'Cumple XV',
 }
 
-const planOptions = ['Todos', 'Básica', 'Standard', 'Premium']
+const planOptions = ['Todos', 'Essential', 'Standard', 'Premium']
 
 // Colores donde el ✓ tiene que verse oscuro por el contraste del swatch.
 const LIGHT_SWATCHES = new Set(['blanco', 'beige', 'amarillo', 'celeste'])

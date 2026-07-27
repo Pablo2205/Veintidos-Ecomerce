@@ -1,5 +1,7 @@
 export const WA_NUMBER = '5491139126543'
 export const waLink = (msg) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`
+export const CONTACT_EMAIL = 'hola@veintidos.ar'
+export const CONTACT_LOCATION = 'Buenos Aires, Argentina'
 
 // --- Datos de pago (transferencia) -------------------------------------
 // Completá con tus datos reales antes de publicar. Se muestran tal cual
@@ -56,8 +58,8 @@ export const productColors = [
 // --- Ranking de planes -----------------------------------------------
 // Se usa en el formulario post-compra para mostrar solo los campos que
 // tienen sentido según el plan comprado (ej. "dress code" no aplica a
-// Básica, "video de bienvenida" es solo de Premium).
-export const PLAN_RANK = { Básica: 1, Standard: 2, Premium: 3 }
+// Essential, "video de bienvenida" es solo de Premium).
+export const PLAN_RANK = { Essential: 1, Standard: 2, Premium: 3 }
 
 // --- Tipos de evento del FORMULARIO post-compra --------------------------
 // Distinto de `categories` (que son los eventos del Home/Catálogo). Acá van
@@ -66,7 +68,7 @@ export const eventTypeOptions = ['Boda', 'Cumple XV', 'Otro']
 
 // Qué preguntas mostrar en el paso "Contenido especial" del formulario,
 // según el plan comprado — no tiene sentido pedir dress code o playlist si
-// el plan Básica no las incluye. Ver `plans` más abajo para el detalle de
+// el plan Essential no las incluye. Ver `plans` más abajo para el detalle de
 // qué trae cada uno.
 export const planFeatureFlags = (planName) => {
   const rank = PLAN_RANK[planName] || PLAN_RANK.Standard
@@ -116,7 +118,7 @@ export const features = [
 // (al pie de la sección de Planes) pide consultar precio por WhatsApp.
 export const plans = [
   {
-    name: 'Básica',
+    name: 'Essential',
     tagline: 'Lo esencial, con estilo',
     price: 56000,
     items: [
@@ -135,7 +137,7 @@ export const plans = [
     highlight: 'Más elegida',
     price: 78000,
     items: [
-      'Todo lo del plan Básica',
+      'Todo lo del plan Essential',
       'Música de fondo a elección',
       'Galería de fotos',
       'Dress code',
@@ -162,11 +164,16 @@ export const plans = [
   },
 ]
 
+// Pasos del flujo real de compra (Catálogo → plan → checkout → formulario).
+// "icon" es un nombre de Material Symbol, salvo 'whatsapp' que renderiza el
+// logo real de WhatsApp en vez de un ícono genérico.
 export const steps = [
-  ['Escribinos', 'Mandanos un WhatsApp contándonos tu evento. Te asesoramos y te pasamos precios.'],
-  ['Elegís tu plan', 'Básica, Standard o Premium. Definimos juntos estilo, colores y funciones.'],
-  ['Nos pasás los datos', 'Nombres, fecha, lugar, fotos y textos. Con un formulario simple te guiamos en todo.'],
-  ['Recibís tu invitación', 'Link + QR listos para compartir por WhatsApp, redes o imprimir en tus tarjetas.'],
+  ['ads_click', 'Seleccioná el tipo de evento'],
+  ['design_services', 'Elegí el diseño que más te guste'],
+  ['celebration', 'Definí el plan que se adapte a tu celebración'],
+  ['shopping_cart_checkout', 'Confirmá tu compra'],
+  ['checklist', 'Cargá los datos del evento en el formulario'],
+  ['whatsapp', 'Recibí tu invitación por WhatsApp en 72hs hábiles'],
 ]
 
 export const faqs = [
@@ -180,7 +187,7 @@ export const faqs = [
   },
   {
     q: '¿Qué diferencia hay entre los planes?',
-    a: 'Básica: lo esencial — cuenta regresiva, fecha, lugar, mapa, confirmación por WhatsApp y sección de regalos. Standard: suma música, galería de fotos, dress code, tips para invitados, agendar la fecha y QR para imprimir. Premium: agrega panel de confirmaciones en tiempo real, sugerencia de canciones, álbum compartido, video y personalización avanzada.',
+    a: 'Essential: lo esencial — cuenta regresiva, fecha, lugar, mapa, confirmación por WhatsApp y sección de regalos. Standard: suma música, galería de fotos, dress code, tips para invitados, agendar la fecha y QR para imprimir. Premium: agrega panel de confirmaciones en tiempo real, sugerencia de canciones, álbum compartido, video y personalización avanzada.',
   },
   {
     q: '¿Puedo personalizar el diseño?',
@@ -188,7 +195,7 @@ export const faqs = [
   },
   {
     q: '¿Cómo confirman asistencia mis invitados?',
-    a: 'Depende del plan: por WhatsApp con un mensaje prearmado (Básica y Standard), o directamente desde la invitación con un panel privado donde ves los confirmados en tiempo real (Premium).',
+    a: 'Depende del plan: por WhatsApp con un mensaje prearmado (Essential y Standard), o directamente desde la invitación con un panel privado donde ves los confirmados en tiempo real (Premium).',
   },
   {
     q: '¿Cuánto tiempo queda online?',
@@ -211,7 +218,7 @@ export const faqs = [
 // se van a redefinir cuando llegue el detalle real de cada demo.
 export const products = [
   { id: 1, name: 'Invitación Boda — Elegante', category: 'boda', plan: 'Standard', price: 78000, color: 'verde', gradient: 'from-[#8FB996] to-[#3C5F41]' },
-  { id: 2, name: 'Invitación Boda — Campo', category: 'boda', plan: 'Básica', price: 56000, color: 'marron', gradient: 'from-[#C9BE9A] to-[#8A7B4F]' },
+  { id: 2, name: 'Invitación Boda — Campo', category: 'boda', plan: 'Essential', price: 56000, color: 'marron', gradient: 'from-[#C9BE9A] to-[#8A7B4F]' },
   { id: 3, name: 'XV Años — Boliche Disco', category: 'xv-anos', plan: 'Premium', price: 88000, color: 'rosa', gradient: 'from-[#3B2F55] to-[#1B1230]', badge: 'Nuevo' },
   { id: 4, name: 'Boda — Tela Minimalista', category: 'boda', plan: 'Standard', price: 78000, color: 'beige', gradient: 'from-[#D9D4C4] to-[#A69C82]' },
   { id: 5, name: 'XV Años — Noche Esmeralda', category: 'xv-anos', plan: 'Standard', price: 78000, color: 'verde', gradient: 'from-[#1F3D2C] to-[#0D1F16]' },

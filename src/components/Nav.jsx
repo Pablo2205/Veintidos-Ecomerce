@@ -6,10 +6,12 @@ import { useCart } from '../context/CartContext.jsx'
 import logoWordmark from '../assets/logo-wordmark.png'
 
 const links = [
+  ['/', 'Inicio'],
   ['/catalogo', 'Demos'],
   ['/#eventos', 'Eventos'],
   ['/#planes', 'Planes'],
   ['/#preguntas', 'Preguntas'],
+  ['/contacto', 'Contacto'],
 ]
 
 export default function Nav() {

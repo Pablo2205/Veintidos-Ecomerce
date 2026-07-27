@@ -20,16 +20,21 @@ export default function Nav() {
 
   return (
     <header className="bg-background border-b border-outlineVariant/30 sticky top-[48px] z-50">
-      {/* Fila 1: logo centrado de verdad — grid de 3 columnas en vez de position:
-          absolute, así el logo se centra respecto al espacio disponible real y
-          nunca se superpone con el carrito/menú, sea cual sea su ancho. */}
+      {/* Fila 1: menú a la izquierda, logo centrado, carrito a la derecha —
+          columnas separadas (no ambos íconos juntos de un mismo lado), así
+          quedan lejos del logo en vez de pegados. */}
       <div className="wrap grid grid-cols-[1fr_auto_1fr] items-center h-24 md:h-28">
-        <div />
+        <div className="justify-self-start">
+          <button className="md:hidden text-primary p-2" aria-label="Abrir menú" onClick={() => setOpen((v) => !v)}>
+            <Icon name={open ? 'close' : 'menu'} />
+          </button>
+        </div>
+
         <Link to="/" className="flex items-center justify-self-center">
           <img src={logoWordmark} alt="veintidós" className="h-10 sm:h-11 md:h-14 w-auto" />
         </Link>
 
-        <div className="flex items-center justify-self-end gap-1 sm:gap-2">
+        <div className="justify-self-end">
           <Link
             to="/carrito"
             className="flex items-center justify-center p-2 rounded-full hover:bg-primaryContainer/10 transition-all relative"
@@ -42,9 +47,6 @@ export default function Nav() {
               </span>
             )}
           </Link>
-          <button className="md:hidden text-primary p-2" aria-label="Abrir menú" onClick={() => setOpen((v) => !v)}>
-            <Icon name={open ? 'close' : 'menu'} />
-          </button>
         </div>
       </div>
 

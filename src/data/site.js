@@ -24,7 +24,7 @@ export const BANK_DATA = {
 // Aplicación web, acceso "Cualquier usuario"). Ver GOOGLE_APPS_SCRIPT.md en
 // la raíz del proyecto para el código listo para pegar en script.google.com.
 export const GOOGLE_SHEETS_URL =
-  'https://script.google.com/macros/s/TU_SCRIPT_ID_ACA/exec' // TODO: reemplazar
+  'https://script.google.com/macros/s/AKfycbztSaKg1DbB_PUejMRfQ7BnNY4rURaX2DkEDmTgRxYhbAyQox0O9vTTVh9nh_0_AQg/exec'
 
 // Tamaño máximo aceptado para el comprobante (en MB) antes de convertir a base64.
 export const MAX_COMPROBANTE_MB = 5
@@ -61,7 +61,6 @@ export const productColors = [
   { key: 'celeste', label: 'Celeste', hex: '#7FC7E8' },
 ]
 
-
 // --- Ranking de planes -----------------------------------------------
 // Se usa en el formulario post-compra para mostrar solo los campos que
 // tienen sentido según el plan comprado (ej. "dress code" no aplica a
@@ -87,7 +86,6 @@ export const planFeatureFlags = (planName) => {
     customization: rank >= PLAN_RANK.Premium,
   }
 }
-
 
 // Solo estos dos tipos de evento están habilitados en todo el sitio
 // (Home, Catálogo, formulario). Para sumar uno nuevo, agregalo acá y

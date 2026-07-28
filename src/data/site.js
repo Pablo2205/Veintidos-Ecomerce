@@ -252,6 +252,9 @@ export const products = [
     gradient: 'from-[#C79A6B] to-[#8A7A5E]',
     badge: 'Nuevo',
     demoUrl: '/demos/lucia-juan/',
+    image: '/demos/lucia-juan/foto-hero.jpg',
+    style: 'Editorial — papel roto',
+    palette: ['#F8F3E9', '#748158', '#C79A6B'],
   },
   {
     id: 9,
@@ -263,6 +266,9 @@ export const products = [
     gradient: 'from-[#5B7FA6] to-[#20375C]',
     badge: 'Nuevo',
     demoUrl: '/demos/olivia-ralph/',
+    image: '/demos/olivia-ralph/foto-hero.jpg',
+    style: 'Clásico — con cortejo',
+    palette: ['#F7F3E9', '#5B7FA6', '#20375C'],
   },
   {
     id: 10,
@@ -274,6 +280,9 @@ export const products = [
     gradient: 'from-[#6E1B26] to-[#4E1119]',
     badge: 'Nuevo',
     demoUrl: '/demos/juan-ana/',
+    image: '/demos/juan-ana/foto-ninos.jpg',
+    style: 'Juguetón — foto de infancia',
+    palette: ['#F5EFE3', '#6E1B26', '#3A2A2A'],
   },
   {
     id: 11,
@@ -285,5 +294,8 @@ export const products = [
     gradient: 'from-[#8FA07A] to-[#3F4A34]',
     badge: 'Nuevo',
     demoUrl: '/demos/lorena-gustavo/',
+    image: '/demos/lorena-gustavo/foto-hero.jpg',
+    style: 'Botánico — fotos difuminadas',
+    palette: ['#FAF7F0', '#3F4A34', '#C6A15B'],
   },
 ]

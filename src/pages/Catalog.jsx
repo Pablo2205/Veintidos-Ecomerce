@@ -19,6 +19,31 @@ const LIGHT_SWATCHES = new Set(['blanco', 'beige', 'amarillo', 'celeste'])
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 
+// Portada de cada producto: si `image` (una foto real de la demo) no carga
+// todavía, cae solo al degradé de color de siempre — mismo criterio que
+// CategoryCover en la Home.
+function ProductCover({ image, gradient, name }) {
+  const [broken, setBroken] = useState(false)
+  const showImage = image && !broken
+  return (
+    <div className={`absolute inset-0 ${showImage ? '' : `bg-gradient-to-br ${gradient}`}`}>
+      {showImage && (
+        <img
+          src={image}
+          alt={name}
+          onError={() => setBroken(true)}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
+      {!showImage && (
+        <span className="absolute inset-0 flex items-center justify-center font-serif italic text-white/90 text-lg px-4 text-center">
+          {name}
+        </span>
+      )}
+    </div>
+  )
+}
+
 export default function Catalog() {
   const [activeCats, setActiveCats] = useState(['boda', 'xv-anos'])
   const [activeColors, setActiveColors] = useState([])
@@ -173,22 +198,22 @@ export default function Catalog() {
                   transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                   className="group"
                 >
-                  <div className={`relative aspect-[3/4] overflow-hidden rounded-xl bg-gradient-to-br ${p.gradient} mb-4 flex items-center justify-center ring-1 ring-transparent group-hover:ring-2 group-hover:ring-promoGold transition-all`}>
-                    <span className="font-serif italic text-white/90 text-lg px-4 text-center">{p.name}</span>
+                  <div className={`relative aspect-[3/4] overflow-hidden rounded-xl mb-4 flex items-center justify-center ring-1 ring-transparent group-hover:ring-2 group-hover:ring-promoGold transition-all`}>
+                    <ProductCover image={p.image} gradient={p.gradient} name={p.name} />
                     {p.badge && (
-                      <span className="absolute top-4 left-4 bg-promoGold text-white font-sans text-[10px] px-3 py-1 rounded-full uppercase tracking-widest">
+                      <span className="absolute top-4 left-4 bg-promoGold text-white font-sans text-[10px] px-3 py-1 rounded-full uppercase tracking-widest z-10">
                         {p.badge}
                       </span>
                     )}
                     {p.demoUrl ? (
                       <button
                         onClick={() => setPreviewDemo({ url: p.demoUrl, name: p.name })}
-                        className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm text-primary py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-white"
+                        className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm text-primary py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-white z-10"
                       >
                         Ver demo
                       </button>
                     ) : (
-                      <span className="absolute bottom-4 left-4 right-4 bg-white/70 backdrop-blur-sm text-onSurfaceVariant py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                      <span className="absolute bottom-4 left-4 right-4 bg-white/70 backdrop-blur-sm text-onSurfaceVariant py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-10">
                         Demo próximamente
                       </span>
                     )}
@@ -197,6 +222,22 @@ export default function Catalog() {
                     <div>
                       <h3 className="font-sans text-label text-primary uppercase">{p.name}</h3>
                       <p className="font-sans text-xs text-onSurfaceVariant mt-1">Sugerido: Plan {p.plan}</p>
+                      {p.style && (
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <span className="font-sans text-[11px] italic text-onSurfaceVariant/80">{p.style}</span>
+                          {p.palette && (
+                            <div className="flex gap-1">
+                              {p.palette.map((c, i) => (
+                                <span
+                                  key={i}
+                                  className="w-2.5 h-2.5 rounded-full border border-black/10"
+                                  style={{ backgroundColor: c }}
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <div className="text-right flex-shrink-0">
                       <span className="block text-[11px] font-sans line-through text-onSurfaceVariant/60">

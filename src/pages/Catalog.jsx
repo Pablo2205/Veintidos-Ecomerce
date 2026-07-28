@@ -178,9 +178,20 @@ export default function Catalog() {
                         {p.badge}
                       </span>
                     )}
-                    <span className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm text-primary py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                      Ver demo
-                    </span>
+                    {p.demoUrl ? (
+                      <a
+                        href={p.demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm text-primary py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-white"
+                      >
+                        Ver demo
+                      </a>
+                    ) : (
+                      <span className="absolute bottom-4 left-4 right-4 bg-white/70 backdrop-blur-sm text-onSurfaceVariant py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                        Demo próximamente
+                      </span>
+                    )}
                   </div>
                   <div className="flex justify-between items-start">
                     <div>

@@ -230,4 +230,15 @@ export const products = [
   { id: 4, name: 'Boda — Tela Minimalista', category: 'boda', plan: 'Standard', price: 78000, color: 'beige', gradient: 'from-[#D9D4C4] to-[#A69C82]' },
   { id: 5, name: 'XV Años — Noche Esmeralda', category: 'xv-anos', plan: 'Standard', price: 78000, color: 'verde', gradient: 'from-[#1F3D2C] to-[#0D1F16]' },
   { id: 6, name: 'Invitación Boda — Fotografía', category: 'boda', plan: 'Premium', price: 88000, color: 'marron', gradient: 'from-[#4A2F1E] to-[#2A1810]' },
+  {
+    id: 7,
+    name: 'Invitación Boda — Pablo & Lucila',
+    category: 'boda',
+    plan: 'Premium',
+    price: 88000,
+    color: 'verde',
+    gradient: 'from-[#3C5F41] to-[#1F2E1C]',
+    badge: 'Demo real',
+    demoUrl: 'https://boda-rosy-alpha.vercel.app/?vip=true',
+  },
 ]

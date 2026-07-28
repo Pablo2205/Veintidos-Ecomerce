@@ -6,92 +6,143 @@
 <title>Lorena & Gustavo — Nos casamos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --cream:#FAF7F0;
+    --cream-2:#F0ECE2;
     --olive:#3F4A34;
     --olive-soft:#6B7A5A;
+    --olive-pale:#C4CEBC;
     --gold:#C6A15B;
     --ink:#3A3730;
+    --ink-soft:#6A6656;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;-webkit-font-smoothing:antialiased}
-  .page{max-width:480px;margin:0 auto;position:relative;overflow:hidden}
-  .script{font-family:'Alex Brush',cursive;font-weight:400}
+  .page{max-width:480px;margin:0 auto;overflow:hidden}
+  .script{font-family:'Alex Brush',cursive}
   .serif{font-family:'Cormorant Garamond',serif}
   .center{text-align:center}
 
-  /* fotos con desvanecido blanco arriba/abajo, en vez de borde de papel */
-  .fade-photo{position:relative;height:340px;overflow:hidden}
+  /* foto con desvanecido — técnica única de esta demo */
+  .fade-photo{position:relative;height:360px;overflow:hidden;background:linear-gradient(155deg,#8FA07A,#C9BE9A)}
   .fade-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-  .fade-photo::before,.fade-photo::after{
-    content:'';position:absolute;left:0;right:0;height:70px;z-index:2;pointer-events:none;
-  }
+  .fade-photo::before,.fade-photo::after{content:'';position:absolute;left:0;right:0;height:80px;z-index:2;pointer-events:none}
   .fade-photo::before{top:0;background:linear-gradient(to bottom,var(--cream),transparent)}
   .fade-photo::after{bottom:0;background:linear-gradient(to top,var(--cream),transparent)}
-  .fade-photo.placeholder{background:linear-gradient(155deg,#8FA07A,#C9BE9A)}
+  .fade-photo.tall{height:420px}
+  .fade-photo.short{height:280px}
 
-  /* ---------- logo/monograma ---------- */
-  .brand-wrap{padding:34px 30px 0;text-align:center;position:relative}
-  .monogram{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px}
-  .monogram .letter{font-family:'Cormorant Garamond',serif;font-size:1.5rem;letter-spacing:.05em;color:var(--ink)}
-  .monogram svg{width:26px;height:26px;color:var(--olive)}
-  .verse{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.85rem;line-height:1.6;color:var(--olive-soft);max-width:280px;margin:0 auto 26px}
+  /* ramificación botánica SVG — elemento divisor entre secciones */
+  .branch{display:block;width:100%;height:40px;overflow:visible;margin:4px 0}
 
-  .leaf-corner{position:absolute;color:var(--olive-soft);opacity:.55}
+  /* encabezado con monograma */
+  .brand-wrap{padding:38px 30px 6px;text-align:center;position:relative}
+  .leaf-corner{position:absolute;color:var(--olive-soft);opacity:.5}
+  .monogram{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px}
+  .monogram .letter{font-family:'Cormorant Garamond',serif;font-size:1.6rem;letter-spacing:.06em;color:var(--ink)}
+  .monogram svg{width:28px;height:28px;color:var(--olive)}
+  .verse{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;line-height:1.7;color:var(--olive-soft);max-width:290px;margin:0 auto 28px}
 
-  /* ---------- bendición / padres ---------- */
-  .blessing{padding:30px 30px 10px;text-align:center}
-  .blessing .lead{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--olive);margin-bottom:18px}
-  .parents{display:flex;justify-content:center;gap:40px;margin-bottom:8px}
-  .parents div{font-size:.72rem;line-height:1.7;color:#5A5648}
+  /* bendición / padres */
+  .blessing{padding:28px 30px 10px;text-align:center}
+  .blessing .lead{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--olive);margin-bottom:18px}
+  .parents{display:flex;justify-content:center;gap:40px;margin-bottom:6px}
+  .parents div{font-size:.72rem;line-height:1.75;color:var(--ink-soft)}
 
-  /* ---------- nombres ---------- */
-  .names-block{padding:16px 30px 6px;text-align:center}
-  .names-block .names{font-size:3rem;color:var(--olive);line-height:1}
-  .names-block .invite{font-size:.78rem;letter-spacing:.06em;color:#6A6656;margin-top:14px}
+  /* nombres principales */
+  .names-block{padding:18px 30px 8px;text-align:center}
+  .names-block .names{font-family:'Alex Brush',cursive;font-size:3.2rem;color:var(--olive);line-height:1}
+  .names-block .invite{font-size:.76rem;letter-spacing:.08em;color:var(--ink-soft);margin-top:14px}
 
-  /* ---------- fecha ---------- */
-  .date-block{padding:18px 30px 30px;text-align:center}
-  .date-block .date{font-family:'Cormorant Garamond',serif;font-size:1.15rem;letter-spacing:.08em;color:var(--ink);font-weight:600}
-  .date-block .time{font-size:.78rem;letter-spacing:.1em;color:#6A6656;margin-top:4px}
-  .venue{padding:0 30px 30px;text-align:center}
-  .venue .name{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--ink)}
-  .venue .addr{font-size:.72rem;color:#8A8676;margin-top:2px}
+  /* fecha y lugar */
+  .date-block{padding:18px 30px 10px;text-align:center}
+  .date-block .date{font-family:'Cormorant Garamond',serif;font-size:1.2rem;letter-spacing:.08em;color:var(--ink);font-weight:600}
+  .date-block .time{font-size:.76rem;letter-spacing:.12em;color:var(--ink-soft);margin-top:4px}
+  .venue{padding:0 30px 28px;text-align:center}
+  .venue .name{font-size:.76rem;font-weight:600;letter-spacing:.05em;color:var(--ink)}
+  .venue .addr{font-size:.7rem;color:var(--ink-soft);margin-top:2px}
 
-  /* ---------- botones de contacto ---------- */
-  .actions{padding:36px 30px 10px;text-align:center}
-  .actions .lead{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--olive);margin-bottom:24px}
-  .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px 20px;max-width:280px;margin:0 auto}
-  .action{display:flex;flex-direction:column;align-items:center;gap:10px}
-  .action .circle{
-    width:64px;height:64px;border-radius:50%;background:var(--olive);
-    display:flex;align-items:center;justify-content:center;color:var(--cream);
-  }
+  /* línea acento dorado */
+  .gold-line{width:44px;height:1px;background:var(--gold);margin:16px auto}
+
+  /* countdown elegante */
+  .countdown-wrap{padding:44px 24px 36px;text-align:center}
+  .countdown-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--olive-soft);margin-bottom:26px}
+  .countdown{display:flex;justify-content:center;gap:6px;align-items:flex-end;margin-bottom:10px}
+  .cd-unit{text-align:center;min-width:62px}
+  .cd-num{font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:400;line-height:1;color:var(--olive)}
+  .cd-sep{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--olive-pale);padding-bottom:16px;line-height:1;user-select:none}
+  .cd-label{font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
+
+  /* cronograma del día */
+  .schedule{padding:40px 30px 48px}
+  .schedule h3{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.7rem;color:var(--olive);text-align:center;margin-bottom:28px}
+  .sched-item{display:flex;gap:22px;align-items:flex-start;margin-bottom:26px}
+  .sched-dot{width:36px;height:36px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--olive-soft);position:relative}
+  .sched-dot::after{content:'';position:absolute;top:38px;left:50%;transform:translateX(-50%);width:1px;height:22px;background:var(--olive-pale)}
+  .sched-item:last-child .sched-dot::after{display:none}
+  .sched-time{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;color:var(--olive);line-height:1;margin-bottom:3px}
+  .sched-label{font-size:.76rem;color:var(--ink-soft);line-height:1.5;max-width:240px}
+
+  /* vestimenta */
+  .dress{padding:42px 30px;text-align:center;background:var(--cream-2)}
+  .dress h3{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.65rem;color:var(--olive);margin-bottom:8px}
+  .dress .code{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--olive);font-weight:600;margin-bottom:6px}
+  .dress .hint{font-size:.75rem;color:var(--ink-soft);max-width:250px;margin:0 auto;line-height:1.6}
+  .dress-row{display:flex;justify-content:center;gap:24px;margin-bottom:14px}
+  .dress-row svg{width:28px;height:38px;color:var(--olive)}
+
+  /* botones de acción */
+  .actions{padding:40px 30px 12px;text-align:center}
+  .actions .lead{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--olive);margin-bottom:26px}
+  .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px 24px;max-width:290px;margin:0 auto}
+  .action{display:flex;flex-direction:column;align-items:center;gap:12px}
+  .action .circle{width:66px;height:66px;border-radius:50%;background:var(--olive);display:flex;align-items:center;justify-content:center;color:var(--cream)}
   .action .circle svg{width:26px;height:26px}
-  .action .label{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);text-align:center}
+  .action .label{font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink);text-align:center;line-height:1.4}
 
-  .hope{padding:30px 30px 10px;text-align:center}
-  .hope .script{font-size:2rem;color:var(--olive)}
+  /* rsvp */
+  .rsvp{padding:42px 30px;text-align:center}
+  .rsvp h3{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.8rem;color:var(--olive);margin-bottom:12px}
+  .rsvp p{font-size:.78rem;line-height:1.75;color:var(--ink-soft);max-width:290px;margin:0 auto 24px}
+  .btn{display:inline-block;background:var(--olive);color:var(--cream);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;padding:14px 38px;border-radius:999px;border:none;cursor:pointer}
+
+  /* cierre */
+  .hope{padding:30px 30px 8px;text-align:center}
+  .hope .script{font-size:2.2rem;color:var(--olive)}
 </style>
 </head>
 <body>
 <div class="page">
 
   <section class="brand-wrap">
-    <svg class="leaf-corner" style="top:-6px;left:6px;width:64px;height:64px" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.2">
-      <path d="M6 58 C 10 40, 20 26, 40 14 M40 14 C 34 20, 32 28, 36 34 M40 14 C 30 18, 24 24, 24 32 M40 14 C 44 22, 44 30, 38 36"/>
+    <svg class="leaf-corner" style="top:0;left:4px;width:68px;height:68px" viewBox="0 0 68 68" fill="none" stroke="currentColor" stroke-width="1.1">
+      <path d="M6 62 C 12 42, 22 28, 44 16 M44 16 C 37 22, 34 30, 38 37 M44 16 C 33 20, 26 27, 27 34 M44 16 C 48 24, 47 33, 40 38"/>
+    </svg>
+    <svg class="leaf-corner" style="top:0;right:4px;width:68px;height:68px;transform:scaleX(-1)" viewBox="0 0 68 68" fill="none" stroke="currentColor" stroke-width="1.1">
+      <path d="M6 62 C 12 42, 22 28, 44 16 M44 16 C 37 22, 34 30, 38 37 M44 16 C 33 20, 26 27, 27 34 M44 16 C 48 24, 47 33, 40 38"/>
     </svg>
     <div class="monogram">
       <span class="letter">L</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 3 C7 3 4 7 4 11 C4 15 7 17 9 17 C9 20 8 21 7 22 M12 3 C17 3 20 7 20 11 C20 15 17 17 15 17 C15 20 16 21 17 22 M9 17 H15 M12 11 V17"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M12 3 C7 3 4 7 4 11 C4 15 7 17 9 17 C9 20 8 21 7 22 M12 3 C17 3 20 7 20 11 C20 15 17 17 15 17 C15 20 16 21 17 22 M9 17 H15 M12 11 V17"/>
+      </svg>
       <span class="letter">G</span>
     </div>
-    <p class="verse">&laquo;Y por encima de todo, tengan amor. Porque el amor une perfectamente todas las cosas.&raquo; — Colosenses 3:14</p>
+    <p class="verse">&laquo;Y por encima de todo, tengan amor, porque el amor une perfectamente todas las cosas.&raquo;<br>— Colosenses 3:14</p>
   </section>
 
-  <div class="fade-photo placeholder">
+  <!-- rama botánica divisor -->
+  <svg class="branch" viewBox="0 0 320 40" fill="none" stroke="#6B7A5A" stroke-width="1" stroke-linecap="round" opacity=".55" preserveAspectRatio="xMidYMid meet">
+    <path d="M20 20 Q80 10, 160 20 T 300 20" stroke-width="1"/>
+    <path d="M65 17 Q60 10, 53 8"/><path d="M65 17 Q68 9, 74 7"/>
+    <path d="M130 21 Q125 13, 118 11"/><path d="M130 21 Q133 12, 139 10"/>
+    <path d="M215 19 Q210 11, 203 9"/><path d="M215 19 Q218 10, 224 8"/>
+  </svg>
+
+  <div class="fade-photo tall">
     <img src="foto-hero.jpg" alt="" onerror="this.style.display='none'">
   </div>
 
@@ -103,14 +154,21 @@
     </div>
   </section>
 
+  <svg class="branch" viewBox="0 0 320 40" fill="none" stroke="#6B7A5A" stroke-width="1" stroke-linecap="round" opacity=".4" preserveAspectRatio="xMidYMid meet" style="transform:scaleX(-1)">
+    <path d="M20 20 Q80 10, 160 20 T 300 20" stroke-width="1"/>
+    <path d="M65 17 Q60 10, 53 8"/><path d="M65 17 Q68 9, 74 7"/>
+    <path d="M130 21 Q125 13, 118 11"/><path d="M130 21 Q133 12, 139 10"/>
+    <path d="M215 19 Q210 11, 203 9"/><path d="M215 19 Q218 10, 224 8"/>
+  </svg>
+
   <section class="names-block">
-    <div class="names script">Lorena y Gustavo</div>
+    <div class="names">Lorena y Gustavo</div>
     <p class="invite">Los invitan a su casamiento</p>
   </section>
 
   <section class="date-block">
-    <div class="date">13 DE MAYO DE 2026</div>
-    <div class="time">Sábado, a las 16h</div>
+    <div class="date">13 DE MAYO DE 2027</div>
+    <div class="time">Sábado, a las 16 hs</div>
   </section>
 
   <div class="venue">
@@ -118,18 +176,106 @@
     <p class="addr">Ruta 8 — km 45, Pilar, Buenos Aires</p>
   </div>
 
-  <div class="fade-photo placeholder">
+  <div class="gold-line"></div>
+
+  <section class="countdown-wrap">
+    <div class="countdown-label">Faltan para el gran día</div>
+    <div class="countdown">
+      <div class="cd-unit"><div class="cd-num" id="cd-days">--</div><div class="cd-label">Días</div></div>
+      <div class="cd-sep">&middot;</div>
+      <div class="cd-unit"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Horas</div></div>
+      <div class="cd-sep">&middot;</div>
+      <div class="cd-unit"><div class="cd-num" id="cd-min">--</div><div class="cd-label">Min</div></div>
+      <div class="cd-sep">&middot;</div>
+      <div class="cd-unit"><div class="cd-num" id="cd-sec">--</div><div class="cd-label">Seg</div></div>
+    </div>
+  </section>
+
+  <svg class="branch" viewBox="0 0 320 40" fill="none" stroke="#6B7A5A" stroke-width="1" stroke-linecap="round" opacity=".5" preserveAspectRatio="xMidYMid meet">
+    <path d="M20 20 Q80 10, 160 20 T 300 20" stroke-width="1"/>
+    <path d="M65 17 Q60 10, 53 8"/><path d="M65 17 Q68 9, 74 7"/>
+    <path d="M130 21 Q125 13, 118 11"/><path d="M130 21 Q133 12, 139 10"/>
+    <path d="M215 19 Q210 11, 203 9"/><path d="M215 19 Q218 10, 224 8"/>
+  </svg>
+
+  <div class="fade-photo">
     <img src="foto-1.jpg" alt="" onerror="this.style.display='none'">
   </div>
 
+  <section class="schedule">
+    <h3>El programa del día</h3>
+    <div class="sched-item">
+      <div class="sched-dot">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21 V10 L12 4 L20 10 V21 M9 21 V14 H15 V21"/></svg>
+      </div>
+      <div>
+        <div class="sched-time">15:30</div>
+        <div class="sched-label">Llegada y recibimiento de los invitados</div>
+      </div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-dot">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 L12 6 M9 6 L15 6 M6 22 V11 L12 6 L18 11 V22 Z"/></svg>
+      </div>
+      <div>
+        <div class="sched-time">16:00</div>
+        <div class="sched-label">Ceremonia religiosa</div>
+      </div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-dot">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 3 L9 11 A3 4 0 0 0 15 11 L17 3 M12 15 V21 M9 21 H15 M4 3 H10 M14 3 H20"/></svg>
+      </div>
+      <div>
+        <div class="sched-time">17:30</div>
+        <div class="sched-label">Cóctel y brindis de bienvenida</div>
+      </div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-dot">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="9" rx="9" ry="4"/><path d="M3 9 Q3 15 8 17"/></svg>
+      </div>
+      <div>
+        <div class="sched-time">19:00</div>
+        <div class="sched-label">Cena y festejo</div>
+      </div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-dot">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></svg>
+      </div>
+      <div>
+        <div class="sched-time">22:00</div>
+        <div class="sched-label">Baile y cierre de la noche</div>
+      </div>
+    </div>
+  </section>
+
+  <svg class="branch" viewBox="0 0 320 40" fill="none" stroke="#6B7A5A" stroke-width="1" stroke-linecap="round" opacity=".45" preserveAspectRatio="xMidYMid meet" style="transform:scaleX(-1)">
+    <path d="M20 20 Q80 10, 160 20 T 300 20" stroke-width="1"/>
+    <path d="M65 17 Q60 10, 53 8"/><path d="M65 17 Q68 9, 74 7"/>
+    <path d="M130 21 Q125 13, 118 11"/><path d="M130 21 Q133 12, 139 10"/>
+    <path d="M215 19 Q210 11, 203 9"/><path d="M215 19 Q218 10, 224 8"/>
+  </svg>
+
+  <section class="dress">
+    <h3>Código de vestimenta</h3>
+    <div class="dress-row">
+      <svg viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 2 L12 5 L15 2 M9 2 L6 6 L8 9 L8 30 L16 30 L16 9 L18 6 L15 2"/></svg>
+      <svg viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2 L9 5 L12 8 L15 5 Z M6 8 L12 8 L18 8 L15 14 L18 30 L6 30 L9 14 Z"/></svg>
+    </div>
+    <div class="code">Formal</div>
+    <p class="hint">Paleta de colores sugerida: verdes, dorados y blancos rotos. Por favor evitá el blanco puro.</p>
+  </section>
+
   <section class="actions">
-    <p class="lead">Tocá los botones</p>
+    <p class="lead">Todo lo que necesitás</p>
     <div class="action-grid">
       <div class="action">
         <div class="circle">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22 C12 22 20 14.5 20 9 A8 8 0 0 0 4 9 C4 14.5 12 22 12 22 Z"/><circle cx="12" cy="9" r="2.6"/></svg>
         </div>
-        <span class="label">Ubicación</span>
+        <span class="label">Cómo llegar</span>
       </div>
       <div class="action">
         <div class="circle">
@@ -139,9 +285,9 @@
       </div>
       <div class="action">
         <div class="circle">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3 L18 12 L11 13 L9 20 Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18 V5 L20 3 V16 M9 8 L20 6 M9 18 A3 3 0 1 1 9 12 M20 16 A3 3 0 1 1 20 10"/></svg>
         </div>
-        <span class="label">Sitio de<br>la boda</span>
+        <span class="label">Nuestra<br>playlist</span>
       </div>
       <div class="action">
         <div class="circle">
@@ -152,14 +298,47 @@
     </div>
   </section>
 
-  <section class="hope">
-    <span class="script">&iexcl;Los esperamos!</span>
+  <section class="rsvp">
+    <div class="gold-line" style="margin-bottom:28px"></div>
+    <h3>Confirmá tu asistencia</h3>
+    <p>Nos encantaría contarte entre los nuestros ese día. Por favor avisanos antes del 30 de abril de 2027 para poder organizarnos y tenerte en cuenta en cada detalle.</p>
+    <button class="btn">Confirmar asistencia</button>
   </section>
 
-  <div class="fade-photo placeholder" style="height:300px">
+  <section class="hope">
+    <span class="script">¡Los esperamos!</span>
+  </section>
+
+  <svg class="branch" viewBox="0 0 320 40" fill="none" stroke="#6B7A5A" stroke-width="1" stroke-linecap="round" opacity=".5" preserveAspectRatio="xMidYMid meet">
+    <path d="M20 20 Q80 10, 160 20 T 300 20" stroke-width="1"/>
+    <path d="M65 17 Q60 10, 53 8"/><path d="M65 17 Q68 9, 74 7"/>
+    <path d="M130 21 Q125 13, 118 11"/><path d="M130 21 Q133 12, 139 10"/>
+    <path d="M215 19 Q210 11, 203 9"/><path d="M215 19 Q218 10, 224 8"/>
+  </svg>
+
+  <div class="fade-photo short">
     <img src="foto-2.jpg" alt="" onerror="this.style.display='none'">
   </div>
 
 </div>
+
+<script>
+  const boda = new Date('2027-05-13T16:00:00')
+  function actualizar(){
+    const ahora = new Date()
+    let dif = boda - ahora
+    if(dif < 0) dif = 0
+    const d = Math.floor(dif / 86400000)
+    const h = Math.floor((dif % 86400000) / 3600000)
+    const m = Math.floor((dif % 3600000) / 60000)
+    const s = Math.floor((dif % 60000) / 1000)
+    document.getElementById('cd-days').textContent = d
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0')
+    document.getElementById('cd-min').textContent = String(m).padStart(2,'0')
+    document.getElementById('cd-sec').textContent = String(s).padStart(2,'0')
+  }
+  actualizar()
+  setInterval(actualizar, 1000)
+</script>
 </body>
 </html>

@@ -10,134 +10,114 @@
 <style>
   :root{
     --cream:#F5EFE3;
+    --cream-2:#EDE4D3;
     --wine:#6E1B26;
     --wine-deep:#4E1119;
+    --wine-light:#8A2332;
     --ink:#3A2A2A;
+    --ink-soft:#5A4A4A;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;-webkit-font-smoothing:antialiased}
-  .page{max-width:480px;margin:0 auto;position:relative;overflow:hidden}
+  .page{max-width:480px;margin:0 auto;overflow:hidden}
   .hand{font-family:'Caveat',cursive;font-weight:700}
   .center{text-align:center}
 
-  /* bordes tipo papel rasgado, amplitud sutil */
-  .torn-b{clip-path:polygon(0% 0%,100% 0%,100% 95.4%,96.8% 96.8%,93.5% 93.9%,90.3% 96.3%,87.1% 94.5%,83.9% 97.1%,80.6% 93.2%,77.4% 95.8%,74.2% 92.6%,71.0% 96.5%,67.7% 94.0%,64.5% 97.4%,61.3% 93.5%,58.1% 96.0%,54.8% 92.9%,51.6% 97.8%,48.4% 95.1%,45.2% 93.0%,41.9% 96.4%,38.7% 94.1%,35.5% 92.4%,32.3% 96.9%,29.0% 94.6%,25.8% 93.3%,22.6% 96.1%,19.4% 94.8%,16.1% 92.7%,12.9% 96.6%,9.7% 94.3%,6.5% 93.6%,3.2% 96.2%,0.0% 95.0%)}
-  .torn-t{clip-path:polygon(0.0% 4.8%,3.2% 3.0%,6.5% 6.4%,9.7% 4.1%,12.9% 7.3%,16.1% 3.6%,19.4% 5.9%,22.6% 3.2%,25.8% 6.7%,29.0% 4.4%,32.3% 2.1%,35.5% 6.1%,38.7% 3.8%,41.9% 5.6%,45.2% 2.9%,48.4% 6.9%,51.6% 4.2%,54.8% 2.2%,58.1% 6.5%,61.3% 3.5%,64.5% 5.8%,67.7% 2.6%,71.0% 6.2%,74.2% 3.9%,77.4% 5.1%,80.6% 2.4%,83.9% 6.8%,87.1% 4.0%,90.3% 3.7%,93.5% 6.3%,96.8% 3.1%,100.0% 5.5%,100% 100%,0% 100%);margin-top:-1px}
+  /* corazones garabato */
+  .doodle{position:absolute;color:var(--wine);opacity:.65}
 
-  .heart-doodle{width:20px;height:20px;color:var(--wine);opacity:.75}
-
-  .doodle-heart{position:absolute;color:var(--wine);opacity:.7}
-
-  /* ---------- header ---------- */
-  header{padding:26px 30px 6px;text-align:center}
-  header .brand{font-family:'Jost',sans-serif;font-weight:700;font-size:1.3rem;letter-spacing:.15em;color:var(--wine)}
-  header .tag{font-size:.6rem;letter-spacing:.1em;color:var(--ink);opacity:.6;margin-top:2px}
-
-  /* ---------- hero playful ---------- */
-  .hero{padding:20px 30px 10px;text-align:center;position:relative}
-  .hero h1{font-family:'Caveat',cursive;font-weight:700;font-size:3.4rem;color:var(--wine);line-height:.95}
-  .kids{position:relative;margin:26px auto 0;max-width:280px}
-  .kids .tags{display:flex;justify-content:space-between;padding:0 6px;margin-bottom:8px}
+  /* hero juguetón */
+  .hero{padding:32px 30px 14px;text-align:center;position:relative}
+  .hero h1{font-family:'Caveat',cursive;font-weight:700;font-size:3.6rem;color:var(--wine);line-height:.95}
+  .kids{position:relative;margin:28px auto 0;max-width:290px}
+  .kids .tags{display:flex;justify-content:space-between;padding:0 4px;margin-bottom:8px}
   .kids .tags span{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--wine-deep)}
-  .kids-photo{
-    aspect-ratio:1/1.1;border-radius:8px;position:relative;overflow:hidden;
-    background:linear-gradient(155deg,#8A8580,#C7C2B8);
-  }
+  .kids-photo{aspect-ratio:1/1.1;border-radius:8px;position:relative;overflow:hidden;background:linear-gradient(155deg,#8A8580,#C7C2B8)}
   .kids-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05)}
-  .ribbon{
-    display:inline-block;background:var(--wine);color:var(--cream);
-    font-family:'Caveat',cursive;font-weight:700;font-size:1.4rem;
-    padding:10px 34px;margin-top:-18px;position:relative;z-index:2;
-    clip-path:polygon(4% 0%,96% 0%,100% 50%,96% 100%,4% 100%,0% 50%);
-  }
+  .ribbon{display:inline-block;background:var(--wine);color:var(--cream);font-family:'Caveat',cursive;font-weight:700;font-size:1.5rem;padding:10px 38px;margin-top:-18px;position:relative;z-index:2;clip-path:polygon(4% 0%,96% 0%,100% 50%,96% 100%,4% 100%,0% 50%)}
 
-  .recognized{padding:26px 30px 40px;text-align:center}
-  .recognized h3{font-family:'Caveat',cursive;font-weight:700;font-size:1.9rem;color:var(--wine);margin-bottom:10px}
-  .recognized p{font-size:.85rem;line-height:1.6;color:#5A4A4A;max-width:280px;margin:0 auto}
+  /* ¿los reconocés? */
+  .recognized{padding:28px 30px 36px;text-align:center}
+  .recognized h3{font-family:'Caveat',cursive;font-weight:700;font-size:2rem;color:var(--wine);margin-bottom:10px}
+  .recognized p{font-size:.84rem;line-height:1.65;color:var(--ink-soft);max-width:285px;margin:0 auto}
 
-  /* ---------- bloque vino con polaroids ---------- */
-  .wine-block{background:var(--wine);padding:40px 30px 46px;position:relative}
-  .polaroid{
-    background:#fff;padding:10px 10px 22px;border-radius:2px;
-    box-shadow:0 8px 18px rgba(0,0,0,.25);width:78%;
-    transform:rotate(-4deg);
-  }
+  /* bloque vino con polaroids */
+  .wine-block{background:var(--wine);padding:42px 30px 48px;position:relative}
+  .polaroid{background:#fff;padding:10px 10px 22px;border-radius:2px;box-shadow:0 8px 20px rgba(0,0,0,.28);width:78%;transform:rotate(-4deg)}
   .polaroid img{width:100%;aspect-ratio:1/1.15;object-fit:cover;filter:grayscale(1) contrast(1.05);display:block;background:linear-gradient(155deg,#B8B2A8,#E8E3D8)}
-  .polaroid.right{margin-left:auto;margin-top:-40px;transform:rotate(3deg)}
-  .names-eq{
-    font-family:'Caveat',cursive;font-weight:700;font-size:2rem;color:var(--cream);
-    display:flex;align-items:center;gap:10px;margin:20px 0 20px 6%;
-  }
+  .polaroid.right{margin-left:auto;margin-top:-42px;transform:rotate(3.5deg)}
+  .names-eq{font-family:'Caveat',cursive;font-weight:700;font-size:2.1rem;color:var(--cream);display:flex;align-items:center;gap:10px;margin:22px 0 22px 6%}
 
-  /* ---------- invitación texto ---------- */
-  .invite{padding:40px 30px 26px;text-align:center}
-  .invite p{font-size:.92rem;line-height:1.7;color:#4A3A3A;max-width:300px;margin:0 auto}
+  /* invitación */
+  .invite{padding:38px 30px 24px;text-align:center}
+  .invite p{font-size:.9rem;line-height:1.75;color:var(--ink-soft);max-width:300px;margin:0 auto}
 
-  /* ---------- calendario ---------- */
-  .calendar{padding:16px 30px 34px}
-  .cal-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px}
-  .cal-head .month{font-family:'Caveat',cursive;font-weight:700;font-size:2rem;color:var(--wine)}
-  .cal-head .year{font-family:'Caveat',cursive;font-weight:700;font-size:1.6rem;color:var(--wine)}
+  /* calendario */
+  .calendar{padding:16px 30px 36px}
+  .cal-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px}
+  .cal-head .month{font-family:'Caveat',cursive;font-weight:700;font-size:2.1rem;color:var(--wine)}
+  .cal-head .year{font-family:'Caveat',cursive;font-weight:700;font-size:1.7rem;color:var(--wine)}
   .cal-days{display:flex;justify-content:space-between;gap:10px}
   .cal-day{flex:1;text-align:center}
-  .cal-day .dow{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:#8A7A7A;margin-bottom:10px}
-  .cal-day .num{font-family:'Caveat',cursive;font-weight:700;font-size:1.6rem;color:var(--ink)}
-  .cal-day.active{position:relative}
+  .cal-day .dow{font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:#8A7A7A;margin-bottom:10px}
+  .cal-day .num{font-family:'Caveat',cursive;font-weight:700;font-size:1.65rem;color:var(--ink)}
   .cal-day.active .dow{color:var(--wine);font-weight:600}
-  .cal-day.active .num{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:52px;height:52px;position:relative;color:var(--wine);
-  }
+  .cal-day.active .num{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;position:relative;color:var(--wine)}
   .cal-day.active .num svg{position:absolute;inset:-4px;width:60px;height:60px;color:var(--wine);z-index:0}
   .cal-day.active .num span{position:relative;z-index:1}
 
-  /* ---------- locación (bloque vino) ---------- */
-  .loc-block{background:var(--wine);color:var(--cream);padding:44px 30px 46px;text-align:center}
-  .loc-block h3{font-family:'Caveat',cursive;font-weight:700;font-size:2rem;margin-bottom:10px}
-  .loc-block .venue{font-size:.82rem;line-height:1.6;margin-bottom:22px;opacity:.95}
-  .loc-photo{
-    background:#fff;padding:8px 8px 18px;border-radius:2px;box-shadow:0 10px 22px rgba(0,0,0,.3);
-    max-width:230px;margin:0 auto 24px;
-  }
+  /* locación vino */
+  .loc-block{background:var(--wine);color:var(--cream);padding:46px 30px 48px;text-align:center}
+  .loc-block h3{font-family:'Caveat',cursive;font-weight:700;font-size:2.1rem;margin-bottom:10px}
+  .loc-block .venue{font-size:.82rem;line-height:1.65;margin-bottom:24px;opacity:.95}
+  .loc-photo{background:#fff;padding:8px 8px 18px;border-radius:2px;box-shadow:0 10px 24px rgba(0,0,0,.32);max-width:234px;margin:0 auto 26px}
   .loc-photo img{width:100%;aspect-ratio:4/3;object-fit:cover;filter:grayscale(1) contrast(1.05);display:block;background:linear-gradient(155deg,#9A9488,#D8D2C4)}
-  .map-btn{
-    display:inline-block;background:var(--cream);color:var(--wine);
-    font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;
-    padding:12px 34px;border-radius:6px;border:none;cursor:pointer;
-  }
+  .btn-light{display:inline-block;background:var(--cream);color:var(--wine);font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;padding:13px 36px;border-radius:6px;border:none;cursor:pointer}
 
-  /* ---------- horario ---------- */
-  .schedule{padding:40px 30px 50px;position:relative}
-  .schedule h3{font-family:'Caveat',cursive;font-weight:700;font-size:2rem;color:var(--wine);margin-bottom:26px;text-align:center}
-  .sched-wavy{position:absolute;left:27px;top:70px;width:60px;height:calc(100% - 160px);z-index:0}
+  /* horario con línea ondulada */
+  .schedule{padding:40px 30px 52px;position:relative}
+  .schedule h3{font-family:'Caveat',cursive;font-weight:700;font-size:2.1rem;color:var(--wine);margin-bottom:28px;text-align:center}
+  .sched-wavy{position:absolute;left:27px;top:72px;width:60px;height:calc(100% - 170px);z-index:0}
   .sched-item{display:flex;gap:18px;align-items:flex-start;margin-bottom:30px;position:relative;z-index:1}
-  .sched-icon{
-    width:54px;height:54px;border-radius:50%;background:var(--cream);border:1.5px solid var(--wine);
-    display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--wine);
-  }
-  .sched-time{font-family:'Caveat',cursive;font-weight:700;font-size:1.6rem;color:var(--wine);line-height:1}
-  .sched-desc{font-size:.78rem;line-height:1.55;color:#5A4A4A;margin-top:4px;max-width:230px}
+  .sched-icon{width:54px;height:54px;border-radius:50%;background:var(--cream);border:1.5px solid var(--wine);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--wine)}
+  .sched-time{font-family:'Caveat',cursive;font-weight:700;font-size:1.65rem;color:var(--wine);line-height:1}
+  .sched-desc{font-size:.76rem;line-height:1.6;color:var(--ink-soft);margin-top:4px;max-width:230px}
+
+  /* dress code */
+  .dress{background:var(--cream-2);padding:44px 30px;text-align:center}
+  .dress h3{font-family:'Caveat',cursive;font-weight:700;font-size:2rem;color:var(--wine);margin-bottom:16px}
+  .dress-row{display:flex;justify-content:center;gap:28px;margin-bottom:14px}
+  .dress-row svg{width:30px;height:40px;color:var(--wine)}
+  .dress .code{font-size:.82rem;font-weight:600;letter-spacing:.08em;color:var(--wine);margin-bottom:6px}
+  .dress .hint{font-size:.76rem;color:var(--ink-soft);max-width:240px;margin:0 auto;line-height:1.55}
+
+  /* rsvp */
+  .rsvp{padding:46px 30px;text-align:center}
+  .rsvp h3{font-family:'Caveat',cursive;font-weight:700;font-size:2.2rem;color:var(--wine);margin-bottom:12px}
+  .rsvp p{font-size:.82rem;line-height:1.7;color:var(--ink-soft);max-width:290px;margin:0 auto 24px}
+  .btn-wine{display:inline-block;background:var(--wine);color:var(--cream);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;padding:14px 38px;border-radius:6px;border:none;cursor:pointer}
+
+  /* cierre */
+  .closing{background:var(--wine);color:var(--cream);padding:46px 30px 56px;text-align:center}
+  .closing h3{font-family:'Caveat',cursive;font-weight:700;font-size:2.4rem;margin-bottom:12px}
+  .closing p{font-size:.82rem;line-height:1.7;opacity:.9;max-width:280px;margin:0 auto 6px}
+  .closing .names-close{font-family:'Caveat',cursive;font-size:1.8rem;margin-top:20px;opacity:.95}
 </style>
 </head>
 <body>
 <div class="page">
 
-  <header>
-    <div class="brand">veinti<span style="color:var(--wine)">dós</span></div>
-    <div class="tag">invitaciones digitales</div>
-  </header>
-
   <section class="hero">
-    <svg class="doodle-heart" style="top:-4px;left:14px;width:22px;height:22px;transform:rotate(-12deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20 C4 13, 3 6, 8 4 C10.5 3, 12 5, 12 7 C12 5, 13.5 3, 16 4 C21 6, 20 13, 12 20 Z"/></svg>
-    <svg class="doodle-heart" style="top:18px;right:20px;width:16px;height:16px;transform:rotate(10deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20 C4 13, 3 6, 8 4 C10.5 3, 12 5, 12 7 C12 5, 13.5 3, 16 4 C21 6, 20 13, 12 20 Z"/></svg>
+    <svg class="doodle" style="top:8px;left:18px;width:22px;height:22px;transform:rotate(-12deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20 C4 13, 3 6, 8 4 C10.5 3, 12 5, 12 7 C12 5, 13.5 3, 16 4 C21 6, 20 13, 12 20 Z"/></svg>
+    <svg class="doodle" style="top:22px;right:22px;width:16px;height:16px;transform:rotate(10deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20 C4 13, 3 6, 8 4 C10.5 3, 12 5, 12 7 C12 5, 13.5 3, 16 4 C21 6, 20 13, 12 20 Z"/></svg>
     <h1>¡Se conocían<br>de chiquitos!</h1>
 
     <div class="kids" style="position:relative">
-      <svg class="doodle-heart" style="top:-10px;left:-8px;width:26px;height:26px;transform:rotate(-8deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20 C4 13, 3 6, 8 4 C10.5 3, 12 5, 12 7 C12 5, 13.5 3, 16 4 C21 6, 20 13, 12 20 Z"/></svg>
-      <svg class="doodle-heart" style="top:36px;right:-10px;width:18px;height:18px;transform:rotate(14deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20 C4 13, 3 6, 8 4 C10.5 3, 12 5, 12 7 C12 5, 13.5 3, 16 4 C21 6, 20 13, 12 20 Z"/></svg>
+      <svg class="doodle" style="top:-10px;left:-8px;width:26px;height:26px;transform:rotate(-8deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20 C4 13, 3 6, 8 4 C10.5 3, 12 5, 12 7 C12 5, 13.5 3, 16 4 C21 6, 20 13, 12 20 Z"/></svg>
+      <svg class="doodle" style="top:38px;right:-10px;width:18px;height:18px;transform:rotate(14deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20 C4 13, 3 6, 8 4 C10.5 3, 12 5, 12 7 C12 5, 13.5 3, 16 4 C21 6, 20 13, 12 20 Z"/></svg>
       <div class="tags">
-        <span>&#10084; novio</span>
-        <span>novia &#10084;</span>
+        <span>&#10084; él</span>
+        <span>ella &#10084;</span>
       </div>
       <div class="kids-photo">
         <img src="foto-ninos.jpg" alt="" onerror="this.style.display='none'">
@@ -149,10 +129,10 @@
   <section class="recognized">
     <h3>&iquest;Los reconocés?</h3>
     <svg width="150" height="14" viewBox="0 0 150 14" style="margin:0 auto 14px;display:block" fill="none" stroke="#6E1B26" stroke-width="2" stroke-linecap="round"><path d="M2 7 Q 14 1, 26 7 T 50 7 T 74 7 T 98 7 T 122 7 T 148 7"/></svg>
-    <p>Sí, somos nosotros. El tiempo pasó volando, y estos dos nenes de la foto ya se casan.</p>
+    <p>Sí, somos nosotros. El tiempo pasó volando y estos dos nenes de la foto ya se casan.</p>
   </section>
 
-  <div class="wine-block torn-b torn-t">
+  <div class="wine-block">
     <div class="polaroid">
       <img src="foto-1.jpg" alt="" onerror="this.style.display='none'">
     </div>
@@ -169,34 +149,34 @@
   <section class="calendar">
     <div class="cal-head">
       <span class="month">Julio</span>
-      <span class="year">2026</span>
+      <span class="year">2027</span>
     </div>
     <div class="cal-days">
       <div class="cal-day">
-        <div class="dow">Jueves</div>
-        <div class="num">18</div>
+        <div class="dow">Sábado</div>
+        <div class="num">17</div>
       </div>
       <div class="cal-day active">
-        <div class="dow">Viernes</div>
+        <div class="dow">Domingo</div>
         <div class="num">
           <svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="2"><path d="M30 3 C 45 3, 57 13, 57 29 C 57 46, 44 57, 29 57 C 14 57, 3 45, 4 29 C 5 14, 15 3, 30 3 Z"/></svg>
-          <span>19</span>
+          <span>18</span>
         </div>
       </div>
       <div class="cal-day">
-        <div class="dow">Sábado</div>
-        <div class="num">20</div>
+        <div class="dow">Lunes</div>
+        <div class="num">19</div>
       </div>
     </div>
   </section>
 
-  <div class="loc-block torn-b torn-t">
+  <div class="loc-block">
     <h3>Ubicación</h3>
     <p class="venue">Quinta Los Álamos<br>&ldquo;Salón Principal&rdquo;</p>
     <div class="loc-photo">
       <img src="foto-lugar.jpg" alt="" onerror="this.style.display='none'">
     </div>
-    <button class="map-btn">Ver mapa</button>
+    <button class="btn-light">Ver en el mapa</button>
   </div>
 
   <section class="schedule">
@@ -212,7 +192,7 @@
       </div>
       <div>
         <div class="sched-time">15:30</div>
-        <div class="sched-desc">Llegada de invitados y bienvenida — para relajarse después del viaje.</div>
+        <div class="sched-desc">Llegada de invitados y bienvenida.</div>
       </div>
     </div>
 
@@ -232,7 +212,7 @@
       </div>
       <div>
         <div class="sched-time">17:00</div>
-        <div class="sched-desc">Comienza el banquete y el disfrute gastronómico.</div>
+        <div class="sched-desc">Banquete y disfrute gastronómico.</div>
       </div>
     </div>
 
@@ -242,9 +222,32 @@
       </div>
       <div>
         <div class="sched-time">23:00</div>
-        <div class="sched-desc">Torta de bodas — el cierre perfecto de un día hermoso.</div>
+        <div class="sched-desc">Torta de bodas — el cierre perfecto.</div>
       </div>
     </div>
+  </section>
+
+  <section class="dress">
+    <h3>¿Cómo venir?</h3>
+    <div class="dress-row">
+      <svg viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 2 L12 5 L15 2 M9 2 L6 6 L8 9 L8 30 L16 30 L16 9 L18 6 L15 2"/></svg>
+      <svg viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2 L9 5 L12 8 L15 5 Z M6 8 L12 8 L18 8 L15 14 L18 30 L6 30 L9 14 Z"/></svg>
+    </div>
+    <div class="code">Semiformal — tonos alegres</div>
+    <p class="hint">¡Vení cómodo y listo para bailar! Evitá el blanco y el negro total.</p>
+  </section>
+
+  <section class="rsvp">
+    <h3>¡Avisanos que vienen!</h3>
+    <p>Para poder separarte un lugar y asegurarnos de que no te falte nada, confirmá tu asistencia antes del 30 de junio de 2027.</p>
+    <button class="btn-wine">Confirmar asistencia</button>
+  </section>
+
+  <section class="closing">
+    <h3>¡Los esperamos!</h3>
+    <p>Va a ser un día que no van a olvidar. Prometemos risas, buena comida y mucho baile.</p>
+    <p>Con todo nuestro amor —</p>
+    <div class="names-close">Juan &amp; Ana &#10084;</div>
   </section>
 
 </div>

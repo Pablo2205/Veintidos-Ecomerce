@@ -59,6 +59,7 @@ export const productColors = [
   { key: 'amarillo', label: 'Amarillo', hex: '#E8C547' },
   { key: 'blanco', label: 'Blanco', hex: '#FFFFFF', border: '#D8D8D8' },
   { key: 'celeste', label: 'Celeste', hex: '#7FC7E8' },
+  { key: 'rojo', label: 'Rojo', hex: '#6E1B26' },
 ]
 
 // --- Ranking de planes -----------------------------------------------
@@ -269,9 +270,20 @@ export const products = [
     category: 'boda',
     plan: 'Premium',
     price: 88000,
-    color: 'marron',
+    color: 'rojo',
     gradient: 'from-[#6E1B26] to-[#4E1119]',
     badge: 'Nuevo',
     demoUrl: '/demos/juan-ana/',
+  },
+  {
+    id: 11,
+    name: 'Invitación Boda — Lorena & Gustavo',
+    category: 'boda',
+    plan: 'Premium',
+    price: 88000,
+    color: 'verde',
+    gradient: 'from-[#8FA07A] to-[#3F4A34]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/lorena-gustavo/',
   },
 ]

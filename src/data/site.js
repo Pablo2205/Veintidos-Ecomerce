@@ -263,4 +263,15 @@ export const products = [
     badge: 'Nuevo',
     demoUrl: '/demos/olivia-ralph/',
   },
+  {
+    id: 10,
+    name: 'Invitación Boda — Juan & Ana',
+    category: 'boda',
+    plan: 'Premium',
+    price: 88000,
+    color: 'marron',
+    gradient: 'from-[#6E1B26] to-[#4E1119]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/juan-ana/',
+  },
 ]

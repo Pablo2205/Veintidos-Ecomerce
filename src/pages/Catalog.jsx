@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import WhatsAppButton from '../components/WhatsAppButton.jsx'
+import DemoPreviewModal from '../components/DemoPreviewModal.jsx'
 import { products, productColors, originalPrice, waLink } from '../data/site.js'
 import { useCart } from '../context/CartContext.jsx'
 
@@ -24,6 +25,7 @@ export default function Catalog() {
   const [activePlan, setActivePlan] = useState('Todos')
   const { add } = useCart()
   const [added, setAdded] = useState(null)
+  const [previewDemo, setPreviewDemo] = useState(null)
   const timeoutRef = useRef(null)
 
   useEffect(() => () => clearTimeout(timeoutRef.current), [])
@@ -179,14 +181,12 @@ export default function Catalog() {
                       </span>
                     )}
                     {p.demoUrl ? (
-                      <a
-                        href={p.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => setPreviewDemo({ url: p.demoUrl, name: p.name })}
                         className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm text-primary py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-white"
                       >
                         Ver demo
-                      </a>
+                      </button>
                     ) : (
                       <span className="absolute bottom-4 left-4 right-4 bg-white/70 backdrop-blur-sm text-onSurfaceVariant py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
                         Demo próximamente
@@ -248,6 +248,16 @@ export default function Catalog() {
           )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {previewDemo && (
+          <DemoPreviewModal
+            url={previewDemo.url}
+            name={previewDemo.name}
+            onClose={() => setPreviewDemo(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

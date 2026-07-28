@@ -241,4 +241,15 @@ export const products = [
     badge: 'Demo real',
     demoUrl: 'https://boda-rosy-alpha.vercel.app/?vip=true',
   },
+  {
+    id: 8,
+    name: 'Invitación Boda — Lucía & Juan',
+    category: 'boda',
+    plan: 'Premium',
+    price: 88000,
+    color: 'marron',
+    gradient: 'from-[#C79A6B] to-[#8A7A5E]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/lucia-juan/',
+  },
 ]

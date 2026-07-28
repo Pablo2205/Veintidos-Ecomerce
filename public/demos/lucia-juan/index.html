@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucía & Juan — Nos casamos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F8F3E9;
+    --cream-2:#F1EAD9;
+    --ink:#3B392F;
+    --ink-soft:#6B6857;
+    --olive:#748158;
+    --olive-deep:#5B6644;
+    --blue:#CBDCE1;
+    --blue-deep:#4C6B75;
+    --line:#DCD3BD;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Jost',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{max-width:480px;margin:0 auto;position:relative;overflow:hidden}
+
+  .script{font-family:'Mrs Saint Delafield',cursive;font-weight:400}
+  .hero .names.script{font-size:1.35em}
+  .mini-header .logo.script,footer .logo.script{font-size:1.5em}
+  .serif{font-family:'Playfair Display',serif}
+  .eyebrow{
+    font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;
+    font-weight:500;color:var(--ink-soft);
+  }
+
+  /* ---------- torn paper edge ---------- */
+  .torn{
+    position:relative;
+    clip-path:polygon(
+      0% 0%,
+      100% 0%,
+      100.0% 94.7%,
+      97.0% 95.4%,
+      93.9% 98.0%,
+      90.9% 94.8%,
+      87.9% 95.1%,
+      84.8% 95.6%,
+      81.8% 92.8%,
+      78.8% 95.1%,
+      75.8% 95.9%,
+      72.7% 97.1%,
+      69.7% 92.2%,
+      66.7% 93.6%,
+      63.6% 92.1%,
+      60.6% 97.2%,
+      57.6% 96.4%,
+      54.5% 91.8%,
+      51.5% 98.4%,
+      48.5% 98.3%,
+      45.5% 96.1%,
+      42.4% 95.8%,
+      39.4% 92.6%,
+      36.4% 91.6%,
+      33.3% 95.2%,
+      30.3% 91.9%,
+      27.3% 92.8%,
+      24.2% 93.2%,
+      21.2% 91.7%,
+      18.2% 94.7%,
+      15.2% 94.6%,
+      12.1% 97.4%,
+      9.1% 95.1%,
+      6.1% 96.0%,
+      3.0% 95.0%,
+      0.0% 96.1%
+    );
+  }
+  .torn-top{
+    clip-path:polygon(
+      0.0% 4.7%,
+      3.0% 3.4%,
+      6.1% 8.5%,
+      9.1% 8.5%,
+      12.1% 7.4%,
+      15.2% 6.5%,
+      18.2% 3.7%,
+      21.2% 3.1%,
+      24.2% 3.5%,
+      27.3% 2.0%,
+      30.3% 6.9%,
+      33.3% 4.3%,
+      36.4% 7.4%,
+      39.4% 4.2%,
+      42.4% 8.2%,
+      45.5% 7.4%,
+      48.5% 1.5%,
+      51.5% 3.0%,
+      54.5% 7.9%,
+      57.6% 4.8%,
+      60.6% 8.4%,
+      63.6% 4.3%,
+      66.7% 2.0%,
+      69.7% 5.9%,
+      72.7% 6.9%,
+      75.8% 3.4%,
+      78.8% 2.1%,
+      81.8% 3.8%,
+      84.8% 8.2%,
+      87.9% 6.8%,
+      90.9% 2.3%,
+      93.9% 3.2%,
+      97.0% 2.2%,
+      100.0% 1.9%,
+      100% 100%,
+      0% 100%
+    );
+    margin-top:-1px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    height:640px;position:relative;
+    background:linear-gradient(155deg,#8A7A5E 0%,#B79C6E 38%,#DDBE86 62%,#C79A6B 100%);
+    display:flex;align-items:flex-end;justify-content:center;
+    padding:0 0 56px;
+  }
+  .hero img,.photo-band img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
+  }
+  .hero-content{position:relative;z-index:1;text-align:center;color:#fff;padding:0 24px}
+  .hero .eyebrow{color:rgba(255,255,255,.85);margin-bottom:10px}
+  .hero .names{font-size:3.1rem;line-height:1;margin-bottom:10px;text-shadow:0 2px 18px rgba(0,0,0,.18)}
+  .hero .date{font-size:.85rem;letter-spacing:.22em;color:rgba(255,255,255,.92);margin-bottom:14px}
+  .leaf{font-size:1rem;color:rgba(255,255,255,.75)}
+
+  /* ---------- countdown ---------- */
+  .countdown-wrap{padding:44px 24px 30px;text-align:center}
+  .countdown{display:flex;justify-content:center;gap:28px;margin-bottom:22px}
+  .cd-num{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:500;line-height:1}
+  .cd-label{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px}
+  .divider{display:flex;align-items:center;justify-content:center;gap:14px;color:var(--olive)}
+  .divider .rule{width:52px;height:1px;background:var(--line)}
+
+  /* ---------- detail block (ceremony / reception) ---------- */
+  .detail{padding:38px 24px;text-align:center}
+  .detail-icon{width:34px;height:34px;margin:0 auto 16px;color:var(--olive-deep)}
+  .detail h3{font-size:1.9rem;font-style:italic;font-weight:500;margin-bottom:8px}
+  .detail .time{font-size:.95rem;letter-spacing:.06em;color:var(--ink);margin-bottom:10px}
+  .detail .place{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-bottom:2px}
+  .detail .subplace{font-size:.8rem;color:var(--ink-soft);margin-bottom:20px}
+  .btn{
+    display:inline-block;background:var(--olive);color:#fff;
+    font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;
+    padding:13px 32px;border-radius:999px;border:none;cursor:pointer;
+  }
+
+  /* ---------- foto banda ---------- */
+  .photo-band{height:300px;position:relative;background:linear-gradient(140deg,#A98F6D 0%,#C9AD7E 55%,#B7906A 100%)}
+
+  /* ---------- mini header (logo + subtitulo) ---------- */
+  .mini-header{padding:44px 24px 30px;text-align:center}
+  .mini-header .logo{font-size:2.1rem;margin-bottom:8px}
+  .mini-header .eyebrow{display:flex;align-items:center;justify-content:center;gap:12px}
+
+  /* ---------- timeline ---------- */
+  .timeline{padding:6px 32px 40px}
+  .tl-item{display:flex;align-items:center;gap:20px;position:relative;padding:16px 0}
+  .tl-item:not(:last-child)::before{
+    content:'';position:absolute;left:19px;top:50px;bottom:-16px;width:1px;background:var(--line);
+  }
+  .tl-dot{
+    width:40px;height:40px;border-radius:50%;background:var(--cream-2);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    color:var(--olive-deep);position:relative;z-index:1;border:1px solid var(--line);
+  }
+  .tl-time{font-size:.68rem;letter-spacing:.1em;color:var(--ink-soft);margin-bottom:2px}
+  .tl-label{font-size:1rem;font-family:'Playfair Display',serif}
+
+  /* ---------- share the love ---------- */
+  .share{background:var(--blue);padding:44px 24px;text-align:center}
+  .share-icon{width:30px;height:30px;margin:0 auto 14px;color:var(--blue-deep)}
+  .share h4{font-size:.78rem;letter-spacing:.2em;font-weight:600;margin-bottom:12px}
+  .share p{font-size:.85rem;color:var(--ink);opacity:.85;max-width:280px;margin:0 auto 22px;line-height:1.5}
+
+  /* ---------- playlist ---------- */
+  .playlist{padding:44px 24px;text-align:center}
+  .playlist-icon{width:26px;height:26px;margin:0 auto 14px;color:var(--olive-deep)}
+  .playlist h4{font-size:.78rem;letter-spacing:.2em;font-weight:600;margin-bottom:12px}
+  .playlist p{font-size:.85rem;color:var(--ink-soft);max-width:260px;margin:0 auto 22px;line-height:1.5}
+
+  /* ---------- footer ---------- */
+  footer{padding:40px 24px 56px;text-align:center}
+  footer .logo{font-size:1.7rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <section class="hero torn">
+    <img src="foto-hero.jpg" alt="" onerror="this.style.display='none'">
+    <div class="hero-content">
+      <div class="eyebrow">We're getting married</div>
+      <div class="names script">Lucía &amp; Juan</div>
+      <div class="date">29 . 11 . 2026</div>
+      <div class="leaf">&#10084;</div>
+    </div>
+  </section>
+
+  <section class="countdown-wrap">
+    <div class="countdown">
+      <div><div class="cd-num" id="cd-days">--</div><div class="cd-label">Días</div></div>
+      <div><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Horas</div></div>
+      <div><div class="cd-num" id="cd-min">--</div><div class="cd-label">Minutos</div></div>
+      <div><div class="cd-num" id="cd-sec">--</div><div class="cd-label">Segundos</div></div>
+    </div>
+    <div class="divider"><span class="rule"></span>&#10047;<span class="rule"></span></div>
+  </section>
+
+  <section class="detail">
+    <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 2 L12 6 M9 6 L15 6 M6 22 V11 L12 6 L18 11 V22 Z M10 22 V16 H14 V22"/></svg>
+    <h3 class="serif">Ceremonia</h3>
+    <div class="time">16:00</div>
+    <div class="place">Capilla Santa María</div>
+    <div class="subplace">Ronda, Málaga</div>
+    <button class="btn">Ver detalles</button>
+  </section>
+
+  <div class="divider" style="padding-bottom:10px"><span class="rule"></span>&#10047;<span class="rule"></span></div>
+
+  <section class="detail">
+    <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M7 2 L7 8 A5 6 0 0 0 12 14 A5 6 0 0 0 17 8 L17 2 M12 14 V20 M8 20 H16 M4 2 H10 M14 2 H20"/></svg>
+    <h3 class="serif">Recepción</h3>
+    <div class="time">18:30</div>
+    <div class="place">Finca La Concepción</div>
+    <div class="subplace">Marbella, Málaga</div>
+    <button class="btn">Ver detalles</button>
+  </section>
+
+  <div class="photo-band torn torn-top"><img src="foto-1.jpg" alt="" onerror="this.style.display='none'"></div>
+
+  <section class="mini-header">
+    <div class="logo script">AreOne</div>
+    <div class="eyebrow">&#10047; The wedding day &#10047;</div>
+  </section>
+
+  <section class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21 V10 L12 4 L20 10 V21 M9 21 V14 H15 V21"/></svg></div>
+      <div><div class="tl-time">15:00</div><div class="tl-label">Llegada al lugar</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 L12 6 M9 6 L15 6 M6 22 V11 L12 6 L18 11 V22 Z"/></svg></div>
+      <div><div class="tl-time">16:00</div><div class="tl-label">Ceremonia</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 3 L9 11 A3 4 0 0 0 15 11 L17 3 M12 15 V21 M9 21 H15 M4 3 H10 M14 3 H20"/></svg></div>
+      <div><div class="tl-time">17:00</div><div class="tl-label">Brindis</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 12 H16 M12 8 V16"/></svg></div>
+      <div><div class="tl-time">18:30</div><div class="tl-label">Cena</div></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></svg></div>
+      <div><div class="tl-time">21:00</div><div class="tl-label">Fiesta</div></div>
+    </div>
+  </section>
+
+  <div class="photo-band torn torn-top"><img src="foto-2.jpg" alt="" onerror="this.style.display='none'"></div>
+
+  <section class="share">
+    <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg>
+    <h4>Compartí el amor</h4>
+    <p>Ayudanos a capturar nuestro día especial compartiendo tus fotos e historias.</p>
+    <button class="btn">#LuciaYJuan</button>
+  </section>
+
+  <section class="playlist">
+    <svg class="playlist-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 18 V5 L20 3 V16 M9 8 L20 6 M9 18 A3 3 0 1 1 9 12 A3 3 0 0 1 9 18 Z M20 16 A3 3 0 1 1 20 10 A3 3 0 0 1 20 16 Z"/></svg>
+    <h4>Nuestra playlist</h4>
+    <p>Sumá una canción para que no falte en la pista de baile.</p>
+    <button class="btn">Agregar canción</button>
+  </section>
+
+  <footer>
+    <div class="logo script">AreOne</div>
+    <div class="leaf" style="color:var(--olive)">&#10047;</div>
+  </footer>
+
+</div>
+
+<script>
+  const boda = new Date('2026-11-29T16:00:00')
+  function actualizar(){
+    const ahora = new Date()
+    let dif = boda - ahora
+    if (dif < 0) dif = 0
+    const d = Math.floor(dif / 86400000)
+    const h = Math.floor((dif % 86400000) / 3600000)
+    const m = Math.floor((dif % 3600000) / 60000)
+    const s = Math.floor((dif % 60000) / 1000)
+    document.getElementById('cd-days').textContent = d
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0')
+    document.getElementById('cd-min').textContent = String(m).padStart(2,'0')
+    document.getElementById('cd-sec').textContent = String(s).padStart(2,'0')
+  }
+  actualizar()
+  setInterval(actualizar, 1000)
+</script>
+</body>
+</html>

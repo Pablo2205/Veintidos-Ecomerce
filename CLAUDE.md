@@ -1,0 +1,385 @@
+# veintidós — Contexto completo del proyecto
+
+> Este documento es un resumen completo de todo lo construido, para que cualquiera (o
+> cualquier IA, como Claude Code) pueda entender el proyecto de punta a punta sin
+> necesitar el historial de la conversación donde se armó. Pegalo como prompt inicial
+> o dejalo en la raíz del repo para que lo lea antes de tocar código.
+
+---
+
+## 1. El negocio
+
+**veintidós** es un estudio que vende **invitaciones digitales web** para casamientos y
+fiestas de 15 años en Argentina. El dueño es Pablo Coria (también corre `cr.studio`, su
+estudio de desarrollo web, y trabaja como Systems Engineer en TIVIT/Edenor). veintidós es
+un negocio propio, independiente.
+
+**Modelo de negocio:** el cliente elige un plan (Essential / Standard / Premium), paga por
+transferencia bancaria, y completa un formulario con los datos de su evento (fecha, lugar,
+dress code, etc.). El equipo arma la invitación a medida en base a esos datos y a un diseño
+elegido del catálogo. Es un negocio de **productos configurables**, no de invitaciones 100%
+automáticas — cada compra dispara un proceso manual de armado del lado de Pablo.
+
+**Eventos que cubre:** solo **Boda** y **Cumple XV** (deliberadamente acotado, no hay
+cumpleaños genéricos, baby showers, etc. — se sacaron a propósito para simplificar).
+
+**Contacto real del negocio:**
+- WhatsApp: `+5491139126543`
+- Email: `veintidos.invitaciones@gmail.com` (cuenta de Gmail creada específicamente para
+  que Google Apps Script pueda mandar mails desde ahí — ver sección 8)
+- Instagram: `instagram.com/veintidos.invitaciones` (real)
+- Facebook y TikTok: **todavía son placeholders**, no URLs reales
+
+---
+
+## 2. Marca
+
+### Logo
+El logo real (`veinti` en un tono + `dós` en itálica dorada, con tagline "INVITACIONES
+DIGITALES") fue provisto por Pablo como foto (fondo verde oscuro sólido). A partir de eso
+se generaron, con Python/PIL (análisis de color píxel por píxel, no a ojo), dos versiones
+con fondo transparente:
+
+- `src/assets/brand/veintidos-logo-on-light.png` — recoloreada para fondos claros:
+  "veinti" en el verde primario del sitio (`#182317`), "dós" en el dorado del sitio
+  (`#C5A059`). Se usa en el **Footer** (con el tagline incluido).
+- `src/assets/brand/veintidos-logo-on-light-wordmark-only.png` — el mismo pero recortado
+  sin el tagline (para el **Nav**, donde no entra tanto texto).
+- `src/assets/brand/veintidos-logo-dark-bg.png` — colores originales (crema + dorado
+  champagne) con fondo transparente, pensada para usarla algún día sobre fondos oscuros
+  (todavía sin uso activo en el sitio).
+
+El favicon (`public/favicon.svg`) es un cuadrado verde oscuro con una "v" dorada en
+itálica — coherente con la paleta real del logo.
+
+### Paleta de colores (Tailwind, ver `tailwind.config.js`)
+
+| Token | Hex | Uso |
+|---|---|---|
+| `primary` | `#182317` | Verde muy oscuro — texto principal, fondo del PromoBar, botones sólidos |
+| `secondary` | `#52634d` | Verde oliva — acentos, íconos, hover de links |
+| `promoGold` | `#C5A059` | Dorado — badges, bordes destacados, foco de inputs, ornamentos ✦ |
+| `background` | `#fbf9f4` | Crema — fondo general del sitio |
+| `creamSurface` | `#F2EFE9` | Crema un poco más oscuro — secciones alternadas |
+| `whatsapp` | `#25D366` | Verde de marca de WhatsApp — **solo** para botones/íconos que llevan a WhatsApp, nunca para otra cosa (para no generar confusión con el verde institucional) |
+| `error` | `#ba1a1a` | Errores de formulario |
+
+Hay más tokens (`surfaceContainer*`, `outline*`, etc.) que son variaciones de gris/crema
+para bordes y fondos sutiles — ver el archivo completo.
+
+**Regla de oro del proyecto:** cualquier elemento que dirija a WhatsApp (botón, ícono,
+link) tiene que usar el color `whatsapp` (#25D366) y el logo real de WhatsApp
+(`WhatsAppIcon.jsx`), **nunca** el ícono genérico de "chat" de Material Symbols ni el verde
+institucional del sitio. Esto se corrigió explícitamente en una vuelta de feedback porque
+generaba ambigüedad visual.
+
+### Tipografías
+- **Serif (`font-serif`):** Playfair Display — títulos, nombres de secciones, números de
+  precio, monogramas.
+- **Sans (`font-sans`):** Montserrat — todo el texto de cuerpo, labels, botones.
+- **Íconos:** Material Symbols Outlined (vía Google Fonts), con un componente wrapper
+  `Icon.jsx`. **Excepción:** WhatsApp, Instagram, Facebook y TikTok no existen en esa
+  librería, así que están armados a mano como SVG propios (`WhatsAppIcon.jsx`,
+  `SocialIcon.jsx`).
+
+### Estilo visual general
+Editorial/boutique, inspirado en estudios de diseño premium (referencia original:
+nk.studio). Grillas punteadas de fondo sutiles, separadores con ✦ dorados, tarjetas con
+`hover:border-promoGold`, bordes de foco dorados en inputs. **Sin animaciones pesadas** —
+solo transiciones CSS y Framer Motion liviano (fade + slide al hacer scroll, stagger en
+grids), nada de WebGL ni librerías de animación pesadas.
+
+---
+
+## 3. Stack técnico
+
+```
+React 18 + Vite 5 + Tailwind CSS 3 + Framer Motion 11 + React Router 6
+```
+
+Sin backend propio. Todo el "backend" real corre en servicios de terceros:
+- **Google Sheets + Apps Script** — guarda pedidos, sube comprobantes a Drive, manda mails.
+- **WhatsApp** (`wa.me` links) — canal de contacto y confirmación en casi todos los CTAs.
+- **Vercel** — hosting + deploy automático desde GitHub.
+
+No hay Mercado Pago ni ningún gateway de pago integrado — **se descartó explícitamente**
+en una etapa temprana (requiere backend propio con token secreto, y se optó por
+transferencia bancaria manual en su lugar, más simple para el volumen del negocio).
+
+### Correr en local
+```bash
+npm install
+npm run dev       # NO "npm start" — es Vite, no Create React App
+```
+
+### Build
+```bash
+npm run build      # genera /dist
+npm run preview    # sirve /dist localmente
+```
+
+---
+
+## 4. Estructura del proyecto
+
+```
+veintidos/
+├── index.html                  ← metadata (título, fuentes, favicon)
+├── vercel.json                 ← ⚠️ ver nota abajo, es crítico
+├── tailwind.config.js          ← paleta y tipografías (sección 2)
+├── vite.config.js
+├── GOOGLE_APPS_SCRIPT.md       ← código completo del backend en Apps Script
+├── README.md                   ← guía rápida de uso (versión corta de este documento)
+│
+├── public/
+│   ├── favicon.svg
+│   ├── images/
+│   │   ├── BODA.jpg            ← foto real de la categoría "Boda" en la Home
+│   │   └── XV.jpg               ← foto real de la categoría "Cumple XV" en la Home
+│   └── demos/                  ← ⭐ ver sección 7, el sistema de demos de invitaciones
+│       ├── lucia-juan/
+│       ├── olivia-ralph/
+│       ├── juan-ana/
+│       └── lorena-gustavo/
+│
+└── src/
+    ├── main.jsx                 ← entry point, envuelve todo en <CartProvider>
+    ├── App.jsx                  ← rutas + ErrorBoundary + ScrollManager (maneja anclas #hash)
+    ├── index.css                ← utilidades compartidas (.field-input, .btn-primary, etc.)
+    │
+    ├── assets/
+    │   ├── brand/                ← logo real (sección 2)
+    │   └── demo-boda.png         ← screenshot real usado en el mockup de iPhone del Hero
+    │
+    ├── data/
+    │   └── site.js               ← ⭐⭐⭐ FUENTE DE VERDAD DE TODO EL CONTENIDO (sección 5)
+    │
+    ├── context/
+    │   └── CartContext.jsx       ← carrito en memoria (NO persiste en localStorage)
+    │
+    ├── components/               ← piezas reutilizables (ver sección 6)
+    └── pages/                    ← Home, Catalog, Cart, Checkout, Personalize, Contact
+```
+
+### ⚠️ Sobre `vercel.json` — MUY IMPORTANTE
+
+```json
+{
+  "rewrites": [{ "source": "/((?!demos/).*)", "destination": "/index.html" }]
+}
+```
+
+Esto NO es un rewrite genérico de SPA. Excluye explícitamente todo lo que empiece con
+`/demos/` para que esas carpetas se sirvan como HTML estático real, en vez de que React
+Router intente interceptarlas. **Si algún día alguien "simplifica" esto a
+`"source": "/(.*)"` (el patrón típico de SPA), todas las demos van a dejar de funcionar**
+— van a mostrar la Home de React en vez del HTML de la invitación. Este bug ya pasó una
+vez en el proyecto (con una versión anterior del rewrite) y costó varias vueltas de
+debugging encontrarlo.
+
+---
+
+## 5. `src/data/site.js` — la fuente de verdad
+
+Este archivo es, con diferencia, el más importante del proyecto. Centraliza **todo** el
+contenido editable: no hay textos hardcodeados sueltos en los componentes (si los hay,
+es un bug a corregir). Exporta:
+
+- `WA_NUMBER`, `waLink()` — número de WhatsApp y helper para armar links con mensaje
+  prellenado
+- `CONTACT_EMAIL`, `CONTACT_LOCATION` — datos de contacto
+- `INSTAGRAM_URL`, `FACEBOOK_URL`, `TIKTOK_URL` — redes (FB y TikTok son placeholders,
+  marcados con `// TODO`)
+- `BANK_DATA` — alias/CBU/titular para el checkout (**alias y CBU son placeholders**,
+  titular "Pablo Daniel Coria" es real)
+- `GOOGLE_SHEETS_URL` — URL del Web App de Apps Script (real, ya conectada — ver sección 8)
+- `MAX_COMPROBANTE_MB` — límite de tamaño del comprobante subido
+- `PROMO_PERCENT`, `currentMonthLabel()` — el banner de "30% OFF" del PromoBar, calcula el
+  mes actual dinámicamente
+- `originalPrice(price)` — calcula un precio tachado (+15%) **puramente cosmético**, nunca
+  se usa para cobrar. El precio real que se cobra es siempre el que ya está en `price`.
+- `productColors` — paleta de swatches para el filtro de color del catálogo (verde, azul,
+  marrón, beige, rosa, naranja, amarillo, blanco, celeste, rojo)
+- `PLAN_RANK`, `planFeatureFlags()` — determina qué campos mostrar en el formulario
+  post-compra según el plan comprado (ej. Essential no ve "dress code" ni "playlist")
+- `eventTypeOptions` — opciones del `<select>` de tipo de evento en el formulario (Boda /
+  Cumple XV / Otro)
+- `categories` — las 2 categorías de la Home (Boda, Cumple XV), cada una con su `image`
+  apuntando a `/images/BODA.jpg` / `/images/XV.jpg`
+- `features`, `plans`, `steps`, `faqs` — contenido de las secciones de la Home
+- `products` — el catálogo completo (ver detalle abajo)
+
+### El array `products` en detalle
+
+Cada producto puede ser:
+1. **Un producto de catálogo genérico** (sin demo real, solo degradé de color + nombre) —
+   los primeros 6 (`id: 1` a `6`), pensados como placeholder hasta tener diseños reales.
+2. **Una demo real** (`id: 7` en adelante) — tiene:
+   - `demoUrl` — o una URL externa completa (como la invitación real de Pablo & Lucila:
+     `https://boda-rosy-alpha.vercel.app/?vip=true`), o una ruta interna
+     (`/demos/lucia-juan/`)
+   - `image` — foto real de esa demo, usada como miniatura de la tarjeta en vez del
+     degradé (con fallback automático a degradé si la imagen no carga, vía el componente
+     `ProductCover` en `Catalog.jsx`)
+   - `style` — descripción corta del estilo (ej. "Editorial — papel roto", "Botánico —
+     fotos difuminadas")
+   - `palette` — array de 3 hex mostrados como puntitos de color debajo del nombre,
+     representando la paleta específica de ESA demo (distinto del filtro general de
+     `color`, que es una categoría amplia)
+
+**El plan "Pablo & Lucila" es la invitación real de la boda del propio Pablo** (con
+Lucila), construida en otro proyecto (`boda-rosy-alpha.vercel.app`, repo GitHub
+`Pablo2205/Boda`). Se linkea con `?vip=true` a propósito — esa versión salta la sección de
+regalos (que muestra el alias/CBU real de Pablo) y va directo a nombre + WhatsApp, para no
+exponer datos bancarios reales a cualquiera navegando el catálogo.
+
+---
+
+## 6. Componentes clave
+
+| Componente | Qué hace |
+|---|---|
+| `Nav.jsx` | Header en 2 filas: logo centrado (fila 1, con carrito a la derecha y menú hamburguesa a la izquierda en mobile — ambos en columnas separadas de un grid `1fr auto 1fr`, NO position:absolute, para evitar que se superpongan) + links de navegación (fila 2, solo desktop) |
+| `PromoBar.jsx` | Banner fijo arriba de todo con el "30% OFF" — el mes se calcula solo, no hay que actualizarlo a mano |
+| `ErrorBoundary.jsx` | Si algo rompe en una sección, muestra un mensaje con botón en vez de pantalla en blanco. El error real queda en la consola del navegador (F12) |
+| `CartContext.jsx` | Estado del carrito compartido entre Catálogo/Carrito/Checkout. **Vive en memoria — se vacía si el usuario refresca la página.** Persistir en localStorage es un pendiente conocido |
+| `WhatsAppButton.jsx` / `WhatsAppIcon.jsx` | Componentes reutilizables para CUALQUIER CTA que lleve a WhatsApp — ver "regla de oro" en sección 2 |
+| `PriceTag.jsx` | Muestra precio tachado (+15%, cosmético) + precio real, usado en Planes/Catálogo/Carrito/Checkout |
+| `DemoPreviewModal.jsx` | Modal que muestra una demo (interna o externa) en un iframe dentro de un marco de iPhone plateado dibujado en CSS, sin sacar al usuario del catálogo. Se abre desde el botón "Ver demo" de cada tarjeta |
+| `Reveal.jsx` | Wrapper de animación de scroll-reveal (fade + slide), y `Stagger` para animar listas en cascada. Respeta `prefers-reduced-motion` |
+| `SocialIcon.jsx` | Logos de Instagram/Facebook/TikTok dibujados a mano en SVG (no existen en Material Symbols) |
+
+### Páginas (`src/pages/`)
+- **Home.jsx** — ensambla Hero, Categories, HowItWorks, Features, Plans, Faq, CtaFinal
+- **Catalog.jsx** — filtros (evento, color, plan) + grid de productos + `DemoPreviewModal`.
+  El filtrado usa `AnimatePresence`/`layout` de Framer Motion en vez de `whileInView`
+  (¡importante! `whileInView` con listas que cambian dinámicamente acumula
+  IntersectionObservers y degrada el rendimiento con el uso — este fue un bug real que se
+  encontró y corrigió)
+- **Cart.jsx** — carrito con cantidad editable, código de promo (10% opcional), precio
+  tachado por ítem y en el total
+- **Checkout.jsx** — muestra alias/CBU con botón de copiar, sin pasarela de pago. Al
+  confirmar, navega a `/completar-datos` pasando el carrito por route state
+- **Personalize.jsx** — formulario de 4 pasos (Datos → Evento → Contenido especial →
+  Comprobante), con campos condicionados por plan, sube el comprobante en base64 a Google
+  Sheets, stepper con verde de validación (WhatsApp green, no el verde institucional) para
+  pasos completados
+- **Contact.jsx** — info de contacto + redes sociales (debajo del título, no al final) +
+  formulario que arma un mensaje de WhatsApp prellenado
+
+---
+
+## 7. Sistema de demos de invitaciones (⭐ el más elaborado)
+
+Además del e-commerce, el proyecto incluye un catálogo creciente de **invitaciones reales,
+standalone**, construidas replicando referencias visuales (capturas de Pinterest, sitios
+existentes) que Pablo va mandando.
+
+### Flujo de trabajo para crear una demo nueva
+1. Pablo manda una referencia (captura, link, imagen)
+2. Se construye un HTML standalone (mobile-first, autocontenido, sin dependencias del
+   proyecto React) que replica el diseño — colores, tipografía, layout, iconografía
+3. Se muestra como preview (embebiendo las fotos en base64 temporalmente, porque el visor
+   de artefactos no puede leer archivos "al lado" del HTML — eso es solo para la vista
+   previa, la versión final usa rutas de archivo livianas, no base64)
+4. Se itera hasta que el diseño está aprobado
+5. Se pide la lista de fotos necesarias con nombres exactos (`foto-hero.jpg`, `foto-1.jpg`,
+   etc.)
+6. Una vez con las fotos reales, se integra a `public/demos/<slug>/` (HTML + fotos) y se
+   agrega como producto en `products` (site.js) con su `demoUrl`, `image`, `style` y
+   `palette`
+
+### Demos existentes
+
+| Carpeta | Estilo | Fotos que usa |
+|---|---|---|
+| `lucia-juan/` | Editorial, papel roto, verde/dorado, countdown en vivo | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg` |
+| `olivia-ralph/` | Azul marino/crema, con cortejo nupcial completo (padrinos, velo/cordón/vela — tradición católica), galería de 9 fotos armada con **una sola imagen** recortada por `background-position` en CSS | `foto-hero.jpg` a `foto-5.jpg` + `foto-galeria.jpg` |
+| `juan-ana/` | Vino/crema, juguetona, con foto de infancia como gancho principal, línea ondulada dibujada a mano conectando el cronograma | `foto-ninos.jpg`, `foto-1.jpg`, `foto-2.jpg`, `foto-lugar.jpg` |
+| `lorena-gustavo/` | Botánico, verde oliva/crema/dorado, fotos con desvanecido blanco (no papel roto — otra técnica visual) | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg` |
+
+**Cada demo tiene su propia paleta y su propia técnica visual** — no son variaciones de una
+misma plantilla, son diseños distintos hechos a medida por referencia. Técnicas reutilizadas
+entre demos: bordes de "papel roto" vía `clip-path: polygon()` con amplitud sutil (ojo:
+amplitudes grandes generan efecto sierra/montaña, no papel — hay que usar variación de
+±3-4% máximo, no ±10%), líneas onduladas a mano vía SVG `<path>` con curvas, ramilletes
+florales reutilizables vía `<symbol>` + `<use>`.
+
+### Convención de nombres de fotos
+Siempre `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg`, etc. — nunca nombres descriptivos
+largos, para que Pablo pueda simplemente arrastrar archivos con esos nombres exactos sin
+tener que editar código. Los `<img>` siempre llevan `onerror="this.style.display='none'"`
+para degradar con gracia (mostrando el degradé de color de fondo) si una foto todavía no
+fue subida.
+
+---
+
+## 8. Google Sheets + Apps Script (el "backend")
+
+Cuenta dedicada: **`veintidos.invitaciones@gmail.com`** (Gmail creado específicamente para
+esto — reemplazó a `hola@veintidos.ar`, que no era una cuenta de Google real y por lo tanto
+no podía ejecutar el script ni enviar mails).
+
+El script (código completo en `GOOGLE_APPS_SCRIPT.md`) hace, en un solo `doPost`:
+1. Agrega una fila a la planilla con todos los datos del pedido
+2. Si hay comprobante adjunto (base64), lo guarda en una carpeta de Drive y linkea la URL
+   en la planilla
+3. Manda un mail de confirmación al cliente (con firma de marca) — con `replyTo` apuntando
+   a la casilla de contacto real
+4. Manda un mail de notificación a Pablo avisando que entró un pedido nuevo, con todos los
+   datos
+
+### Gotchas ya resueltos (para no repetir)
+- **Guardar el código en Apps Script NO lo publica.** Hay que ir a Implementar → Gestionar
+  implementaciones → editar → "Nueva versión" → Implementar, cada vez. Si no, sigue
+  corriendo la versión vieja aunque el editor muestre el código nuevo.
+- **"Nueva implementación" ≠ "Gestionar implementaciones".** Crear una implementación nueva
+  desde cero genera una URL `/exec` completamente distinta — hay que actualizar
+  `GOOGLE_SHEETS_URL` en `site.js` si eso pasa. Para actualizar el código sin cambiar la
+  URL, siempre usar "Gestionar implementaciones" → editar → nueva versión.
+- El mail no llegaba en un momento porque `OWNER_EMAIL` tenía un typo (`.com.ar` en vez de
+  `.com`) — MailApp no tira error si el dominio no existe, simplemente no llega. Si un mail
+  "no llega" pero la ejecución en el log dice "Completada" sin error, sospechar de un typo
+  en la dirección antes que de un bug de código.
+
+---
+
+## 9. Deploy
+
+- **Hosting:** Vercel, deploy automático desde GitHub (push a la rama principal → deploy a
+  producción)
+- **Para probar cambios sin afectar producción:** crear una rama nueva y pushearla — Vercel
+  genera automáticamente una Preview Deployment con URL propia. También se puede usar
+  `vercel` (CLI, sin `--prod`) desde la carpeta del proyecto para un preview instantáneo.
+- **Importante:** reemplazar el repo completo al aplicar cambios grandes, no ir pegando
+  archivo por archivo — en este proyecto aparecieron más de una vez restos de código viejo
+  (integraciones abandonadas, archivos duplicados) por mezclar versiones a mano. Si hay que
+  aplicar pocos archivos sueltos está bien, pero ante la duda, reemplazar todo.
+
+---
+
+## 10. Pendientes conocidos (buscar `// TODO` en el código)
+
+- `BANK_DATA.alias` y `BANK_DATA.cbu` — todavía placeholders, Pablo los completa a mano
+- `FACEBOOK_URL` y `TIKTOK_URL` — URLs inventadas, no llevan a ningún lado real
+- Productos `id: 1` a `6` del catálogo — sin fotos reales ni demo, solo degradé de color
+- El carrito no persiste en `localStorage` (se pierde al refrescar)
+- La galería de fotos del formulario post-compra (`Personalize.jsx`) pide un link a Drive/
+  Google Fotos en vez de subir archivos directo — está bien para el volumen actual, pero es
+  candidato a mejorar si crece el negocio
+
+---
+
+## 11. Cómo pedirle cambios a este proyecto (para Claude Code)
+
+- Siempre correr `npm run build` antes de dar algo por terminado — varias veces apareció
+  contenido duplicado o desincronizado entre lo que el asistente tenía en memoria y lo que
+  realmente estaba en el repo. **Ver el archivo real antes de editarlo, no asumir el estado
+  por el historial de chat.**
+- Si se toca `site.js`, revisar que no haya bloques duplicados (pasó más de una vez:
+  variables con el mismo propósito pero nombres distintos, como `hola@veintidos.ar` vs.
+  `GAS_WEBHOOK_URL` conviviendo con `GOOGLE_SHEETS_URL`).
+- Cualquier cambio a `vercel.json` tiene que preservar la exclusión de `/demos/` (sección 4).
+- Las demos (`public/demos/`) son HTML autocontenido — no importan nada de React ni de
+  Tailwind, tienen su propio `<style>` inline. No intentar "integrarlas" al sistema de
+  componentes de React, son intencionalmente independientes.

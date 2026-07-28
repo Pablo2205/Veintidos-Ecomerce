@@ -4,15 +4,19 @@ import { waLink } from '../data/site.js'
 
 export default function CtaFinal() {
   return (
-    <section className="py-section bg-creamSurface/50 border-t border-b border-outlineVariant/20">
+    <section className="py-section bg-primary border-t border-primaryFixed/10">
       <div className="wrap text-center">
         <Reveal>
-          <h2 className="font-serif text-display-mobile md:text-headline-lg text-primary mb-6">
-            Tu evento merece una invitación <em className="italic font-normal">inolvidable</em>
+          <h2
+            className="font-serif italic font-normal text-primaryFixed mb-6"
+            style={{ fontSize: 'clamp(1.8rem, 4vw, 3.5rem)', lineHeight: 1.1 }}
+          >
+            Tu evento merece una invitación{' '}
+            <span className="text-promoGold">inolvidable</span>
           </h2>
-          <p className="text-onSurfaceVariant font-sans text-body-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-            Contanos qué vas a festejar y te respondemos en el día con demos, asesoramiento y precios. Sin
-            compromiso.
+          <p className="text-primaryFixed/45 font-sans text-base max-w-xl mx-auto mb-10 leading-relaxed">
+            Contanos qué vas a festejar y te respondemos en el día con demos,
+            asesoramiento y precios. Sin compromiso.
           </p>
           <WhatsAppButton
             href={waLink('Hola! Quiero mi invitación digital. Les cuento sobre mi evento:')}

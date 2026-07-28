@@ -1,39 +1,51 @@
 import { motion } from 'framer-motion'
 import Reveal, { Stagger, staggerItem } from './Reveal.jsx'
+import Icon from './Icon.jsx'
+import WhatsAppIcon from './WhatsAppIcon.jsx'
 import { steps } from '../data/site.js'
 
 export default function HowItWorks() {
   return (
-    <section className="py-section bg-creamSurface/30">
+    <section className="py-section bg-creamSurface/40">
       <div className="wrap">
         <Reveal className="text-center mb-16">
           <p className="font-sans text-label text-secondary uppercase tracking-widest mb-4">Paso a paso</p>
-          <h2 className="font-serif text-headline-lg text-primary">
-            ¿Cómo pedir <em className="italic font-normal">una invitación?</em>
+          <h2
+            className="font-serif italic font-normal text-primary"
+            style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
+          >
+            ¿Cómo pedís <span className="text-secondary">tu invitación?</span>
           </h2>
-          <div className="ornament mt-6 text-sm">
-            <span className="opacity-40">✦</span><span className="opacity-70">✦</span><span className="opacity-40">✦</span>
-          </div>
         </Reveal>
 
-        <Stagger className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4" gap={0.08}>
-          {steps.map(([, caption], i) => (
-            <motion.div
-              key={caption}
-              variants={staggerItem}
-              whileHover={{ y: -4 }}
-              className="rounded-2xl p-6 flex flex-col items-center text-center gap-4 border border-transparent hover:border-white/50 transition-colors"
-              style={{ backgroundColor: '#9F8471' }}
-            >
-              <div className="w-11 h-11 rounded-full border-2 border-white/85 flex items-center justify-center flex-shrink-0">
-                <span className="font-serif text-lg text-white">{i + 1}</span>
-              </div>
-              <p className="font-sans text-xs font-bold uppercase tracking-wide text-white leading-snug">
-                <span className="mr-1">→</span>
-                {caption}
-              </p>
-            </motion.div>
-          ))}
+        <Stagger className="grid grid-cols-2 sm:grid-cols-3 gap-4" gap={0.08}>
+          {steps.map(([icon, caption], i) => {
+            const isWa = icon === 'whatsapp'
+            return (
+              <motion.div
+                key={caption}
+                variants={staggerItem}
+                whileHover={{ y: -4 }}
+                className="rounded-2xl p-6 flex flex-col gap-5 bg-primaryFixed/70 border border-transparent hover:border-promoGold/30 hover:bg-primaryFixed transition-all duration-300 cursor-default"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="w-10 h-10 rounded-full bg-white/70 border border-white/80 flex items-center justify-center flex-shrink-0">
+                    {isWa ? (
+                      <WhatsAppIcon className="w-5 h-5 text-whatsapp" />
+                    ) : (
+                      <Icon name={icon} className="text-secondary" />
+                    )}
+                  </div>
+                  <span className="font-serif italic text-promoGold/50 leading-none select-none" style={{ fontSize: '2rem' }}>
+                    {i + 1}
+                  </span>
+                </div>
+                <p className="font-sans text-xs font-bold uppercase tracking-wide text-primary leading-snug">
+                  {caption}
+                </p>
+              </motion.div>
+            )
+          })}
         </Stagger>
       </div>
     </section>

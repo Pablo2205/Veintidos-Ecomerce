@@ -5,34 +5,35 @@ import { features } from '../data/site.js'
 
 export default function Features() {
   return (
-    <section className="py-section bg-surfaceContainerLowest">
+    <section className="py-section bg-primary">
       <div className="wrap">
-        <Reveal className="flex flex-col lg:flex-row justify-between items-end mb-16 gap-8">
+        <Reveal className="flex flex-col lg:flex-row justify-between items-end mb-14 gap-8">
           <div className="max-w-2xl">
-            <p className="font-sans text-label text-secondary uppercase tracking-widest mb-4">Todo en un solo link</p>
-            <h2 className="font-serif text-headline-lg text-primary">
-              ¿Qué puede incluir <em className="italic font-normal">tu invitación?</em>
+            <p className="font-sans text-label text-promoGold uppercase tracking-widest mb-4">Todo en un solo link</p>
+            <h2
+              className="font-serif italic font-normal text-primaryFixed leading-tight"
+              style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
+            >
+              ¿Qué puede incluir <span className="text-promoGold/80">tu invitación?</span>
             </h2>
           </div>
-          <p className="text-onSurfaceVariant font-sans text-sm">
+          <p className="text-primaryFixed/40 font-sans text-sm max-w-xs leading-relaxed flex-shrink-0">
             Estas son todas las funciones disponibles. Cuáles incluye la tuya depende del plan que elijas.
           </p>
         </Reveal>
 
-        <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map(([icon, title, desc], i) => (
+        <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {features.map(([icon, title, desc]) => (
             <motion.div
               key={title}
               variants={staggerItem}
-              className={`p-8 rounded-2xl flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-1 border border-transparent hover:border-promoGold/50 ${
-                i % 2 === 0 ? 'bg-creamSurface' : 'bg-secondaryFixed/30'
-              }`}
+              className="p-6 rounded-xl border border-white/5 bg-primaryContainer/50 hover:bg-primaryContainer hover:border-promoGold/20 transition-all duration-300 hover:-translate-y-1"
             >
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm ring-1 ring-transparent group-hover:ring-promoGold">
-                <Icon name={icon} className="text-secondary" />
+              <div className="w-11 h-11 rounded-full bg-promoGold/10 border border-promoGold/15 flex items-center justify-center mb-5 flex-shrink-0">
+                <Icon name={icon} className="text-promoGold" />
               </div>
-              <h3 className="font-serif text-headline-md text-primary mb-3">{title}</h3>
-              <p className="text-onSurfaceVariant font-sans text-sm">{desc}</p>
+              <h3 className="font-serif italic font-normal text-primaryFixed text-base mb-2">{title}</h3>
+              <p className="text-primaryFixed/40 font-sans text-xs leading-relaxed">{desc}</p>
             </motion.div>
           ))}
         </Stagger>

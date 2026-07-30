@@ -29,10 +29,12 @@ export default function Features() {
               variants={staggerItem}
               className="p-6 rounded-xl border border-white/5 bg-primaryContainer/50 hover:bg-primaryContainer hover:border-promoGold/20 transition-all duration-300 hover:-translate-y-1"
             >
-              <div className="w-11 h-11 rounded-full bg-promoGold/10 border border-promoGold/15 flex items-center justify-center mb-5 flex-shrink-0">
-                <Icon name={icon} className="text-promoGold" />
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-11 h-11 rounded-full bg-promoGold/10 border border-promoGold/15 flex items-center justify-center flex-shrink-0">
+                  <Icon name={icon} className="text-promoGold" />
+                </div>
+                <h3 className="font-serif italic font-normal text-primaryFixed text-base">{title}</h3>
               </div>
-              <h3 className="font-serif italic font-normal text-primaryFixed text-base mb-2">{title}</h3>
               <p className="text-primaryFixed/40 font-sans text-xs leading-relaxed">{desc}</p>
             </motion.div>
           ))}

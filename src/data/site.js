@@ -219,18 +219,11 @@ export const faqs = [
   },
 ]
 
-// --- Catálogo — productos de ejemplo ---------------------------------
-// Reemplazar por tus diseños reales. "category" tiene que ser "boda" o
-// "xv-anos" (son los únicos eventos habilitados, ver `categories` arriba).
-// "color" es la clave de `productColors` de arriba — placeholder por ahora,
-// se van a redefinir cuando llegue el detalle real de cada demo.
+// --- Catálogo — solo productos con demo real disponible ---------------
+// "category" tiene que ser "boda" o "xv-anos" (son los únicos eventos
+// habilitados, ver `categories` arriba). "color" es la clave de
+// `productColors` de arriba.
 export const products = [
-  { id: 1, name: 'Invitación Boda — Elegante', category: 'boda', plan: 'Standard', price: 78000, color: 'verde', gradient: 'from-[#8FB996] to-[#3C5F41]' },
-  { id: 2, name: 'Invitación Boda — Campo', category: 'boda', plan: 'Essential', price: 56000, color: 'marron', gradient: 'from-[#C9BE9A] to-[#8A7B4F]' },
-  { id: 3, name: 'XV Años — Boliche Disco', category: 'xv-anos', plan: 'Premium', price: 88000, color: 'rosa', gradient: 'from-[#3B2F55] to-[#1B1230]', badge: 'Nuevo' },
-  { id: 4, name: 'Boda — Tela Minimalista', category: 'boda', plan: 'Standard', price: 78000, color: 'beige', gradient: 'from-[#D9D4C4] to-[#A69C82]' },
-  { id: 5, name: 'XV Años — Noche Esmeralda', category: 'xv-anos', plan: 'Standard', price: 78000, color: 'verde', gradient: 'from-[#1F3D2C] to-[#0D1F16]' },
-  { id: 6, name: 'Invitación Boda — Fotografía', category: 'boda', plan: 'Premium', price: 88000, color: 'marron', gradient: 'from-[#4A2F1E] to-[#2A1810]' },
   {
     id: 7,
     name: 'Invitación Boda — Pablo & Lucila',
@@ -251,8 +244,8 @@ export const products = [
     color: 'marron',
     gradient: 'from-[#C79A6B] to-[#8A7A5E]',
     badge: 'Nuevo',
-    demoUrl: '/demos/lucia-juan/',
-    image: '/demos/lucia-juan/foto-hero.jpg',
+    demoUrl: '/demos/boda/lucia-juan/',
+    image: '/demos/boda/lucia-juan/foto-hero.jpg',
     style: 'Editorial — papel roto',
     palette: ['#F8F3E9', '#748158', '#C79A6B'],
   },
@@ -265,8 +258,8 @@ export const products = [
     color: 'azul',
     gradient: 'from-[#5B7FA6] to-[#20375C]',
     badge: 'Nuevo',
-    demoUrl: '/demos/olivia-ralph/',
-    image: '/demos/olivia-ralph/foto-hero.jpg',
+    demoUrl: '/demos/boda/olivia-ralph/',
+    image: '/demos/boda/olivia-ralph/foto-hero.jpg',
     style: 'Clásico — con cortejo',
     palette: ['#F7F3E9', '#5B7FA6', '#20375C'],
   },
@@ -279,8 +272,8 @@ export const products = [
     color: 'rojo',
     gradient: 'from-[#6E1B26] to-[#4E1119]',
     badge: 'Nuevo',
-    demoUrl: '/demos/juan-ana/',
-    image: '/demos/juan-ana/foto-ninos.jpg',
+    demoUrl: '/demos/boda/juan-ana/',
+    image: '/demos/boda/juan-ana/foto-ninos.jpg',
     style: 'Juguetón — foto de infancia',
     palette: ['#F5EFE3', '#6E1B26', '#3A2A2A'],
   },
@@ -293,8 +286,8 @@ export const products = [
     color: 'verde',
     gradient: 'from-[#8FA07A] to-[#3F4A34]',
     badge: 'Nuevo',
-    demoUrl: '/demos/lorena-gustavo/',
-    image: '/demos/lorena-gustavo/foto-hero.jpg',
+    demoUrl: '/demos/boda/lorena-gustavo/',
+    image: '/demos/boda/lorena-gustavo/foto-hero.jpg',
     style: 'Botánico — fotos difuminadas',
     palette: ['#FAF7F0', '#3F4A34', '#C6A15B'],
   },

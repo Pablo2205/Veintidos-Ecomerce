@@ -85,13 +85,13 @@ export default function Hero() {
             ['QR listo', 'Para imprimir'],
           ].map(([label, value]) => (
             <div key={label} className="text-center px-4">
+              <p className="font-sans text-[10px] uppercase tracking-widest text-primaryFixed/45 mb-0.5">{label}</p>
               <p
-                className="font-serif italic font-normal text-primaryFixed leading-tight mb-0.5"
+                className="font-serif italic font-normal text-primaryFixed leading-tight"
                 style={{ fontSize: 'clamp(1rem, 1.8vw, 1.25rem)' }}
               >
                 {value}
               </p>
-              <p className="font-sans text-[10px] uppercase tracking-widest text-primaryFixed/45">{label}</p>
             </div>
           ))}
         </div>

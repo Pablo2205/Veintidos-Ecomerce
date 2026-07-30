@@ -2,7 +2,6 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { waLink } from '../data/site.js'
 import WhatsAppButton from './WhatsAppButton.jsx'
-import demoBoda from '../assets/demo-boda.png'
 
 const item = {
   hidden: { opacity: 0, y: 26 },
@@ -64,7 +63,7 @@ export default function Hero() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
           >
             <div className="flex gap-6 md:gap-8 items-start">
-              <IPhoneMock rotate="-6deg" image={demoBoda} />
+              <IPhoneMock rotate="-6deg" image="/demos/boda/olivia-ralph/foto-hero.jpg" />
               <IPhoneMock rotate="6deg" marginTop="mt-14" image="/demos/boda/lucia-juan/foto-hero.jpg" />
             </div>
           </motion.div>

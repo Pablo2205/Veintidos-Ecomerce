@@ -1,5 +1,3 @@
-import demoBodaPabloLucila from '../assets/demo-boda.png'
-
 export const WA_NUMBER = '5491139126543'
 export const waLink = (msg) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`
 export const CONTACT_EMAIL = 'veintidos.invitaciones@gmail.com'
@@ -236,7 +234,7 @@ export const products = [
     gradient: 'from-[#3C5F41] to-[#1F2E1C]',
     badge: 'Demo real',
     demoUrl: 'https://boda-rosy-alpha.vercel.app/?vip=true',
-    image: demoBodaPabloLucila,
+    image: '/demos/boda/pablo-lucila/foto-hero.jpg',
   },
   {
     id: 8,

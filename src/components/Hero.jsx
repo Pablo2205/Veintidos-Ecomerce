@@ -65,7 +65,7 @@ export default function Hero() {
           >
             <div className="flex gap-6 md:gap-8 items-start">
               <IPhoneMock rotate="-6deg" image={demoBoda} />
-              <IPhoneMock rotate="6deg" marginTop="mt-14" label="Mis XV" sub="Valentina" gold />
+              <IPhoneMock rotate="6deg" marginTop="mt-14" image="/demos/boda/lucia-juan/foto-hero.jpg" />
             </div>
           </motion.div>
         </div>
@@ -100,7 +100,7 @@ export default function Hero() {
   )
 }
 
-function IPhoneMock({ rotate, marginTop = '', label, sub, gold, image }) {
+function IPhoneMock({ rotate, marginTop = '', image }) {
   return (
     <div
       style={{ transform: `rotate(${rotate})` }}
@@ -109,22 +109,7 @@ function IPhoneMock({ rotate, marginTop = '', label, sub, gold, image }) {
       <div className="absolute inset-0 rounded-[2.4rem] bg-gradient-to-br from-[#e7e9ec] via-[#c9cdd3] to-[#9ea3aa] shadow-xl" />
       <div className="absolute inset-[3px] rounded-[2.25rem] bg-black" />
       <div className="absolute inset-[7px] rounded-[2rem] overflow-hidden bg-black">
-        {image ? (
-          <img src={image} alt="Demo invitación de boda" className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-[#1F2E1C] to-[#3B4A2F] flex flex-col items-center justify-center text-center px-4 gap-2">
-            <span className={`text-[9px] tracking-[0.3em] uppercase ${gold ? 'text-promoGold' : 'text-white/70'}`}>
-              ✦ ✦ ✦
-            </span>
-            <p className={`font-serif italic text-base leading-tight ${gold ? 'text-secondaryFixed' : 'text-white'}`}>
-              {label}
-            </p>
-            <p className="font-serif text-white text-xs">{sub}</p>
-            <div className="mt-1 flex gap-2 text-[8px] text-white/80 font-sans">
-              <span>—d</span><span>—h</span><span>—m</span>
-            </div>
-          </div>
-        )}
+        <img src={image} alt="Demo invitación de boda" className="w-full h-full object-cover" />
         <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[34%] h-[18px] bg-black rounded-full z-10" />
       </div>
       <div className="absolute -left-[2px] top-[26%] w-[3px] h-[22px] bg-[#9ea3aa] rounded-l" />

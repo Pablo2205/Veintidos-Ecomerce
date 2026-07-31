@@ -12,7 +12,7 @@ import {
   planFeatureFlags,
 } from '../data/site.js'
 
-const stepDefs = [
+const baseStepDefs = [
   { key: 'hosts', label: 'Datos', icon: 'person' },
   { key: 'event', label: 'Evento', icon: 'event' },
   { key: 'extras', label: 'Contenido', icon: 'auto_awesome' },
@@ -33,6 +33,11 @@ export default function Personalize() {
   const orderRef = location.state?.orderRef || ''
   const cartSummary = location.state?.cartSummary || []
   const planFromCart = cartSummary[0]?.plan || ''
+  const paymentMethod = location.state?.paymentMethod || 'transferencia'
+  const paidWithMp = paymentMethod === 'mercadopago'
+  // Mercado Pago confirma el pago automáticamente del lado de Mercado Pago —
+  // no hace falta pedir comprobante manual como con la transferencia directa.
+  const stepDefs = paidWithMp ? baseStepDefs.filter((s) => s.key !== 'proof') : baseStepDefs
 
   const [step, setStep] = useState(0)
   const [data, setData] = useState(() => ({
@@ -76,13 +81,13 @@ export default function Personalize() {
     setFile(f)
   }
 
-  const summaryMsg = () => `Hola! Ya transferí y quiero confirmar mi invitación.
+  const summaryMsg = () => `Hola! ${paidWithMp ? 'Ya pagué con Mercado Pago' : 'Ya transferí'} y quiero confirmar mi invitación.
 Referencia: ${orderRef || '-'}
 Plan: ${data.plan}
 Anfitriones: ${data.names || '-'}
 Evento: ${data.eventType} — ${data.date || 'fecha a definir'}
 Lugar: ${data.venue || '-'}
-${file ? 'Adjunto el comprobante en este mismo chat.' : 'Te mando el comprobante a continuación.'}`
+${paidWithMp ? '' : file ? 'Adjunto el comprobante en este mismo chat.' : 'Te mando el comprobante a continuación.'}`
 
   const submitToSheets = async () => {
     if (!GOOGLE_SHEETS_URL || GOOGLE_SHEETS_URL.includes('TU_SCRIPT_ID_ACA')) {
@@ -95,6 +100,8 @@ ${file ? 'Adjunto el comprobante en este mismo chat.' : 'Te mando el comprobante
       const comprobanteBase64 = file ? await fileToBase64(file) : null
       const payload = {
         orderRef,
+        paymentMethod,
+        totalPaid: location.state?.totalPaid ?? '',
         cartSummary: cartSummary.map((i) => ({ name: i.name, plan: i.plan, price: i.price, qty: i.qty || 1 })),
         ...data,
         comprobanteNombre: file?.name || '',
@@ -137,7 +144,9 @@ ${file ? 'Adjunto el comprobante en este mismo chat.' : 'Te mando el comprobante
         </h1>
         <p className="font-sans text-onSurfaceVariant italic">
           {orderRef
-            ? `Pedido ${orderRef} — cargá los datos de tu evento y subí el comprobante de la transferencia.`
+            ? paidWithMp
+              ? `Pedido ${orderRef} — cargá los datos de tu evento para armar tu invitación.`
+              : `Pedido ${orderRef} — cargá los datos de tu evento y subí el comprobante de la transferencia.`
             : 'Cargá los datos de tu evento. Con esta información armamos tu invitación a medida.'}
         </p>
         <div className="ornament mt-6 text-lg">

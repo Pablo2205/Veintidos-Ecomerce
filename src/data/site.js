@@ -19,6 +19,23 @@ export const BANK_DATA = {
   titular: 'Pablo Daniel Coria',
 }
 
+// --- Datos de pago (Mercado Pago) ---------------------------------------
+// Links de pago fijos generados desde el panel de Mercado Pago, uno por
+// plan (cada link tiene un monto fijo, no soporta cantidad ni combinar
+// planes). El checkout solo ofrece Mercado Pago cuando el carrito tiene
+// un único ítem con cantidad 1 — ver `Checkout.jsx`.
+export const MP_LINKS = {
+  Essential: 'https://mpago.la/1tCkbgb',
+  Standard: 'https://mpago.la/2YhQAwA',
+  Premium: 'https://mpago.la/1JqVsJL',
+}
+
+// La transferencia bancaria directa tiene un recargo respecto del precio de
+// Mercado Pago (que ya descuenta la comisión de la plataforma).
+export const TRANSFER_SURCHARGE_PERCENT = 10
+export const transferPrice = (price) =>
+  Math.round((price * (1 + TRANSFER_SURCHARGE_PERCENT / 100)) / 10) * 10
+
 // --- Google Sheets (formulario post-compra) ---------------------------
 // URL del Web App de Google Apps Script (Implementar > Nueva implementación >
 // Aplicación web, acceso "Cualquier usuario"). Ver GOOGLE_APPS_SCRIPT.md en

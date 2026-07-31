@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import { useCart } from '../context/CartContext.jsx'
-import { BANK_DATA, originalPrice } from '../data/site.js'
+import { BANK_DATA, MP_LINKS, TRANSFER_SURCHARGE_PERCENT, transferPrice, originalPrice } from '../data/site.js'
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 
@@ -39,6 +39,8 @@ function CopyField({ label, value }) {
 export default function Checkout() {
   const { items, subtotal } = useCart()
   const navigate = useNavigate()
+  const [method, setMethod] = useState('mercadopago')
+  const [mpConfirming, setMpConfirming] = useState(false)
 
   if (items.length === 0) {
     return (
@@ -53,8 +55,22 @@ export default function Checkout() {
 
   const orderRef = `VD-${Date.now().toString().slice(-6)}`
 
-  const handleContinue = () => {
-    navigate('/completar-datos', { state: { orderRef, cartSummary: items } })
+  // Los links de pago de Mercado Pago son de monto fijo por plan: no soportan
+  // cantidad ni combinar varios ítems. Solo se ofrecen cuando el carrito trae
+  // un único plan en cantidad 1 — para cualquier otro caso, solo transferencia.
+  const singleItem = items.length === 1 ? items[0] : null
+  const mpEligible = Boolean(singleItem && (singleItem.qty || 1) === 1)
+  const mpLink = mpEligible ? MP_LINKS[singleItem.plan] : null
+  const activeMethod = mpEligible ? method : 'transferencia'
+
+  const transferTotal = transferPrice(subtotal)
+
+  const goToForm = (paymentMethod, totalPaid) =>
+    navigate('/completar-datos', { state: { orderRef, cartSummary: items, paymentMethod, totalPaid } })
+
+  const handleMpPay = () => {
+    window.open(mpLink, '_blank', 'noopener,noreferrer')
+    setMpConfirming(true)
   }
 
   return (
@@ -64,44 +80,116 @@ export default function Checkout() {
           <Reveal>
             <h1 className="font-serif text-display-mobile md:text-display text-primary">Finalizar compra</h1>
             <p className="mt-4 text-onSurfaceVariant font-sans text-body-lg max-w-lg">
-              Transferí el total a los datos de abajo. Una vez hecho, continuá para cargar los datos de tu evento y
-              adjuntar el comprobante.
+              Elegí cómo preferís pagar tu invitación.
             </p>
             <div className="ornament my-8 text-sm">
               <span>✦</span><span>✦</span><span>✦</span>
             </div>
           </Reveal>
 
-          <Reveal delay={0.05}>
-            <section className="space-y-6">
-              <h2 className="font-serif text-headline-md text-primary flex items-center gap-3">
-                <Icon name="account_balance" /> Datos para transferir
-              </h2>
-              <div className="space-y-3">
-                <CopyField label="Alias" value={BANK_DATA.alias} />
-                <CopyField label="CBU" value={BANK_DATA.cbu} />
-                <CopyField label="Titular" value={BANK_DATA.titular} />
+          {mpEligible && (
+            <Reveal delay={0.02}>
+              <div className="inline-flex bg-creamSurface border border-outlineVariant/40 rounded-full p-1 gap-1">
+                <button
+                  onClick={() => setMethod('mercadopago')}
+                  className={`px-6 py-2.5 rounded-full font-sans text-label transition-colors ${
+                    activeMethod === 'mercadopago' ? 'bg-primary text-onPrimary' : 'text-onSurfaceVariant hover:text-primary'
+                  }`}
+                >
+                  Mercado Pago
+                </button>
+                <button
+                  onClick={() => setMethod('transferencia')}
+                  className={`px-6 py-2.5 rounded-full font-sans text-label transition-colors ${
+                    activeMethod === 'transferencia' ? 'bg-primary text-onPrimary' : 'text-onSurfaceVariant hover:text-primary'
+                  }`}
+                >
+                  Transferencia
+                </button>
               </div>
+            </Reveal>
+          )}
+
+          {!mpEligible && (
+            <Reveal delay={0.02}>
               <div className="flex items-start gap-3 bg-creamSurface border border-secondaryFixed rounded-xl p-5">
                 <Icon name="info" className="text-secondary flex-shrink-0 mt-0.5" />
                 <p className="font-sans text-sm text-onSurfaceVariant">
-                  Después de transferir, tocá <strong>"Ya transferí, continuar"</strong>. En la siguiente pantalla
-                  cargás los datos de tu evento y subís una foto o captura del comprobante. Validamos el pago y te
-                  confirmamos por WhatsApp en el día.
+                  Mercado Pago solo está disponible para un plan por pedido. Para más de una invitación o cantidad,
+                  completá la compra por transferencia o escribinos por WhatsApp.
                 </p>
               </div>
-            </section>
-          </Reveal>
+            </Reveal>
+          )}
 
-          <Reveal delay={0.1}>
-            <motion.button
-              whileTap={{ scale: 0.97 }}
-              onClick={handleContinue}
-              className="w-full md:w-auto btn-primary px-10 py-4 flex items-center justify-center gap-2"
-            >
-              Ya transferí, continuar <Icon name="arrow_forward" />
-            </motion.button>
-          </Reveal>
+          {activeMethod === 'mercadopago' ? (
+            <Reveal delay={0.05}>
+              <section className="space-y-6">
+                <h2 className="font-serif text-headline-md text-primary flex items-center gap-3">
+                  <Icon name="credit_card" /> Pagar con Mercado Pago
+                </h2>
+                <div className="flex items-start gap-3 bg-creamSurface border border-secondaryFixed rounded-xl p-5">
+                  <Icon name="info" className="text-secondary flex-shrink-0 mt-0.5" />
+                  <p className="font-sans text-sm text-onSurfaceVariant">
+                    Te vamos a redirigir a Mercado Pago para completar el pago del plan{' '}
+                    <strong className="text-primary">{singleItem.plan}</strong>. Cuando termines, volvé a esta
+                    pestaña y tocá <strong>"Ya pagué, continuar"</strong> para cargar los datos de tu evento.
+                  </p>
+                </div>
+
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleMpPay}
+                  className="w-full md:w-auto btn-primary px-10 py-4 flex items-center justify-center gap-2"
+                >
+                  Pagar con Mercado Pago <Icon name="open_in_new" />
+                </motion.button>
+
+                {mpConfirming && (
+                  <Reveal>
+                    <motion.button
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => goToForm('mercadopago', subtotal)}
+                      className="w-full md:w-auto border-2 border-primary text-primary font-sans font-bold rounded-full px-10 py-4 flex items-center justify-center gap-2 hover:bg-primary hover:text-onPrimary transition-colors"
+                    >
+                      Ya pagué, continuar <Icon name="arrow_forward" />
+                    </motion.button>
+                  </Reveal>
+                )}
+              </section>
+            </Reveal>
+          ) : (
+            <Reveal delay={0.05}>
+              <section className="space-y-6">
+                <h2 className="font-serif text-headline-md text-primary flex items-center gap-3">
+                  <Icon name="account_balance" /> Datos para transferir
+                </h2>
+                <div className="space-y-3">
+                  <CopyField label="Alias" value={BANK_DATA.alias} />
+                  <CopyField label="CBU" value={BANK_DATA.cbu} />
+                  <CopyField label="Titular" value={BANK_DATA.titular} />
+                </div>
+                <div className="flex items-start gap-3 bg-creamSurface border border-secondaryFixed rounded-xl p-5">
+                  <Icon name="info" className="text-secondary flex-shrink-0 mt-0.5" />
+                  <p className="font-sans text-sm text-onSurfaceVariant">
+                    La transferencia directa tiene un recargo del {TRANSFER_SURCHARGE_PERCENT}% sobre el precio de
+                    Mercado Pago (ya reflejado en el total). Después de transferir, tocá{' '}
+                    <strong>"Ya transferí, continuar"</strong>. En la siguiente pantalla cargás los datos de tu
+                    evento y subís una foto o captura del comprobante. Validamos el pago y te confirmamos por
+                    WhatsApp en el día.
+                  </p>
+                </div>
+
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => goToForm('transferencia', transferTotal)}
+                  className="w-full md:w-auto btn-primary px-10 py-4 flex items-center justify-center gap-2"
+                >
+                  Ya transferí, continuar <Icon name="arrow_forward" />
+                </motion.button>
+              </section>
+            </Reveal>
+          )}
         </div>
 
         {/* Resumen */}
@@ -136,12 +224,16 @@ export default function Checkout() {
               </div>
 
               <div className="pt-6 border-t border-outlineVariant/30 flex justify-between items-end">
-                <p className="font-bold text-primary font-sans">Total a transferir</p>
+                <p className="font-bold text-primary font-sans">
+                  {activeMethod === 'mercadopago' ? 'Total a pagar' : 'Total a transferir'}
+                </p>
                 <div className="text-right">
                   <p className="text-xs font-sans line-through text-onSurfaceVariant/50">
                     {money(items.reduce((sum, i) => sum + originalPrice(i.price) * (i.qty || 1), 0))}
                   </p>
-                  <p className="font-serif text-headline-lg text-primary">{money(subtotal)}</p>
+                  <p className="font-serif text-headline-lg text-primary">
+                    {money(activeMethod === 'mercadopago' ? subtotal : transferTotal)}
+                  </p>
                 </div>
               </div>
 

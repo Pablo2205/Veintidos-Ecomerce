@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect, useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
@@ -45,7 +46,14 @@ function ProductCover({ image, gradient, name }) {
 }
 
 export default function Catalog() {
-  const [activeCats, setActiveCats] = useState(['boda', 'xv-anos'])
+  const [searchParams] = useSearchParams()
+  // Si se llegó desde "Ver demos" de una categoría puntual en la Home
+  // (?evento=boda o ?evento=xv-anos), arrancar el filtro solo con esa
+  // categoría marcada. Si no, mostrar todo como siempre.
+  const [activeCats, setActiveCats] = useState(() => {
+    const evento = searchParams.get('evento')
+    return evento === 'boda' || evento === 'xv-anos' ? [evento] : ['boda', 'xv-anos']
+  })
   const [activeColors, setActiveColors] = useState([])
   const [activePlan, setActivePlan] = useState('Todos')
   const { add } = useCart()

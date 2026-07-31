@@ -64,7 +64,7 @@ function CategoryPanel({ category: c, gradient }) {
             Consultar
           </WhatsAppButton>
           <Link
-            to="/catalogo"
+            to={`/catalogo?evento=${c.slug}`}
             className="border border-white/35 text-white py-3 px-6 rounded-full font-sans text-xs font-semibold tracking-wide hover:bg-white/10 hover:border-white/60 transition-all text-center"
           >
             Ver demos

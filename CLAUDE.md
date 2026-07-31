@@ -301,11 +301,15 @@ existentes) que Pablo va mandando.
 | `valeria-eugenio/` | Dorado/oliva, hojas de rama dibujadas a mano, fecha grande de fondo, programa del día bilingüe (estilo minimal) | `foto-1.jpg`, `foto-2.jpg` |
 | `camila-sebastian/` | Marrón/crema — hero con sobre (envelope reveal en CSS), monograma, reproductor de música, calendario JS, dress code por género, regalo con alias copiable, aviso "sin niños" | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg`, `foto-3.jpg`, `cancion.mp3` |
 | `alexandra-nicolas/` | Verde oliva/crema — secciones con borde ondulado (SVG wave), "nuestra historia", foto hero con botón de play decorativo | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg`, `foto-3.jpg` |
+| `sofia-tomas/` | Terracota/crema — plan **Essential**: solo hero+countdown, ceremonia/recepción con mapa, RSVP por WhatsApp y regalos. Sin dress code, música ni galería (adrede, para reflejar el plan) | `foto-hero.jpg` |
+| `valentina-ignacio/` | Azul grisáceo/crema — plan **Standard**: Essential + música de fondo, galería, dress code, tips para invitados y "agendar la fecha" (.ics) | `foto-hero.jpg`, `foto-1.jpg` a `foto-4.jpg`, `cancion.mp3` |
 
-Estas 4 últimas replican 4 referencias de Pinterest (`azul clasico.jpg`, `dorado.jpg`,
+Estas 6 últimas replican 4 referencias de Pinterest (`azul clasico.jpg`, `dorado.jpg`,
 `marron.jpg`, `verde.jpg`) igual que se hizo con las de XV — mismo criterio: paleta,
 tipografía y secciones fieles a la referencia, nombres de pareja ficticios, fotos en
-placeholder con fallback a degradé.
+placeholder con fallback a degradé. `sofia-tomas` y `valentina-ignacio` no vienen de una
+referencia de Pinterest — se armaron para mostrar en el catálogo cómo se ve cada plan
+(antes todo el catálogo era Premium), reusando la paleta/técnica ya establecida.
 
 Todas las de arriba viven en `public/demos/boda/`. Las de XV años viven en `public/demos/xv/`,
 armadas replicando 5 referencias de Pinterest (una por paleta de color):
@@ -317,11 +321,25 @@ armadas replicando 5 referencias de Pinterest (una por paleta de color):
 | `mariana-lila/` | Floral lavanda, fecha límite de confirmación, "lluvia de sobres" como sugerencia de regalo | `foto-hero.jpg`, `foto-1.jpg`, `cancion.mp3` |
 | `ximena-rosa/` | Elegante rosa/dorado, arco floral en el hero, calendario del mes generado por JS con el día del evento marcado | `foto-hero.jpg` a `foto-3.jpg`, `cancion.mp3` |
 | `marianel-rosa-marron/` | Cream/marrón con rosas, papel roto, padrinos, confirmación por WhatsApp | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg` |
+| `delfina-esencial/` | Coral/crema — plan **Essential**: solo hero+countdown, salón con mapa, RSVP y regalo. Sin dress code, música ni galería | `foto-hero.jpg` |
+| `camila-xv/` | Menta/crema — plan **Standard**: Essential + música de fondo, galería, dress code, tips y "agendar la fecha" (.ics) | `foto-hero.jpg`, `foto-1.jpg` a `foto-4.jpg`, `cancion.mp3` |
 
-Todas están registradas en `products` (`site.js`, ids 12-16, `category: 'xv-anos'`, plan
-Premium) — aparecen en el catálogo filtrando por "Cumple XV". El reproductor de música
-(`adriana-celeste`, `mariana-lila`, `ximena-rosa`) y el calendario dinámico (`ximena-rosa`)
-son técnicas nuevas, no estaban en las demos de boda — quedan disponibles para reusar.
+Todas están registradas en `products` (`site.js`, ids 12-16 y 23-24, `category: 'xv-anos'`)
+— aparecen en el catálogo filtrando por "Cumple XV". El reproductor de música
+(`adriana-celeste`, `mariana-lila`, `ximena-rosa`, `camila-xv`, `valentina-ignacio`) y el
+calendario dinámico (`ximena-rosa`) son técnicas nuevas, no estaban en las demos de boda
+originales — quedan disponibles para reusar.
+
+### Catálogo por plan
+
+Antes de esta ronda, **todo** el catálogo (14 demos) era plan Premium — no había forma de
+mostrarle a un cliente cómo se veía Essential o Standard. Se agregaron 4 demos puntuales
+para cubrir eso (`sofia-tomas` y `delfina-esencial` en Essential, `valentina-ignacio` y
+`camila-xv` en Standard), armadas quitando/agregando secciones según `planFeatureFlags`
+en `site.js` y lo documentado en `docs/PLANES-Y-FEATURES.md`. El resto de los productos
+(ids 7-11, 17-20 boda; 12-16 xv) siguen siendo Premium — si se agregan clientes reales con
+otros planes, más adelante conviene sumar más ejemplos de Essential/Standard para variar
+la paleta que ve cada visitante del catálogo.
 
 **Cada demo tiene su propia paleta y su propia técnica visual** — no son variaciones de una
 misma plantilla, son diseños distintos hechos a medida por referencia. Técnicas reutilizadas

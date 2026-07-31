@@ -73,7 +73,7 @@ export default function Cart() {
                           <span className="text-sm font-sans line-through text-onSurfaceVariant/70">
                             {money(originalPrice(item.price) * qty)}
                           </span>
-                          <span className="bg-error text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+                          <span className="text-error text-xs font-bold">
                             -{savingsPercent(item.price)}%
                           </span>
                         </span>
@@ -161,11 +161,9 @@ export default function Cart() {
               </div>
 
               <div className="flex items-center gap-2 bg-error/10 border border-error/30 rounded-xl px-4 py-3">
-                <span className="bg-error text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">
-                  -{TRANSFER_DISCOUNT_PERCENT}%
-                </span>
+                <Icon name="local_offer" className="text-error flex-shrink-0" />
                 <p className="font-sans text-xs text-onSurfaceVariant">
-                  Pagando por transferencia bancaria obtenés un {TRANSFER_DISCOUNT_PERCENT}% de descuento adicional.
+                  Pagando por transferencia bancaria obtenés <strong className="text-error">-{TRANSFER_DISCOUNT_PERCENT}%</strong> de descuento adicional.
                 </p>
               </div>
 

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alexandra & Nicolás — Nos casamos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FAF8F2;
+    --ink:#2E3323;
+    --ink-soft:#767A63;
+    --olive-deep:#4B5138;
+    --olive:#6B7350;
+    --olive-light:#DCE2CB;
+    --line:#D9DCC7;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .page{max-width:480px;margin:0 auto;overflow:hidden;position:relative}
+  .serif{font-family:'Playfair Display',serif}
+  .cormorant-italic{font-family:'Cormorant Garamond',serif;font-style:italic}
+  .eyebrow{font-size:.66rem;letter-spacing:.32em;text-transform:uppercase;font-weight:500}
+
+  .progress{position:fixed;top:0;left:0;height:2px;background:var(--olive-deep);z-index:50;width:0%;transition:width .1s linear}
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.is-visible{opacity:1;transform:translateY(0)}
+  @media (prefers-reduced-motion: reduce){.reveal{transition:none;opacity:1;transform:none}}
+
+  .dark{background:var(--olive-deep);color:#EFEFE2}
+  .dark .eyebrow{color:#C7CDB0}
+  section{padding:38px 26px;position:relative}
+  .center{text-align:center}
+
+  .wave{display:block;width:100%;height:36px;margin-top:-1px}
+
+  .names{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:2rem;line-height:1.15}
+  .hero-sub{font-size:.8rem;color:var(--ink-soft);margin-top:8px;letter-spacing:.05em}
+
+  .photo{position:relative;width:100%;border-radius:0;overflow:hidden;background:linear-gradient(160deg,var(--olive),var(--olive-deep))}
+  .photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .photo.hero-photo{height:340px;border-radius:0 0 32px 32px}
+  .photo.rounded{height:220px;border-radius:14px;margin-top:18px}
+  .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:rgba(0,0,0,.15)}
+  .play-btn{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:var(--olive-deep)}
+  .play-caption{color:#fff;font-size:.72rem;max-width:220px;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+
+  h4.h-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.5rem;color:var(--ink)}
+  .dark h4.h-title{color:#F3F3E8}
+  .msg{color:var(--ink-soft);font-size:.88rem;line-height:1.75;max-width:300px;margin:14px auto 0}
+  .dark .msg{color:#D3D8C1}
+
+  .addr{color:var(--ink-soft);font-size:.86rem;margin-top:6px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--olive-deep);color:#fff;text-decoration:none;padding:12px 24px;border-radius:2px;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;font-family:'Jost',sans-serif;margin-top:16px}
+  .dark .btn{background:#F3F3E8;color:var(--olive-deep)}
+  .btn.whatsapp{background:#25D366;color:#fff;border-radius:999px;letter-spacing:.03em;text-transform:none}
+
+  .divider{width:36px;height:1px;background:var(--ink-soft);margin:18px auto}
+
+  .countdown-label{font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);text-align:center;margin-top:22px}
+  .countdown{display:flex;justify-content:center;gap:0;margin-top:12px;border-top:1px solid var(--line);padding-top:14px}
+  .cd-unit{flex:1;text-align:center;border-right:1px solid var(--line)}
+  .cd-unit:last-child{border-right:none}
+  .cd-num{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--ink)}
+  .cd-num.tick{animation:tick .35s ease}
+  @keyframes tick{0%{transform:scale(1.2);opacity:.5}100%{transform:scale(1);opacity:1}}
+  .cd-label{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
+
+  .timeline{margin-top:8px}
+  .tl-item{padding:16px 0;border-bottom:1px solid rgba(255,255,255,.15)}
+  .tl-item:last-child{border-bottom:none}
+  .tl-time{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.5rem}
+  .tl-label{font-size:.85rem;margin-top:4px;color:#EFEFE2}
+  .tl-desc{font-size:.76rem;color:#C7CDB0;margin-top:4px;max-width:280px;margin-left:auto;margin-right:auto}
+
+  footer{padding:44px 26px 60px;text-align:center}
+  footer .names{font-size:1.8rem}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<div class="progress" id="progress"></div>
+
+  <section class="center reveal is-visible" style="padding-bottom:24px">
+    <h1 class="names">Alexandra <span style="font-family:'Jost',sans-serif;font-style:normal;font-size:1.1rem">&amp;</span> Nicolás</h1>
+    <p class="hero-sub">LOS INVITAN A SU BODA</p>
+  </section>
+
+  <div class="photo hero-photo reveal">
+    <img src="foto-hero.jpg" alt="" onerror="this.parentElement.style.display='none'">
+    <div class="play-overlay">
+      <div class="play-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5 L19 12 L8 19 Z"/></svg></div>
+      <p class="play-caption">Tocá para sumergirte en la atmósfera de la celebración</p>
+    </div>
+  </div>
+
+  <section class="center reveal">
+    <h4 class="h-title">Nuestra historia</h4>
+    <p class="msg">Nos cruzamos por primera vez discutiendo qué película ver — "¿la de acción o la de comedia?" — Alexandra eligió, y de paso eligió la película correcta. Así empezó nuestra noche, y después algo mucho más grande.</p>
+    <div class="photo rounded"><img src="foto-1.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
+  </section>
+
+  <section class="center reveal">
+    <h4 class="h-title">¡Queridos invitados!</h4>
+    <p class="msg">Queremos compartir con ustedes el día más importante de nuestras vidas y los invitamos a nuestra boda.</p>
+    <div class="divider"></div>
+    <p class="msg" style="margin-top:0">Estamos ansiosos de verlos y celebrar juntos el comienzo de nuestro camino.</p>
+    <div class="countdown-label">Falta para el gran día</div>
+    <div class="countdown">
+      <div class="cd-unit"><div class="cd-num" id="cd-d">--</div><div class="cd-label">Días</div></div>
+      <div class="cd-unit"><div class="cd-num" id="cd-h">--</div><div class="cd-label">Horas</div></div>
+      <div class="cd-unit"><div class="cd-num" id="cd-m">--</div><div class="cd-label">Min</div></div>
+      <div class="cd-unit"><div class="cd-num" id="cd-s">--</div><div class="cd-label">Seg</div></div>
+    </div>
+  </section>
+
+  <section class="center reveal">
+    <h4 class="h-title">Ubicación</h4>
+    <p class="msg">Nuestra fiesta se va a realizar en:</p>
+    <p class="addr" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;color:var(--ink);margin-top:4px">The Sun / Veranda</p>
+    <div class="photo rounded"><img src="foto-2.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
+    <p class="msg">Más abajo van a encontrar el mapa, para que puedan llegar rápido y a tiempo.</p>
+    <a class="btn" href="https://www.google.com/maps/search/?api=1&query=The+Sun+Veranda" target="_blank" rel="noopener">Abrir mapa</a>
+  </section>
+
+  <svg class="wave" viewBox="0 0 120 20" preserveAspectRatio="none"><path d="M0,20 Q 15,0 30,20 T 60,20 T 90,20 T 120,20 V20 H0 Z" fill="#4B5138"/></svg>
+
+  <section class="dark reveal">
+    <h4 class="center h-title">Programa del día</h4>
+    <div class="timeline">
+      <div class="tl-item center">
+        <div class="tl-time">14:00</div>
+        <div class="tl-label">Recepción de invitados</div>
+        <div class="tl-desc">El tiempo va a volar entre brindis, aperitivos livianos y buena charla.</div>
+      </div>
+      <div class="tl-item center">
+        <div class="tl-time">14:30</div>
+        <div class="tl-label">Ceremonia de casamiento</div>
+        <div class="tl-desc">Van a ser testigos de la creación de una nueva familia — la nuestra.</div>
+      </div>
+      <div class="photo rounded" style="margin-top:20px"><img src="foto-3.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
+      <div class="tl-item center" style="margin-top:20px">
+        <div class="tl-time">16:00</div>
+        <div class="tl-label">Brindis y recepción</div>
+      </div>
+      <div class="tl-item center">
+        <div class="tl-time">20:00</div>
+        <div class="tl-label">Fiesta</div>
+      </div>
+    </div>
+  </section>
+
+  <svg class="wave" viewBox="0 0 120 20" preserveAspectRatio="none"><path d="M0,0 Q 15,20 30,0 T 60,0 T 90,0 T 120,0 V0 H0 Z" fill="#4B5138"/></svg>
+
+  <section class="center reveal">
+    <h4 class="h-title">Confirmar asistencia</h4>
+    <p class="msg">Por favor confirmanos tu presencia con anticipación.</p>
+    <a class="btn whatsapp" href="https://wa.me/5491100000000?text=Hola!%20Confirmo%20mi%20asistencia%20a%20la%20boda%20de%20Alexandra%20y%20Nicol%C3%A1s" target="_blank" rel="noopener">Confirmar aquí</a>
+  </section>
+
+  <footer class="reveal">
+    <div class="names cormorant-italic">A &amp; N</div>
+  </footer>
+
+</div>
+
+<script>
+  var FECHA_EVENTO = new Date('2027-11-20T14:30:00');
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function actualizar(){
+    var diff = FECHA_EVENTO.getTime() - new Date().getTime();
+    if (diff < 0) diff = 0;
+    var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000),
+        m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+    tick('cd-d', String(d)); tick('cd-h', pad(h)); tick('cd-m', pad(m)); tick('cd-s', pad(s));
+  }
+  function tick(id, val){
+    var el = document.getElementById(id);
+    if (el.textContent === val) return;
+    el.textContent = val; el.classList.add('tick');
+    setTimeout(function(){ el.classList.remove('tick'); }, 350);
+  }
+  actualizar(); setInterval(actualizar, 1000);
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduceMotion && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+    }, { threshold: .16 });
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('is-visible'); });
+  }
+
+  var progressEl = document.getElementById('progress');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop, max = h.scrollHeight - h.clientHeight;
+    progressEl.style.width = max > 0 ? (scrolled/max*100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+</script>
+</body>
+</html>

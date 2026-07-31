@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valeria & Eugenio — Nos casamos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF8F2;
+    --ink:#3A3226;
+    --ink-soft:#8C7F65;
+    --gold:#B8935A;
+    --gold-deep:#8C6B3B;
+    --olive:#7C7A4E;
+    --line:#E9DFC8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .page{max-width:480px;margin:0 auto;overflow:hidden;position:relative}
+  .serif{font-family:'Playfair Display',serif}
+  .script{font-family:'Mrs Saint Delafield',cursive}
+  .eyebrow{font-size:.68rem;letter-spacing:.32em;text-transform:uppercase;font-weight:500;color:var(--gold-deep)}
+
+  .progress{position:fixed;top:0;left:0;height:2px;background:var(--gold-deep);z-index:50;width:0%;transition:width .1s linear}
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.is-visible{opacity:1;transform:translateY(0)}
+  @media (prefers-reduced-motion: reduce){.reveal{transition:none;opacity:1;transform:none}}
+
+  .leaf{position:absolute;width:120px;opacity:.5;pointer-events:none;color:var(--gold)}
+  .leaf.tl{top:6px;left:-8px;transform:rotate(-10deg)}
+  .leaf.br{bottom:6px;right:-8px;transform:rotate(170deg)}
+
+  section{padding:40px 28px;position:relative}
+  .center{text-align:center}
+
+  .wedding-day{letter-spacing:.2em;font-size:.95rem;color:var(--gold-deep);text-transform:uppercase}
+  .big-date{font-family:'Playfair Display',serif;font-weight:600;font-size:5rem;color:var(--ink);opacity:.14;line-height:.9;margin-top:10px}
+  .names{font-family:'Mrs Saint Delafield',cursive;font-size:2.6rem;color:var(--gold-deep);margin-top:-38px;position:relative}
+
+  .msg{color:var(--ink-soft);font-size:.9rem;line-height:1.7;max-width:300px;margin:20px auto 0}
+
+  h4.h-title{font-family:'Playfair Display',serif;color:var(--gold-deep);font-size:1.3rem}
+  h4.h-title .sub{display:block;font-family:'Mrs Saint Delafield',cursive;font-size:1.1rem;color:var(--ink-soft);margin-top:2px}
+  .addr{color:var(--ink-soft);font-size:.86rem;margin-top:6px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--gold-deep);color:#fff;text-decoration:none;padding:12px 22px;border-radius:999px;font-size:.78rem;letter-spacing:.03em;border:none;cursor:pointer;font-family:'Jost',sans-serif;margin-top:14px}
+  .btn.whatsapp{background:#25D366}
+
+  .photo{width:100%;border-radius:14px;overflow:hidden;background:linear-gradient(160deg,var(--gold),var(--gold-deep));margin-top:18px}
+  .photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .photo.wide{height:220px}
+  .photo.tall{height:320px}
+
+  .timeline{margin-top:10px}
+  .tl-item{padding:16px 0;border-bottom:1px dashed var(--line)}
+  .tl-item:last-child{border-bottom:none}
+  .tl-item .tl-time{font-family:'Playfair Display',serif;font-style:italic;color:var(--gold-deep);font-size:1.05rem}
+  .tl-item .tl-label{font-family:'Mrs Saint Delafield',cursive;font-size:1.15rem;color:var(--ink);margin-top:2px}
+  .tl-item .tl-desc{color:var(--ink-soft);font-size:.78rem;margin-top:2px;max-width:280px;margin-left:auto;margin-right:auto}
+
+  .palette-row{display:flex;justify-content:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .swatch{width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
+
+  footer{padding:40px 28px 60px;text-align:center}
+  footer .thanks{font-family:'Mrs Saint Delafield',cursive;font-size:2.2rem;color:var(--gold-deep)}
+  .rsvp-note{color:var(--ink-soft);font-size:.78rem;margin-top:14px}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="leaf-branch" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.3">
+    <path d="M4 116 C 20 90, 18 60, 40 44 C 60 30, 90 28, 108 6"/>
+    <ellipse cx="40" cy="44" rx="8" ry="15" transform="rotate(35 40 44)" fill="currentColor" opacity=".5" stroke="none"/>
+    <ellipse cx="60" cy="34" rx="7" ry="13" transform="rotate(20 60 34)" fill="currentColor" opacity=".5" stroke="none"/>
+    <ellipse cx="82" cy="20" rx="6" ry="12" transform="rotate(10 82 20)" fill="currentColor" opacity=".5" stroke="none"/>
+  </symbol>
+</svg>
+
+<div class="page">
+
+  <section class="center reveal is-visible">
+    <svg class="leaf tl"><use href="#leaf-branch"/></svg>
+    <div class="wedding-day">Wedding Day</div>
+    <div class="big-date">27<br>07<br>24</div>
+    <div class="names">Valeria &amp; Eugenio</div>
+  </section>
+
+  <section class="center reveal">
+    <h4 class="h-title">¡Queridos invitados!</h4>
+    <p class="msg">De todo corazón queremos invitarlos al día más importante de nuestras vidas — ¡nuestra boda! Este día va a estar lleno de amor, alegría y ternura, y vamos a ser muy felices de que nos acompañen en este momento tan especial.</p>
+  </section>
+
+  <section class="center reveal">
+    <h4 class="h-title">Location<span class="sub">Los esperamos en</span></h4>
+    <p class="addr">Restaurante "Atrium"<br>Dirección a confirmar</p>
+    <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Restaurante+Atrium" target="_blank" rel="noopener">Abrir mapa</a>
+  </section>
+
+  <section class="reveal">
+    <div class="center" style="margin-bottom:8px"><h4 class="h-title">Program of the day<span class="sub">Programa del día</span></h4></div>
+    <div class="timeline">
+      <div class="tl-item center">
+        <div class="tl-time">16:00</div>
+        <div class="tl-label">Recepción de invitados</div>
+      </div>
+      <div class="tl-item center">
+        <div class="tl-time">16:30</div>
+        <div class="tl-label">Ceremonia</div>
+        <div class="tl-desc">El evento principal del día — la ceremonia de casamiento.</div>
+      </div>
+      <div class="tl-item center">
+        <div class="tl-time">17:20</div>
+        <div class="tl-label">Sesión de fotos</div>
+        <div class="tl-desc">Fotos de los novios junto a los invitados.</div>
+      </div>
+      <div class="tl-item center">
+        <div class="tl-time">18:00</div>
+        <div class="tl-label">Banquete</div>
+        <div class="tl-desc">Momento de disfrutar, relajarse y bailar.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="center reveal">
+    <h4 class="h-title">Dress code<span class="sub">Paleta y estilo</span></h4>
+    <div class="photo wide"><img src="foto-1.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
+    <div class="palette-row">
+      <span class="swatch" style="background:#7A2A32"></span>
+      <span class="swatch" style="background:#6B6B45"></span>
+      <span class="swatch" style="background:#C98362"></span>
+      <span class="swatch" style="background:#D9A9A0"></span>
+      <span class="swatch" style="background:#9BC2B0"></span>
+      <span class="swatch" style="background:#8FA6B8"></span>
+    </div>
+    <p class="msg">Nos encantaría que acompañen el estilo de nuestra celebración y elijan su atuendo dentro de la paleta de colores propuesta.</p>
+  </section>
+
+  <section class="center reveal">
+    <h4 class="h-title">Details<span class="sub">Deseos</span></h4>
+    <p class="msg">Queridos invitados, traigan alegría y buena onda — si quieren regalarnos algo, un sobre es más que suficiente. Les pedimos de corazón que disfrutemos juntos con calma esta noche tan familiar.</p>
+  </section>
+
+  <section class="center reveal">
+    <div class="photo tall"><img src="foto-2.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
+    <p class="thanks" style="margin-top:24px">¡Nos vemos pronto!</p>
+    <p class="msg" style="margin-top:4px">Con amor,<br>Valeria y Eugenio</p>
+    <a class="btn whatsapp" href="https://wa.me/5491100000000?text=Hola!%20Confirmo%20mi%20asistencia%20a%20la%20boda%20de%20Valeria%20y%20Eugenio" target="_blank" rel="noopener">Confirmar aquí</a>
+    <p class="rsvp-note">Por favor confirmá tu presencia antes del 20.06.2024</p>
+  </section>
+
+  <footer class="reveal">
+    <svg class="leaf" style="position:static;opacity:.6;width:90px;margin:0 auto;transform:rotate(180deg)"><use href="#leaf-branch"/></svg>
+  </footer>
+
+</div>
+
+<script>
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduceMotion && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+    }, { threshold: .16 });
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('is-visible'); });
+  }
+
+  var progressEl = document.getElementById('progress');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop, max = h.scrollHeight - h.clientHeight;
+    progressEl.style.width = max > 0 ? (scrolled/max*100) + '%' : '0%';
+  }
+  document.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+</script>
+</body>
+</html>

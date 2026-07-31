@@ -297,6 +297,15 @@ existentes) que Pablo va mandando.
 | `olivia-ralph/` | Azul marino/crema, con cortejo nupcial completo (padrinos, velo/cordón/vela — tradición católica), galería de 9 fotos armada con **una sola imagen** recortada por `background-position` en CSS | `foto-hero.jpg` a `foto-5.jpg` + `foto-galeria.jpg` |
 | `juan-ana/` | Vino/crema, juguetona, con foto de infancia como gancho principal, línea ondulada dibujada a mano conectando el cronograma | `foto-ninos.jpg`, `foto-1.jpg`, `foto-2.jpg`, `foto-lugar.jpg` |
 | `lorena-gustavo/` | Botánico, verde oliva/crema/dorado, fotos con desvanecido blanco (no papel roto — otra técnica visual) | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg` |
+| `lauren-marco/` | "Boarding pass" navy/crema — ticket de embarque, globo, timeline con línea de vuelo punteada, calendario JS con save the date | `foto-1.jpg`, `foto-2.jpg` |
+| `valeria-eugenio/` | Dorado/oliva, hojas de rama dibujadas a mano, fecha grande de fondo, programa del día bilingüe (estilo minimal) | `foto-1.jpg`, `foto-2.jpg` |
+| `camila-sebastian/` | Marrón/crema — hero con sobre (envelope reveal en CSS), monograma, reproductor de música, calendario JS, dress code por género, regalo con alias copiable, aviso "sin niños" | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg`, `foto-3.jpg`, `cancion.mp3` |
+| `alexandra-nicolas/` | Verde oliva/crema — secciones con borde ondulado (SVG wave), "nuestra historia", foto hero con botón de play decorativo | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg`, `foto-3.jpg` |
+
+Estas 4 últimas replican 4 referencias de Pinterest (`azul clasico.jpg`, `dorado.jpg`,
+`marron.jpg`, `verde.jpg`) igual que se hizo con las de XV — mismo criterio: paleta,
+tipografía y secciones fieles a la referencia, nombres de pareja ficticios, fotos en
+placeholder con fallback a degradé.
 
 Todas las de arriba viven en `public/demos/boda/`. Las de XV años viven en `public/demos/xv/`,
 armadas replicando 5 referencias de Pinterest (una por paleta de color):

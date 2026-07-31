@@ -24,8 +24,8 @@ export const BANK_DATA = {
 // plan (cada link tiene un monto fijo, no soporta cantidad ni combinar
 // planes). El checkout solo ofrece Mercado Pago cuando el carrito tiene
 // un único ítem con cantidad 1 — ver `Checkout.jsx`. El monto configurado
-// en cada link en el panel de Mercado Pago tiene que coincidir con lo que
-// devuelve `mpPrice()` para ese plan.
+// en cada link en el panel de Mercado Pago tiene que coincidir con
+// `PLAN_PRICING[plan].price` de acá abajo.
 export const MP_LINKS = {
   Essential: 'https://mpago.la/1tCkbgb',
   Standard: 'https://mpago.la/2YhQAwA',
@@ -43,42 +43,39 @@ export const GOOGLE_SHEETS_URL =
 export const MAX_COMPROBANTE_MB = 5
 
 // --- Promo del banner superior -------------------------------------------
-// Puramente de marketing (texto del banner) — pero el precio tachado de más
-// abajo SÍ está atado a este número, para que la promo sea matemáticamente
-// consistente en vez de un texto suelto sin relación con los precios reales.
 export const PROMO_PERCENT = 30
 export const currentMonthLabel = () => {
   const mes = new Date().toLocaleDateString('es-AR', { month: 'long' })
   return mes.charAt(0).toUpperCase() + mes.slice(1)
 }
 
-// --- Precios según método de pago -------------------------------------
-// `plans[].price` / `products[].price` es el "precio de lista": el neto que
-// se quiere recibir por la venta. A partir de ahí:
+// --- Lista de precios real por plan --------------------------------------
+// Estos tres números por plan son la lista de precios real del negocio (no
+// se derivan matemáticamente unos de otros con una fórmula única, aunque en
+// la UI se comuniquen como "-30% del mes de lanzamiento" y "-10% transferencia"):
 //
-// - Mercado Pago se queda MP_FEE_PERCENT% de comisión por venta, así que
-//   ese % se traslada al precio para que el neto cobrado siga siendo el
-//   precio de lista.
-// - La transferencia bancaria no tiene comisión, así que además se le hace
-//   un descuento adicional sobre el precio de lista.
-//
-// La diferencia entre ambos totales termina siendo de aproximadamente
-// TRANSFER_DISCOUNT_PERCENT% — así es como se comunica en la UI (badges,
-// PromoBar), aunque el número exacto no cierre en un porcentaje redondo.
-export const MP_FEE_PERCENT = 6
-export const TRANSFER_EXTRA_DISCOUNT_PERCENT = 4
-export const TRANSFER_DISCOUNT_PERCENT = 10 // etiqueta de marketing, ver nota arriba
+// - `original`: precio sin ningún descuento — es el precio TACHADO en toda
+//   la web (Planes, Catálogo, Carrito, Checkout). Nunca se cobra.
+// - `price`: precio con el 30% OFF del mes de lanzamiento — es el precio de
+//   lista real, el que se muestra sin tachar y el que se cobra por
+//   Mercado Pago. `plans[].price` y `products[].price` usan este valor.
+// - `transfer`: precio pagando por transferencia bancaria — con el 10% de
+//   descuento adicional ya aplicado.
+export const PLAN_PRICING = {
+  Essential: { original: 79980, price: 61600, transfer: 55970 },
+  Standard: { original: 111540, price: 85800, transfer: 77970 },
+  Premium: { original: 125840, price: 96800, transfer: 87970 },
+}
+export const TRANSFER_DISCOUNT_PERCENT = 10 // etiqueta de marketing (el número exacto varía un poco por plan)
 
-export const mpPrice = (price) => Math.round((price * (1 + MP_FEE_PERCENT / 100)) / 10) * 10
-export const transferPrice = (price) =>
-  Math.round((price * (1 - TRANSFER_EXTRA_DISCOUNT_PERCENT / 100)) / 10) * 10
+const pricingRowByPrice = (price) => Object.values(PLAN_PRICING).find((row) => row.price === price)
 
-// --- Precio "tachado" ------------------------------------------------------
-// El precio de lista ya representa el PROMO_PERCENT% OFF del mes vigente
-// (ver PromoBar). El tachado deshace ese descuento para mostrar cuánto
-// costaría sin la promo del mes — puramente cosmético, nunca se usa para
-// cobrar.
-export const originalPrice = (price) => Math.round((price / (1 - PROMO_PERCENT / 100)) / 10) * 10
+// El tachado y el precio de transferencia son fijos por plan (ver
+// PLAN_PRICING arriba). Si se llama con un precio que no corresponde a
+// ningún plan, se devuelve el mismo precio sin modificar en vez de inventar
+// un número.
+export const originalPrice = (price) => pricingRowByPrice(price)?.original ?? price
+export const transferPrice = (price) => pricingRowByPrice(price)?.transfer ?? price
 
 // --- Colores para el filtro del catálogo ---------------------------------
 // Paleta de swatches seleccionables. "hex" es lo que se pinta en el círculo;
@@ -144,6 +141,7 @@ export const categories = [
     slug: 'otro',
     name: 'Otro evento',
     desc: '¿Cumpleaños, aniversario, baby shower u otra celebración? Contanos qué estás festejando y te asesoramos.',
+    image: '/images/OTRO.jpg',
     // Sin catálogo propio (el catálogo solo tiene diseños para Boda y Cumple XV) —
     // este panel siempre deriva a consulta directa por WhatsApp. Ver `consultOnly`
     // en `Categories.jsx`.
@@ -173,7 +171,7 @@ export const plans = [
   {
     name: 'Essential',
     tagline: 'Lo esencial, con estilo',
-    price: 56000,
+    price: 61600,
     items: [
       'Diseño adaptado a tu evento',
       'Cuenta regresiva',
@@ -188,7 +186,7 @@ export const plans = [
     name: 'Standard',
     tagline: 'La experiencia completa',
     highlight: 'Más elegida',
-    price: 78000,
+    price: 85800,
     items: [
       'Todo lo del plan Essential',
       'Música de fondo a elección',
@@ -203,7 +201,7 @@ export const plans = [
   {
     name: 'Premium',
     tagline: 'Para que no falte nada',
-    price: 88000,
+    price: 96800,
     items: [
       'Todo lo del plan Standard',
       'Panel de confirmaciones en tiempo real',
@@ -274,7 +272,7 @@ export const products = [
     name: 'Invitación Boda — Pablo & Lucila',
     category: 'boda',
     plan: 'Premium',
-    price: 88000,
+    price: 96800,
     color: 'verde',
     gradient: 'from-[#3C5F41] to-[#1F2E1C]',
     badge: 'Demo real',
@@ -286,7 +284,7 @@ export const products = [
     name: 'Invitación Boda — Lucía & Juan',
     category: 'boda',
     plan: 'Premium',
-    price: 88000,
+    price: 96800,
     color: 'marron',
     gradient: 'from-[#C79A6B] to-[#8A7A5E]',
     badge: 'Nuevo',
@@ -300,7 +298,7 @@ export const products = [
     name: 'Invitación Boda — Olivia & Ralph',
     category: 'boda',
     plan: 'Premium',
-    price: 88000,
+    price: 96800,
     color: 'azul',
     gradient: 'from-[#5B7FA6] to-[#20375C]',
     badge: 'Nuevo',
@@ -314,7 +312,7 @@ export const products = [
     name: 'Invitación Boda — Juan & Ana',
     category: 'boda',
     plan: 'Premium',
-    price: 88000,
+    price: 96800,
     color: 'rojo',
     gradient: 'from-[#6E1B26] to-[#4E1119]',
     badge: 'Nuevo',
@@ -328,7 +326,7 @@ export const products = [
     name: 'Invitación Boda — Lorena & Gustavo',
     category: 'boda',
     plan: 'Premium',
-    price: 88000,
+    price: 96800,
     color: 'verde',
     gradient: 'from-[#8FA07A] to-[#3F4A34]',
     badge: 'Nuevo',
@@ -342,7 +340,7 @@ export const products = [
     name: 'Invitación XV — Katherina',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 88000,
+    price: 96800,
     color: 'azul',
     gradient: 'from-[#8FAEC9] to-[#3E5C76]',
     badge: 'Nuevo',
@@ -356,7 +354,7 @@ export const products = [
     name: 'Invitación XV — Adriana',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 88000,
+    price: 96800,
     color: 'celeste',
     gradient: 'from-[#6E93B5] to-[#243447]',
     badge: 'Nuevo',
@@ -370,7 +368,7 @@ export const products = [
     name: 'Invitación XV — Mariana',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 88000,
+    price: 96800,
     color: 'lila',
     gradient: 'from-[#A57FC4] to-[#7C5A9C]',
     badge: 'Nuevo',
@@ -384,7 +382,7 @@ export const products = [
     name: 'Invitación XV — Ximena',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 88000,
+    price: 96800,
     color: 'rosa',
     gradient: 'from-[#D9A8A0] to-[#8C6B3B]',
     badge: 'Nuevo',
@@ -398,7 +396,7 @@ export const products = [
     name: 'Invitación XV — Marianel',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 88000,
+    price: 96800,
     color: 'marron',
     gradient: 'from-[#B08A5E] to-[#7A5C3E]',
     badge: 'Nuevo',
@@ -406,5 +404,61 @@ export const products = [
     image: '/demos/xv/marianel-rosa-marron/foto-hero.jpg',
     style: 'Cream/marrón — rosas, papel roto',
     palette: ['#FFFFFF', '#B08A5E', '#7A5C3E'],
+  },
+  {
+    id: 17,
+    name: 'Invitación Boda — Lauren & Marco',
+    category: 'boda',
+    plan: 'Premium',
+    price: 96800,
+    color: 'azul',
+    gradient: 'from-[#1F3252] to-[#16233A]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/boda/lauren-marco/',
+    image: '/demos/boda/lauren-marco/foto-1.jpg',
+    style: 'Boarding pass — navy/crema, destino de viaje',
+    palette: ['#F3EDE2', '#16233A', '#A79C89'],
+  },
+  {
+    id: 18,
+    name: 'Invitación Boda — Valeria & Eugenio',
+    category: 'boda',
+    plan: 'Premium',
+    price: 96800,
+    color: 'amarillo',
+    gradient: 'from-[#B8935A] to-[#8C6B3B]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/boda/valeria-eugenio/',
+    image: '/demos/boda/valeria-eugenio/foto-1.jpg',
+    style: 'Dorado/oliva — hojas y programa del día',
+    palette: ['#FBF8F2', '#B8935A', '#7C7A4E'],
+  },
+  {
+    id: 19,
+    name: 'Invitación Boda — Camila & Sebastián',
+    category: 'boda',
+    plan: 'Premium',
+    price: 96800,
+    color: 'marron',
+    gradient: 'from-[#A9784C] to-[#7A5230]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/boda/camila-sebastian/',
+    image: '/demos/boda/camila-sebastian/foto-hero.jpg',
+    style: 'Marrón/crema — sobre, música, regalos',
+    palette: ['#FBF7F0', '#A9784C', '#7A5230'],
+  },
+  {
+    id: 20,
+    name: 'Invitación Boda — Alexandra & Nicolás',
+    category: 'boda',
+    plan: 'Premium',
+    price: 96800,
+    color: 'verde',
+    gradient: 'from-[#6B7350] to-[#4B5138]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/boda/alexandra-nicolas/',
+    image: '/demos/boda/alexandra-nicolas/foto-hero.jpg',
+    style: 'Verde oliva — secciones onduladas, nuestra historia',
+    palette: ['#FAF8F2', '#6B7350', '#4B5138'],
   },
 ]

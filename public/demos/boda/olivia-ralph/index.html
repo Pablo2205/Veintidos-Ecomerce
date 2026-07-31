@@ -4,187 +4,247 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Olivia & Ralph — Nos casamos</title>
+<meta name="description" content="Invitación digital de la boda de Olivia & Ralph — 18 de mayo de 2027">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500;1,600&family=Alex+Brush&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Alex+Brush&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream:#F7F3E9;
-    --navy:#20375C;
+    --cream:#F8F4EC;
+    --cream-deep:#EFE7D6;
+    --navy:#1B2E4B;
+    --navy-deep:#0F1B30;
     --blue:#5B7FA6;
+    --blue-soft:#8FA8C4;
     --blue-pale:#DCE6EF;
     --gold:#C9A55A;
-    --ink:#20375C;
+    --gold-soft:#E4CE9C;
+    --ink:#1B2E4B;
     --ink-soft:#4A5A70;
+    --ease:cubic-bezier(.16,.8,.28,1);
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;-webkit-font-smoothing:antialiased}
-  .page{max-width:480px;margin:0 auto;overflow:hidden}
+  html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .page{max-width:480px;margin:0 auto;overflow:hidden;position:relative}
   .script{font-family:'Alex Brush',cursive}
   .serif{font-family:'Playfair Display',serif}
-  .eyebrow{font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;font-weight:600}
+  .eyebrow{font-size:.68rem;letter-spacing:.34em;text-transform:uppercase;font-weight:600}
+  img{max-width:100%;display:block}
 
-  /* corte diagonal — técnica única de esta demo */
-  .diag-b{clip-path:polygon(0 0,100% 0,100% 94%,0 100%)}
-  .diag-t{clip-path:polygon(0 6%,100% 0,100% 100%,0 100%);margin-top:-1px}
-  .diag-both{clip-path:polygon(0 5%,100% 0,100% 95%,0 100%)}
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  }
 
-  /* acento dorado */
-  .gold-line{width:44px;height:2px;background:var(--gold);margin:12px auto 0}
+  .flourish{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px auto 0}
+  .flourish .ln{width:30px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+  .flourish .ln.r{background:linear-gradient(90deg,var(--gold),transparent)}
+  .flourish svg{width:12px;height:12px;color:var(--gold)}
 
-  /* hero */
-  .hero{padding:50px 30px 0;text-align:center}
-  .hero .eyebrow{color:var(--blue);margin-bottom:12px}
-  .hero .surname{font-family:'Playfair Display',serif;font-weight:700;font-size:2.5rem;letter-spacing:.04em;line-height:1.1;color:var(--navy)}
-  .hero .connector{display:block;font-family:'Alex Brush',cursive;font-size:2rem;color:var(--gold);margin:6px 0}
-  .hero-photo{height:440px;position:relative;margin-top:26px;background:linear-gradient(155deg,#3C5A82 0%,#5B7FA6 45%,#7C9CC0 75%,#A9C2DC 100%)}
-  .hero-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;opacity:.9}
-  .hero-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(155deg,rgba(32,55,92,.42),rgba(91,127,166,.12))}
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+  .reveal.in{opacity:1;transform:translateY(0)}
+  .reveal-zoom{transform:scale(1.16);transition:transform 1.6s var(--ease)}
+  .reveal-zoom.in{transform:scale(1)}
 
-  /* monograma ceremonial */
-  .monogram-wrap{display:flex;justify-content:center;margin-top:-54px;position:relative;z-index:2;padding-bottom:4px}
-  .monogram-circle{width:108px;height:108px;border-radius:50%;background:var(--cream);border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(32,55,92,.12)}
-  .monogram-circle .m{font-family:'Playfair Display',serif;font-weight:700;font-style:italic;font-size:2.2rem;color:var(--navy)}
+  /* ---------- hero ---------- */
+  .hero{position:relative;height:100svh;min-height:560px;overflow:hidden;background:var(--navy-deep)}
+  .hero-media{position:absolute;inset:0}
+  .hero-media img{width:100%;height:100%;object-fit:cover;animation:kenburns 16s ease-in-out infinite alternate}
+  @keyframes kenburns{from{transform:scale(1.04) translateY(0)}to{transform:scale(1.16) translateY(-1.5%)}}
+  .hero-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,27,48,.55) 0%,rgba(15,27,48,.15) 32%,rgba(15,27,48,.35) 60%,rgba(15,27,48,.92) 100%)}
+  .hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;padding:0 30px 54px;color:var(--cream)}
+  .hero-content .eyebrow{opacity:0;color:var(--gold-soft);margin-bottom:14px;animation:fadeUp .9s var(--ease) .3s forwards}
+  .hero-names{opacity:0;font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(2.6rem,11vw,3.4rem);letter-spacing:.02em;line-height:1;animation:fadeUp 1s var(--ease) .55s forwards}
+  .hero-names .amp{display:block;font-family:'Alex Brush',cursive;font-weight:400;font-size:.62em;color:var(--gold-soft);margin:2px 0}
+  .hero-date-chip{opacity:0;margin-top:20px;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cream);animation:fadeUp 1s var(--ease) .85s forwards}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .scroll-cue{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:2;width:18px;height:28px;border:1.4px solid rgba(248,244,236,.55);border-radius:10px;opacity:0;animation:fadeUp .8s var(--ease) 1.3s forwards}
+  .scroll-cue::before{content:'';position:absolute;top:5px;left:50%;width:3px;height:6px;margin-left:-1.5px;background:var(--gold-soft);border-radius:2px;animation:cueDot 1.8s ease-in-out infinite}
+  @keyframes cueDot{0%{opacity:1;transform:translateY(0)}70%{opacity:0;transform:translateY(9px)}100%{opacity:0}}
 
-  /* fecha */
-  .date-block{padding:30px 30px 28px;text-align:center}
-  .date-big{font-family:'Playfair Display',serif;font-weight:700;font-size:2.8rem;line-height:1;color:var(--navy);margin-bottom:4px}
-  .date-rest{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin-bottom:18px}
-  .verse{font-size:.76rem;line-height:1.7;color:var(--blue);max-width:280px;margin:0 auto;font-style:italic}
+  /* ---------- monograma ---------- */
+  .monogram-wrap{display:flex;justify-content:center;margin-top:-56px;position:relative;z-index:3;padding-bottom:4px}
+  .monogram-circle{width:104px;height:104px;border-radius:50%;background:var(--cream);border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(15,27,48,.22)}
+  .monogram-circle .m{font-family:'Playfair Display',serif;font-weight:700;font-style:italic;font-size:2.05rem;color:var(--navy)}
 
-  /* programa horizontal */
-  .program-row{display:flex;border-top:1px solid var(--blue-pale);border-bottom:1px solid var(--blue-pale);margin:0 24px 36px}
-  .prog-item{flex:1;text-align:center;padding:18px 6px;position:relative}
-  .prog-item:not(:last-child)::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);height:28px;width:1px;background:var(--blue-pale)}
-  .prog-time{font-family:'Playfair Display',serif;font-weight:600;font-size:.98rem;color:var(--navy);margin-bottom:4px}
-  .prog-label{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+  /* ---------- fecha + countdown ---------- */
+  .date-block{padding:26px 30px 6px;text-align:center}
+  .date-big{font-family:'Playfair Display',serif;font-weight:700;font-size:2.7rem;line-height:1;color:var(--navy)}
+  .date-rest{font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-top:4px}
+  .verse{font-size:.76rem;line-height:1.75;color:var(--blue);max-width:280px;margin:18px auto 0;font-style:italic}
 
-  /* historia */
-  .story{padding:6px 30px 32px;text-align:center}
-  .story h4{font-family:'Playfair Display',serif;font-style:italic;font-size:1.5rem;color:var(--navy);margin-bottom:14px}
-  .story p{font-size:.8rem;line-height:1.8;color:var(--ink-soft);max-width:320px;margin:0 auto}
+  .countdown{display:flex;justify-content:center;gap:10px;margin:26px 24px 6px}
+  .cd-item{flex:1;background:var(--cream-deep);border:1px solid var(--blue-pale);border-radius:12px;padding:14px 4px;text-align:center}
+  .cd-num{font-family:'Playfair Display',serif;font-weight:700;font-size:1.5rem;color:var(--navy);font-variant-numeric:tabular-nums}
+  .cd-label{font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-top:3px}
 
-  /* padres */
-  .parents{padding:26px 30px 32px;text-align:center}
-  .parents .lead{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:18px}
-  .parents-cols{display:flex;justify-content:center;gap:44px;margin-bottom:20px}
-  .parents-cols h5{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--navy);margin-bottom:6px;font-weight:700}
-  .parents-cols p{font-size:.7rem;line-height:1.75;color:var(--ink-soft)}
-  .witnesses{font-size:.72rem;color:var(--ink-soft);padding-top:16px;border-top:1px solid var(--blue-pale)}
-  .witnesses strong{display:block;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);margin-bottom:6px}
+  /* ---------- agenda ---------- */
+  .agenda{display:flex;gap:10px;margin:34px 24px 0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+  .agenda::-webkit-scrollbar{display:none}
+  .ag-item{flex:0 0 auto;width:104px;text-align:center;background:var(--cream-deep);border-radius:14px;padding:16px 8px}
+  .ag-item svg{width:22px;height:22px;color:var(--gold);margin:0 auto 8px}
+  .ag-time{font-family:'Playfair Display',serif;font-weight:600;font-size:.95rem;color:var(--navy)}
+  .ag-label{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-top:2px}
 
-  /* bandas fotográficas con corte diagonal */
-  .band{height:340px;position:relative;background:linear-gradient(155deg,#2C4568,#5B7FA6)}
-  .band img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;opacity:.92}
-  .band-label{position:absolute;bottom:32px;left:0;right:0;text-align:center;z-index:2;font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;letter-spacing:.06em;color:#fff;text-transform:uppercase}
+  /* ---------- historia ---------- */
+  .story{padding:44px 30px 6px;text-align:center}
+  .story-photo{width:132px;height:132px;border-radius:50%;overflow:hidden;margin:0 auto 22px;border:1px solid var(--gold-soft);box-shadow:0 14px 34px rgba(27,46,75,.18)}
+  .story-photo img{width:100%;height:100%;object-fit:cover}
+  .story h4{font-family:'Alex Brush',cursive;font-weight:400;font-size:2rem;color:var(--navy);margin-bottom:14px}
+  .story p{font-size:.82rem;line-height:1.85;color:var(--ink-soft);max-width:320px;margin:0 auto}
 
-  /* detalles / vestimenta */
-  .details{padding:40px 30px 34px;text-align:center}
-  .details h4{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--navy);font-weight:700;margin-bottom:12px}
-  .dress-row{display:flex;justify-content:center;gap:22px;margin-bottom:8px}
-  .dress-row svg{width:36px;height:48px;color:var(--navy)}
-  .attire{font-size:.78rem;color:var(--blue);margin-bottom:26px}
-  .colors{display:flex;justify-content:center;gap:10px;margin:10px 0 26px}
-  .dot{width:20px;height:20px;border-radius:50%}
-  .details-copy{font-size:.74rem;line-height:1.75;color:var(--ink-soft);max-width:290px;margin:0 auto}
+  /* ---------- padres ---------- */
+  .parents{padding:44px 30px 6px;text-align:center}
+  .parents .lead{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:22px}
+  .parents-cols{display:flex;justify-content:center;gap:14px;margin-bottom:24px}
+  .parents-cols>div{flex:1;max-width:150px}
+  .parents-cols h5{font-family:'Playfair Display',serif;font-style:italic;font-size:.8rem;color:var(--navy);margin-bottom:8px}
+  .parents-cols p{font-size:.7rem;line-height:1.8;color:var(--ink-soft)}
+  .witnesses{font-size:.72rem;color:var(--ink-soft);padding-top:22px;border-top:1px solid var(--blue-pale)}
+  .witnesses strong{display:block;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--navy);margin-bottom:8px;font-weight:600}
 
-  /* compartí */
-  .share{padding:6px 30px 36px;text-align:center}
-  .share h4{font-family:'Alex Brush',cursive;font-size:1.9rem;color:var(--navy);margin-bottom:8px}
-  .share .hashtag{font-size:.76rem;color:var(--blue);margin-bottom:18px;line-height:1.6}
+  /* ---------- bandas fotográficas ---------- */
+  .band{height:360px;position:relative;overflow:hidden;background:var(--navy)}
+  .band-crop{position:absolute;inset:0;overflow:hidden}
+  .band img{position:absolute;inset:-4%;width:108%;height:108%;object-fit:cover}
+  .band-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,27,48,.05) 0%,rgba(15,27,48,.15) 55%,rgba(15,27,48,.86) 100%)}
+  .band-label{position:absolute;bottom:28px;left:0;right:0;text-align:center;z-index:2}
+  .band-label .eyebrow{color:var(--gold-soft);margin-bottom:6px}
+  .band-label .serif{font-size:1.5rem;font-weight:700;font-style:italic;color:#fff}
+
+  /* ---------- venue copy ---------- */
+  .venue-copy{padding:26px 30px 8px;text-align:center}
+  .venue-copy p{font-size:.8rem;line-height:1.85;color:var(--ink-soft);max-width:300px;margin:0 auto}
+  .venue-copy p.hope{margin-top:10px;font-style:italic;color:var(--blue)}
+  .map-link{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--navy);font-weight:600;border-bottom:1px solid var(--gold);padding-bottom:2px}
+  .map-link svg{width:13px;height:13px}
+
+  /* ---------- detalles / vestimenta ---------- */
+  .details{padding:48px 30px 6px;text-align:center}
+  .details h4{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--navy);font-weight:700;margin-bottom:16px}
+  .dress-row{display:flex;justify-content:center;gap:26px;margin-bottom:12px}
+  .dress-row svg{width:34px;height:46px;color:var(--navy)}
+  .attire{font-size:.8rem;color:var(--blue)}
+  .colors{display:flex;justify-content:center;gap:11px;margin:16px 0}
+  .dot{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
+  .details-copy{font-size:.76rem;line-height:1.85;color:var(--ink-soft);max-width:290px;margin:6px auto 0}
+  .divider{height:1px;background:var(--blue-pale);margin:34px auto;width:60px}
+
+  /* ---------- galería (carrusel real) ---------- */
+  .gallery-wrap{padding:48px 0 8px;text-align:center}
+  .gallery-wrap h4{font-family:'Alex Brush',cursive;font-weight:400;font-size:2.1rem;color:var(--navy);margin-bottom:4px;padding:0 30px}
+  .gallery-sub{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:22px}
+  .carousel{display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;padding:0 24px 6px;scrollbar-width:none}
+  .carousel::-webkit-scrollbar{display:none}
+  .carousel .cell{flex:0 0 auto;width:70%;max-width:230px;aspect-ratio:4/5;border-radius:14px;overflow:hidden;scroll-snap-align:center;box-shadow:0 12px 28px rgba(27,46,75,.16)}
+  .carousel .cell img{width:100%;height:100%;object-fit:cover}
+  .carousel .cell:last-child{margin-right:14px}
+
+  /* ---------- rsvp ---------- */
+  .rsvp{padding:46px 30px 8px;text-align:center}
+  .rsvp .mono{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:1.8rem;color:var(--navy);margin-bottom:10px}
+  .rsvp .title{font-size:.8rem;letter-spacing:.24em;color:var(--navy);margin-bottom:16px;font-weight:600;text-transform:uppercase}
+  .rsvp p{font-size:.78rem;line-height:1.85;color:var(--ink-soft);max-width:290px;margin:0 auto 26px}
+  .btn-row{display:flex;flex-direction:column;align-items:center;gap:12px}
+  .btn{position:relative;display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:var(--cream);font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;padding:15px 38px;border-radius:999px;border:none;cursor:pointer;transition:transform .35s var(--ease),background .35s var(--ease)}
+  .btn:active{transform:scale(.96)}
+  .btn.done{background:#3E5C46}
+  .btn svg{width:15px;height:15px}
+  .btn-outline{display:inline-flex;align-items:center;gap:7px;background:none;border:1px solid var(--blue-pale);color:var(--navy);font-family:'Jost',sans-serif;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;padding:12px 26px;border-radius:999px;cursor:pointer;text-decoration:none}
+  .btn-outline svg{width:13px;height:13px}
+
+  /* ---------- compartí ---------- */
+  .share{padding:50px 30px 8px;text-align:center}
+  .share h4{font-family:'Alex Brush',cursive;font-weight:400;font-size:1.9rem;color:var(--navy);margin-bottom:10px}
+  .share .hashtag{font-size:.78rem;color:var(--blue);margin-bottom:6px;line-height:1.7}
+  .hashtag strong{color:var(--navy)}
+  .copy-btn{display:inline-flex;align-items:center;gap:5px;margin:10px 0 20px;background:none;border:none;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:600;cursor:pointer}
+  .copy-btn svg{width:11px;height:11px}
   .social-row{display:flex;justify-content:center;gap:12px}
   .social-row a{width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--cream)}
   .social-row svg{width:17px;height:17px}
 
-  /* venue copy */
-  .venue-copy{padding:24px 30px 30px;text-align:center}
-  .venue-copy p{font-size:.78rem;line-height:1.8;color:var(--ink-soft);max-width:300px;margin:0 auto}
-  .venue-copy p.hope{margin-top:10px;font-style:italic;color:var(--blue)}
-
-  /* galería */
-  .gallery-wrap{padding:10px 24px 36px;text-align:center}
-  .gallery-wrap h4{font-family:'Alex Brush',cursive;font-size:2.1rem;color:var(--navy);margin-bottom:6px}
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:18px}
-  .grid div{aspect-ratio:1;border-radius:4px;background-image:url('foto-galeria.jpg');background-size:300% 300%;background-color:var(--blue-pale)}
-  .grid div:nth-child(1){background-position:0% 0%}
-  .grid div:nth-child(2){background-position:50% 0%}
-  .grid div:nth-child(3){background-position:100% 0%}
-  .grid div:nth-child(4){background-position:0% 50%}
-  .grid div:nth-child(5){background-position:50% 50%}
-  .grid div:nth-child(6){background-position:100% 50%}
-  .grid div:nth-child(7){background-position:0% 100%}
-  .grid div:nth-child(8){background-position:50% 100%}
-  .grid div:nth-child(9){background-position:100% 100%}
-
-  /* rsvp */
-  .rsvp-band{height:230px;position:relative;background:linear-gradient(155deg,#DCE6EF,#A9C2DC)}
-  .rsvp-band img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
-  .rsvp{padding:38px 30px;text-align:center}
-  .rsvp .mono{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:1.8rem;color:var(--navy);margin-bottom:8px}
-  .rsvp .title{font-size:.86rem;letter-spacing:.22em;color:var(--navy);margin-bottom:14px;font-weight:600;text-transform:uppercase}
-  .rsvp p{font-size:.76rem;line-height:1.75;color:var(--ink-soft);max-width:290px;margin:0 auto 24px}
-  .btn{display:inline-block;background:var(--navy);color:var(--cream);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;padding:14px 36px;border-radius:999px;border:none;cursor:pointer}
-
-  /* reminder */
-  .reminder{background:var(--blue-pale);padding:38px 30px;text-align:center}
-  .reminder h4{font-family:'Alex Brush',cursive;font-size:1.7rem;color:var(--navy);margin-bottom:12px}
-  .reminder p{font-size:.74rem;line-height:1.75;color:#3F4E63;max-width:290px;margin:0 auto 22px}
-  .qr{width:110px;height:110px;background:#fff;border:1.5px solid var(--gold);border-radius:8px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center}
+  /* ---------- reminder ---------- */
+  .reminder{background:linear-gradient(180deg,var(--blue-pale),var(--cream-deep));padding:48px 30px;text-align:center;margin-top:44px}
+  .reminder h4{font-family:'Alex Brush',cursive;font-weight:400;font-size:1.7rem;color:var(--navy);margin-bottom:14px}
+  .reminder p{font-size:.76rem;line-height:1.85;color:#3F4E63;max-width:290px;margin:0 auto 24px}
+  .qr{width:112px;height:112px;background:#fff;border:1.5px solid var(--gold);border-radius:10px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center}
   .qr svg{width:78px;height:78px;color:var(--navy)}
-  .reminder .bless{font-size:.82rem;color:var(--navy);font-style:italic}
+  .reminder .bless{font-size:.84rem;color:var(--navy);font-style:italic}
 
-  /* footer */
-  footer{padding:38px 30px 54px;text-align:center}
-  footer .mono{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:1.8rem;color:var(--navy);margin-bottom:6px}
-  footer .names-sm{font-size:.8rem;letter-spacing:.12em;color:var(--navy);font-weight:600}
-  footer .date-sm{font-size:.7rem;color:var(--blue);margin-top:4px}
+  /* ---------- footer ---------- */
+  footer{padding:44px 30px 60px;text-align:center;background:var(--navy-deep)}
+  footer .mono{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:1.9rem;color:var(--gold-soft);margin-bottom:8px}
+  footer .names-sm{font-size:.8rem;letter-spacing:.14em;color:var(--cream);font-weight:500}
+  footer .date-sm{font-size:.7rem;color:var(--blue-soft);margin-top:6px}
+  footer .made{font-size:.6rem;color:rgba(248,244,236,.35);margin-top:26px;letter-spacing:.06em}
 </style>
 </head>
 <body>
 <div class="page">
 
   <section class="hero">
-    <div class="eyebrow">La boda de</div>
-    <div class="surname">OLIVIA<span class="connector">y</span>RALPH</div>
-    <div class="gold-line"></div>
+    <div class="hero-media"><img src="foto-hero.jpg" alt="Olivia y Ralph" onerror="this.parentElement.style.display='none'"></div>
+    <div class="hero-scrim"></div>
+    <div class="hero-content">
+      <div class="eyebrow">La boda de</div>
+      <h1 class="hero-names">OLIVIA<span class="amp">&amp;</span>RALPH</h1>
+      <div class="hero-date-chip">18 &middot; mayo &middot; 2027</div>
+    </div>
+    <div class="scroll-cue"></div>
   </section>
-
-  <div class="hero-photo diag-b">
-    <img src="foto-hero.jpg" alt="" onerror="this.style.display='none'">
-  </div>
 
   <div class="monogram-wrap">
     <div class="monogram-circle"><span class="m">O&amp;R</span></div>
   </div>
 
-  <section class="date-block">
+  <section class="date-block reveal">
     <div class="date-big">18</div>
     <div class="date-rest">de mayo &middot; 2027</div>
-    <div class="gold-line" style="margin-bottom:18px"></div>
     <p class="verse">&ldquo;Isaías 60:22 — Cuando sea el momento justo, yo, el Señor, haré que suceda.&rdquo;</p>
   </section>
 
-  <div class="program-row">
-    <div class="prog-item"><div class="prog-time">14:00</div><div class="prog-label">Ceremonia</div></div>
-    <div class="prog-item"><div class="prog-time">16:00</div><div class="prog-label">Recepción</div></div>
-    <div class="prog-item"><div class="prog-time">17:00</div><div class="prog-label">Cena</div></div>
-    <div class="prog-item"><div class="prog-time">18:00</div><div class="prog-label">Fotos</div></div>
+  <div class="countdown reveal" id="countdown">
+    <div class="cd-item"><div class="cd-num" id="cd-d">00</div><div class="cd-label">Días</div></div>
+    <div class="cd-item"><div class="cd-num" id="cd-h">00</div><div class="cd-label">Hs</div></div>
+    <div class="cd-item"><div class="cd-num" id="cd-m">00</div><div class="cd-label">Min</div></div>
+    <div class="cd-item"><div class="cd-num" id="cd-s">00</div><div class="cd-label">Seg</div></div>
   </div>
 
-  <section class="story">
+  <div class="agenda reveal">
+    <div class="ag-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M9 5h6M5 21V11l7-4 7 4v10"/><path d="M9 21v-6h6v6"/></svg>
+      <div class="ag-time">14:00</div><div class="ag-label">Ceremonia</div>
+    </div>
+    <div class="ag-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l-1 7a3 3 0 0 1-6 0L8 2Z"/><path d="M12 13v7M9 21h6"/></svg>
+      <div class="ag-time">16:00</div><div class="ag-label">Recepción</div>
+    </div>
+    <div class="ag-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v8M5 2v5a2 2 0 0 0 4 0V2M17 2c-2 1-2 4-2 6a2 2 0 0 0 2 2v12"/></svg>
+      <div class="ag-time">17:00</div><div class="ag-label">Cena</div>
+    </div>
+    <div class="ag-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="3.4"/><path d="M8 7l1.5-3h5L16 7"/></svg>
+      <div class="ag-time">18:00</div><div class="ag-label">Fotos</div>
+    </div>
+  </div>
+
+  <section class="story reveal">
+    <div class="story-photo"><img src="foto-2.jpg" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
     <h4>Nuestra historia</h4>
     <p>En un pueblo costero, ella marina y él pescador, se conocieron cuando el bote de él se averió cerca de la costa. Compartieron caletas y mareas, y ese verano floreció en amor. Su historia, arraigada en el mar que ambos aman, se convirtió en el relato favorito de todo el pueblo.</p>
   </section>
 
-  <section class="parents">
+  <section class="parents reveal">
     <p class="lead">Con la bendición de nuestros padres</p>
     <div class="parents-cols">
       <div>
-        <h5>Novia</h5>
+        <h5>De la novia</h5>
         <p>Sr. Lucas Harrington<br>Sra. Megan Harrington</p>
       </div>
       <div>
-        <h5>Novio</h5>
+        <h5>Del novio</h5>
         <p>Sr. Nathaniel Barlow<br>Sra. Olivia Barlow</p>
       </div>
     </div>
@@ -194,80 +254,99 @@
     </div>
   </section>
 
-  <div class="band diag-both">
-    <img src="foto-1.jpg" alt="" onerror="this.style.display='none'">
+  <div class="band">
+    <div class="band-crop"><img class="reveal-zoom" src="foto-3.jpg" alt="" loading="lazy" onerror="this.parentElement.parentElement.style.background='linear-gradient(155deg,#2C4568,#5B7FA6)'"></div>
+    <div class="band-scrim"></div>
+    <div class="band-label"><div class="eyebrow">14:00 hs</div><div class="serif">Ceremonia</div></div>
+  </div>
+  <div class="venue-copy reveal">
+    <p>La ceremonia se realizará en la Parroquia Nuestra Señora de Lourdes.</p>
+    <p class="hope">Te esperamos puntual — el amor no espera.</p>
+    <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Parroquia+Nuestra+Se%C3%B1ora+de+Lourdes" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>
+      Cómo llegar
+    </a>
   </div>
 
-  <section class="details">
+  <div class="band" style="margin-top:10px">
+    <div class="band-crop"><img class="reveal-zoom" src="foto-4.jpg" alt="" loading="lazy" onerror="this.parentElement.parentElement.style.background='linear-gradient(155deg,#2C4568,#5B7FA6)'"></div>
+    <div class="band-scrim"></div>
+    <div class="band-label"><div class="eyebrow">16:00 hs</div><div class="serif">Recepción</div></div>
+  </div>
+  <div class="venue-copy reveal">
+    <p>Acompañanos a celebrar el amor y quedate para la fiesta — cena, cócteles y baile hasta tarde.</p>
+    <p class="hope">The Farm @ Carpenter Hill, Marbel</p>
+    <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=The+Farm+Carpenter+Hill+Marbel" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>
+      Cómo llegar
+    </a>
+  </div>
+
+  <section class="details reveal">
     <h4>Código de vestimenta</h4>
     <div class="dress-row">
       <svg viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M9 2 L12 5 L15 2 M9 2 L6 6 L8 9 L8 30 L16 30 L16 9 L18 6 L15 2"/></svg>
       <svg viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2 L9 5 L12 8 L15 5 Z M6 8 L12 8 L18 8 L15 14 L18 30 L6 30 L9 14 Z"/></svg>
     </div>
     <p class="attire">Vestimenta formal</p>
-    <div class="gold-line" style="margin-bottom:20px"></div>
-    <h4>Paleta de colores sugerida</h4>
+    <div class="divider"></div>
+    <h4>Paleta sugerida</h4>
     <div class="colors">
-      <span class="dot" style="background:#20375C"></span>
+      <span class="dot" style="background:#1B2E4B"></span>
       <span class="dot" style="background:#3C5A82"></span>
       <span class="dot" style="background:#5B7FA6"></span>
       <span class="dot" style="background:#A9C2DC"></span>
       <span class="dot" style="background:#C9A55A"></span>
     </div>
-    <div class="gold-line" style="margin-bottom:20px"></div>
+    <div class="divider"></div>
     <h4>Lista de regalos</h4>
-    <p class="details-copy" style="margin-top:10px">Con todo lo que tenemos, nos sentimos verdaderamente bendecidos. Tu presencia y tus oraciones son todo lo que pedimos. Pero si deseás obsequiarnos algo, un regalo en efectivo es más que suficiente.</p>
+    <p class="details-copy">Con todo lo que tenemos, nos sentimos verdaderamente bendecidos. Tu presencia y tus oraciones son todo lo que pedimos. Pero si deseás obsequiarnos algo, un regalo en efectivo es más que suficiente.</p>
   </section>
 
-  <section class="share">
+  <section class="gallery-wrap reveal">
+    <h4>La galería</h4>
+    <p class="gallery-sub">Deslizá para ver más</p>
+    <div class="carousel">
+      <div class="cell"><img src="foto-1.jpg" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
+      <div class="cell"><img src="foto-galeria.jpg" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
+      <div class="cell"><img src="foto-2.jpg" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
+      <div class="cell"><img src="foto-5.jpg" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
+      <div class="cell"><img src="foto-3.jpg" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
+    </div>
+  </section>
+
+  <div class="band" style="margin-top:44px">
+    <div class="band-crop"><img class="reveal-zoom" src="foto-5.jpg" alt="" loading="lazy" onerror="this.parentElement.parentElement.style.background='linear-gradient(155deg,#2C4568,#5B7FA6)'"></div>
+    <div class="band-scrim"></div>
+  </div>
+
+  <section class="rsvp reveal">
+    <div class="mono">O&amp;R</div>
+    <p class="title">Confirmá tu asistencia</p>
+    <p>Intercambiaremos votos el 18 de mayo de 2027 a las 14:00 en la Parroquia Nuestra Señora de Lourdes. Por favor confirmá antes del 1 de mayo.</p>
+    <div class="btn-row">
+      <button class="btn" id="rsvp-btn" onclick="confirmRsvp(this)">Confirmar asistencia</button>
+      <a class="btn-outline" id="ics-link" href="#" download="olivia-y-ralph.ics">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+        Agregar al calendario
+      </a>
+    </div>
+  </section>
+
+  <section class="share reveal">
     <h4>Capturá y compartí</h4>
-    <p class="hashtag">Ayudanos a capturar el amor, ¡compartí una foto con nuestro hashtag!<br><strong>#RalphYOliviaParaSiempre</strong></p>
+    <p class="hashtag">Ayudanos a capturar el amor,<br>compartí una foto con nuestro hashtag<br><strong>#RalphYOliviaParaSiempre</strong></p>
+    <button class="copy-btn" onclick="copyHashtag(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V5a1 1 0 0 1 1-1h11"/></svg>
+      <span>Copiar hashtag</span>
+    </button>
     <div class="social-row">
       <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.4 21v-7.9h2.65l.4-3.08H15.4V8.02c0-.89.25-1.5 1.52-1.5h1.63V3.77C18.25 3.7 17.31 3.6 16.21 3.6c-2.3 0-3.87 1.4-3.87 3.98v2.44H9.68v3.08h2.66V21h3.06z"/></svg></a>
       <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
     </div>
   </section>
 
-  <div class="band diag-both" style="margin:8px 0">
-    <img src="foto-3.jpg" alt="" onerror="this.style.display='none'">
-    <div class="band-label">Ceremonia</div>
-  </div>
-  <div class="venue-copy">
-    <p>La ceremonia se realizará en la Parroquia Nuestra Señora de Lourdes a las 14:00 hs.</p>
-    <p class="hope">La recepción será después en The Farm @ Carpenter Hill, Marbel.</p>
-  </div>
-
-  <div class="band diag-both" style="margin:8px 0">
-    <img src="foto-4.jpg" alt="" onerror="this.style.display='none'">
-    <div class="band-label">Recepción</div>
-  </div>
-  <div class="venue-copy">
-    <p>Acompañanos a celebrar el amor y quedate para la fiesta a las 16:00 — cena, cócteles y baile.</p>
-    <p class="hope">The Farm @ Carpenter Hill, Marbel<br>¡Esperamos verte ahí!</p>
-  </div>
-
-  <section class="gallery-wrap">
-    <h4>La galería</h4>
-    <div class="gold-line"></div>
-    <div class="grid">
-      <div></div><div></div><div></div>
-      <div></div><div></div><div></div>
-      <div></div><div></div><div></div>
-    </div>
-  </section>
-
-  <div class="rsvp-band">
-    <img src="foto-5.jpg" alt="" onerror="this.style.display='none'">
-  </div>
-
-  <section class="rsvp">
-    <div class="mono">O&amp;R</div>
-    <p class="title">Confirmá tu asistencia</p>
-    <p>Intercambiaremos votos el 18 de mayo de 2027 a las 14:00 en la Parroquia Nuestra Señora de Lourdes. Por favor confirmá antes del 1 de mayo.</p>
-    <button class="btn">Confirmar asistencia</button>
-  </section>
-
-  <section class="reminder">
+  <section class="reminder reveal">
     <h4>Recordatorio</h4>
     <p>Por favor sé puntual y evitá usar el celular durante la ceremonia. Escaneá nuestro QR para acceder al álbum oficial de la boda.</p>
     <div class="qr">
@@ -280,8 +359,77 @@
     <div class="mono">O&amp;R</div>
     <div class="names-sm">OLIVIA &amp; RALPH</div>
     <div class="date-sm">18 de mayo, 2027</div>
+    <div class="made">Invitación digital &middot; veintidós</div>
   </footer>
 
 </div>
+
+<script>
+  var revealEls = document.querySelectorAll('.reveal, .reveal-zoom');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  var target = new Date('2027-05-18T14:00:00-03:00').getTime();
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function tick(){
+    var diff = target - Date.now();
+    if(diff < 0) diff = 0;
+    var d = Math.floor(diff / 86400000);
+    var h = Math.floor(diff % 86400000 / 3600000);
+    var m = Math.floor(diff % 3600000 / 60000);
+    var s = Math.floor(diff % 60000 / 1000);
+    var elD = document.getElementById('cd-d');
+    if(elD){
+      elD.textContent = d;
+      document.getElementById('cd-h').textContent = pad(h);
+      document.getElementById('cd-m').textContent = pad(m);
+      document.getElementById('cd-s').textContent = pad(s);
+    }
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  function confirmRsvp(btn){
+    if(btn.classList.contains('done')) return;
+    btn.classList.add('done');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> ¡Gracias por confirmar!';
+  }
+
+  function copyHashtag(btn){
+    var text = '#RalphYOliviaParaSiempre';
+    var span = btn.querySelector('span');
+    var original = span.textContent;
+    function done(ok){
+      span.textContent = ok ? '¡Copiado!' : text;
+      setTimeout(function(){ span.textContent = original; }, 1800);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }).catch(function(){ done(false); });
+    } else {
+      done(false);
+    }
+  }
+
+  (function(){
+    var ics = [
+      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//veintidos//boda//ES','BEGIN:VEVENT',
+      'UID:olivia-ralph-2027@veintidos', 'DTSTART:20270518T170000Z', 'DTEND:20270519T020000Z',
+      'SUMMARY:Boda de Olivia & Ralph',
+      'DESCRIPTION:Ceremonia en la Parroquia Nuestra Señora de Lourdes\\, recepción en The Farm @ Carpenter Hill\\, Marbel.',
+      'LOCATION:Parroquia Nuestra Señora de Lourdes',
+      'END:VEVENT','END:VCALENDAR'
+    ].join('\r\n');
+    var link = document.getElementById('ics-link');
+    if(link){ link.setAttribute('href', 'data:text/calendar;charset=utf8,' + encodeURIComponent(ics)); }
+  })();
+</script>
 </body>
 </html>

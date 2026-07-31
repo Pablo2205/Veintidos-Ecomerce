@@ -298,6 +298,22 @@ existentes) que Pablo va mandando.
 | `juan-ana/` | Vino/crema, juguetona, con foto de infancia como gancho principal, línea ondulada dibujada a mano conectando el cronograma | `foto-ninos.jpg`, `foto-1.jpg`, `foto-2.jpg`, `foto-lugar.jpg` |
 | `lorena-gustavo/` | Botánico, verde oliva/crema/dorado, fotos con desvanecido blanco (no papel roto — otra técnica visual) | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg` |
 
+Todas las de arriba viven en `public/demos/boda/`. Las de XV años viven en `public/demos/xv/`,
+armadas replicando 5 referencias de Pinterest (una por paleta de color):
+
+| Carpeta | Estilo | Fotos/assets que usa |
+|---|---|---|
+| `katherina-azul/` | Floral azul, papel roto, cuenta regresiva, sección de música y regalo con alias copiable | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg` |
+| `adriana-celeste/` | Fotográfico celeste, fotos reales a pantalla completa, reproductor de música de fondo funcional (`<audio>` + toggle), regalo por QR | `foto-hero.jpg` a `foto-4.jpg`, `cancion.mp3`, `qr-transferencia.png` |
+| `mariana-lila/` | Floral lavanda, fecha límite de confirmación, "lluvia de sobres" como sugerencia de regalo | `foto-hero.jpg`, `foto-1.jpg`, `cancion.mp3` |
+| `ximena-rosa/` | Elegante rosa/dorado, arco floral en el hero, calendario del mes generado por JS con el día del evento marcado | `foto-hero.jpg` a `foto-3.jpg`, `cancion.mp3` |
+| `marianel-rosa-marron/` | Cream/marrón con rosas, papel roto, padrinos, confirmación por WhatsApp | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg` |
+
+Todas están registradas en `products` (`site.js`, ids 12-16, `category: 'xv-anos'`, plan
+Premium) — aparecen en el catálogo filtrando por "Cumple XV". El reproductor de música
+(`adriana-celeste`, `mariana-lila`, `ximena-rosa`) y el calendario dinámico (`ximena-rosa`)
+son técnicas nuevas, no estaban en las demos de boda — quedan disponibles para reusar.
+
 **Cada demo tiene su propia paleta y su propia técnica visual** — no son variaciones de una
 misma plantilla, son diseños distintos hechos a medida por referencia. Técnicas reutilizadas
 entre demos: bordes de "papel roto" vía `clip-path: polygon()` con amplitud sutil (ojo:

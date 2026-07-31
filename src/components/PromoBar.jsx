@@ -7,13 +7,17 @@ export default function PromoBar() {
   // pantallas anchas. Las dos mitades son idénticas: al animar x de 0% a
   // -50% (el ancho de una mitad), el loop queda perfectamente continuo.
   const half = Array.from({ length: 6 })
+  // Duración proporcional al largo del mensaje para que la velocidad de
+  // desplazamiento se sienta siempre igual, sin importar cuánto texto tenga
+  // (un mensaje más largo con duración fija se ve más rápido).
+  const duration = message.length * 0.8
 
   return (
     <div className="bg-error text-white py-3 sticky top-0 z-[60] overflow-hidden">
       <motion.div
         className="flex w-max"
         animate={{ x: ['0%', '-50%'] }}
-        transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration, repeat: Infinity, ease: 'linear' }}
       >
         {[...half, ...half].map((_, i) => (
           <span

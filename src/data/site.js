@@ -23,19 +23,14 @@ export const BANK_DATA = {
 // Links de pago fijos generados desde el panel de Mercado Pago, uno por
 // plan (cada link tiene un monto fijo, no soporta cantidad ni combinar
 // planes). El checkout solo ofrece Mercado Pago cuando el carrito tiene
-// un único ítem con cantidad 1 — ver `Checkout.jsx`.
+// un único ítem con cantidad 1 — ver `Checkout.jsx`. El monto configurado
+// en cada link en el panel de Mercado Pago tiene que coincidir con lo que
+// devuelve `mpPrice()` para ese plan.
 export const MP_LINKS = {
   Essential: 'https://mpago.la/1tCkbgb',
   Standard: 'https://mpago.la/2YhQAwA',
   Premium: 'https://mpago.la/1JqVsJL',
 }
-
-// La transferencia bancaria directa tiene un descuento adicional respecto del
-// precio de Mercado Pago (se evita la comisión de la plataforma, y ese ahorro
-// se traslada al cliente).
-export const TRANSFER_DISCOUNT_PERCENT = 10
-export const transferPrice = (price) =>
-  Math.round((price * (1 - TRANSFER_DISCOUNT_PERCENT / 100)) / 10) * 10
 
 // --- Google Sheets (formulario post-compra) ---------------------------
 // URL del Web App de Google Apps Script (Implementar > Nueva implementación >
@@ -48,20 +43,42 @@ export const GOOGLE_SHEETS_URL =
 export const MAX_COMPROBANTE_MB = 5
 
 // --- Promo del banner superior -------------------------------------------
-// Puramente de marketing (texto del banner). No modifica ningún precio real.
+// Puramente de marketing (texto del banner) — pero el precio tachado de más
+// abajo SÍ está atado a este número, para que la promo sea matemáticamente
+// consistente en vez de un texto suelto sin relación con los precios reales.
 export const PROMO_PERCENT = 30
 export const currentMonthLabel = () => {
   const mes = new Date().toLocaleDateString('es-AR', { month: 'long' })
   return mes.charAt(0).toUpperCase() + mes.slice(1)
 }
 
+// --- Precios según método de pago -------------------------------------
+// `plans[].price` / `products[].price` es el "precio de lista": el neto que
+// se quiere recibir por la venta. A partir de ahí:
+//
+// - Mercado Pago se queda MP_FEE_PERCENT% de comisión por venta, así que
+//   ese % se traslada al precio para que el neto cobrado siga siendo el
+//   precio de lista.
+// - La transferencia bancaria no tiene comisión, así que además se le hace
+//   un descuento adicional sobre el precio de lista.
+//
+// La diferencia entre ambos totales termina siendo de aproximadamente
+// TRANSFER_DISCOUNT_PERCENT% — así es como se comunica en la UI (badges,
+// PromoBar), aunque el número exacto no cierre en un porcentaje redondo.
+export const MP_FEE_PERCENT = 6
+export const TRANSFER_EXTRA_DISCOUNT_PERCENT = 4
+export const TRANSFER_DISCOUNT_PERCENT = 10 // etiqueta de marketing, ver nota arriba
+
+export const mpPrice = (price) => Math.round((price * (1 + MP_FEE_PERCENT / 100)) / 10) * 10
+export const transferPrice = (price) =>
+  Math.round((price * (1 - TRANSFER_EXTRA_DISCOUNT_PERCENT / 100)) / 10) * 10
+
 // --- Precio "tachado" ------------------------------------------------------
-// Todos los precios que se muestran (planes, catálogo, carrito, checkout)
-// son el precio real que se cobra. Para mostrar un precio tachado más alto
-// arriba (sensación de descuento), multiplicamos por este factor SOLO para
-// mostrar — nunca se usa para cobrar.
-const STRIKETHROUGH_FACTOR = 1.15
-export const originalPrice = (price) => Math.round((price * STRIKETHROUGH_FACTOR) / 10) * 10
+// El precio de lista ya representa el PROMO_PERCENT% OFF del mes vigente
+// (ver PromoBar). El tachado deshace ese descuento para mostrar cuánto
+// costaría sin la promo del mes — puramente cosmético, nunca se usa para
+// cobrar.
+export const originalPrice = (price) => Math.round((price / (1 - PROMO_PERCENT / 100)) / 10) * 10
 
 // --- Colores para el filtro del catálogo ---------------------------------
 // Paleta de swatches seleccionables. "hex" es lo que se pinta en el círculo;
@@ -78,6 +95,7 @@ export const productColors = [
   { key: 'blanco', label: 'Blanco', hex: '#FFFFFF', border: '#D8D8D8' },
   { key: 'celeste', label: 'Celeste', hex: '#7FC7E8' },
   { key: 'rojo', label: 'Rojo', hex: '#6E1B26' },
+  { key: 'lila', label: 'Lila', hex: '#A57FC4' },
 ]
 
 // --- Ranking de planes -----------------------------------------------
@@ -318,5 +336,75 @@ export const products = [
     image: '/demos/boda/lorena-gustavo/foto-hero.jpg',
     style: 'Botánico — fotos difuminadas',
     palette: ['#FAF7F0', '#3F4A34', '#C6A15B'],
+  },
+  {
+    id: 12,
+    name: 'Invitación XV — Katherina',
+    category: 'xv-anos',
+    plan: 'Premium',
+    price: 88000,
+    color: 'azul',
+    gradient: 'from-[#8FAEC9] to-[#3E5C76]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/xv/katherina-azul/',
+    image: '/demos/xv/katherina-azul/foto-hero.jpg',
+    style: 'Floral azul — papel roto',
+    palette: ['#F8FAFC', '#5D82A8', '#3E5C76'],
+  },
+  {
+    id: 13,
+    name: 'Invitación XV — Adriana',
+    category: 'xv-anos',
+    plan: 'Premium',
+    price: 88000,
+    color: 'celeste',
+    gradient: 'from-[#6E93B5] to-[#243447]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/xv/adriana-celeste/',
+    image: '/demos/xv/adriana-celeste/foto-hero.jpg',
+    style: 'Fotográfico celeste — con QR de regalos',
+    palette: ['#FBFAF7', '#6E93B5', '#243447'],
+  },
+  {
+    id: 14,
+    name: 'Invitación XV — Mariana',
+    category: 'xv-anos',
+    plan: 'Premium',
+    price: 88000,
+    color: 'lila',
+    gradient: 'from-[#A57FC4] to-[#7C5A9C]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/xv/mariana-lila/',
+    image: '/demos/xv/mariana-lila/foto-hero.jpg',
+    style: 'Floral lavanda',
+    palette: ['#F8F5FB', '#A57FC4', '#7C5A9C'],
+  },
+  {
+    id: 15,
+    name: 'Invitación XV — Ximena',
+    category: 'xv-anos',
+    plan: 'Premium',
+    price: 88000,
+    color: 'rosa',
+    gradient: 'from-[#D9A8A0] to-[#8C6B3B]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/xv/ximena-rosa/',
+    image: '/demos/xv/ximena-rosa/foto-hero.jpg',
+    style: 'Elegante rosa/dorado — con calendario',
+    palette: ['#FBF8F3', '#D9A8A0', '#B8935A'],
+  },
+  {
+    id: 16,
+    name: 'Invitación XV — Marianel',
+    category: 'xv-anos',
+    plan: 'Premium',
+    price: 88000,
+    color: 'marron',
+    gradient: 'from-[#B08A5E] to-[#7A5C3E]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/xv/marianel-rosa-marron/',
+    image: '/demos/xv/marianel-rosa-marron/foto-hero.jpg',
+    style: 'Cream/marrón — rosas, papel roto',
+    palette: ['#FFFFFF', '#B08A5E', '#7A5C3E'],
   },
 ]

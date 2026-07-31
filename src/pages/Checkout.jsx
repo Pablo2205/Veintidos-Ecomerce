@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import { useCart } from '../context/CartContext.jsx'
-import { BANK_DATA, MP_LINKS, TRANSFER_DISCOUNT_PERCENT, transferPrice, originalPrice } from '../data/site.js'
+import { BANK_DATA, MP_LINKS, TRANSFER_DISCOUNT_PERCENT, MP_FEE_PERCENT, mpPrice, transferPrice, originalPrice } from '../data/site.js'
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 
@@ -66,6 +66,7 @@ export default function Checkout() {
   const mpLink = mpEligible ? MP_LINKS[singleItem.plan] : null
   const activeMethod = mpEligible ? method : 'transferencia'
 
+  const mpTotal = mpPrice(subtotal)
   const transferTotal = transferPrice(subtotal)
 
   const goToForm = (paymentMethod, totalPaid) =>
@@ -138,8 +139,9 @@ export default function Checkout() {
                   <Icon name="info" className="text-secondary flex-shrink-0 mt-0.5" />
                   <p className="font-sans text-sm text-onSurfaceVariant">
                     Te vamos a redirigir a Mercado Pago para completar el pago del plan{' '}
-                    <strong className="text-primary">{singleItem.plan}</strong>. Cuando termines, volvé a esta
-                    pestaña y tocá <strong>"Ya pagué, continuar"</strong> para cargar los datos de tu evento.
+                    <strong className="text-primary">{singleItem.plan}</strong> (el total ya incluye la comisión de
+                    Mercado Pago del {MP_FEE_PERCENT}%). Cuando termines, volvé a esta pestaña y tocá{' '}
+                    <strong>"Ya pagué, continuar"</strong> para cargar los datos de tu evento.
                   </p>
                 </div>
 
@@ -155,7 +157,7 @@ export default function Checkout() {
                   <Reveal>
                     <motion.button
                       whileTap={{ scale: 0.97 }}
-                      onClick={() => goToForm('mercadopago', subtotal)}
+                      onClick={() => goToForm('mercadopago', mpTotal)}
                       className="w-full md:w-auto border-2 border-primary text-primary font-sans font-bold rounded-full px-10 py-4 flex items-center justify-center gap-2 hover:bg-primary hover:text-onPrimary transition-colors"
                     >
                       Ya pagué, continuar <Icon name="arrow_forward" />
@@ -253,19 +255,27 @@ export default function Checkout() {
                     {money(items.reduce((sum, i) => sum + originalPrice(i.price) * (i.qty || 1), 0))}
                   </p>
                   <p className="font-serif text-headline-lg font-bold text-primary">
-                    {money(activeMethod === 'mercadopago' ? subtotal : transferTotal)}
+                    {money(activeMethod === 'mercadopago' ? mpTotal : transferTotal)}
                   </p>
                 </div>
               </div>
 
-              {activeMethod === 'transferencia' && (
+              {activeMethod === 'transferencia' ? (
                 <div className="flex items-center gap-2 bg-error/10 border border-error/30 rounded-xl px-4 py-3">
                   <span className="bg-error text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">
                     -{TRANSFER_DISCOUNT_PERCENT}%
                   </span>
                   <p className="font-sans text-xs text-onSurfaceVariant">
-                    Ahorrás <strong className="text-error">{money(subtotal - transferTotal)}</strong> pagando por
-                    transferencia.
+                    Ahorrás <strong className="text-error">{money(mpTotal - transferTotal)}</strong> pagando por
+                    transferencia en vez de Mercado Pago.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 bg-creamSurface border border-outlineVariant/40 rounded-xl px-4 py-3">
+                  <Icon name="info" className="text-secondary text-base flex-shrink-0" />
+                  <p className="font-sans text-xs text-onSurfaceVariant">
+                    Incluye la comisión de Mercado Pago ({MP_FEE_PERCENT}%). Con transferencia pagás{' '}
+                    <strong className="text-primary">{money(mpTotal - transferTotal)}</strong> menos.
                   </p>
                 </div>
               )}

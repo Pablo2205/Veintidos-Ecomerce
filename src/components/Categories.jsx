@@ -8,6 +8,7 @@ import { categories, waLink } from '../data/site.js'
 const panelGradients = [
   'from-[#8FB996] to-[#1F2E1C]',
   'from-[#D9C98A] to-[#3C2E10]',
+  'from-[#C5A059] to-[#182317]',
 ]
 
 function CategoryPanel({ category: c, gradient }) {
@@ -57,18 +58,24 @@ function CategoryPanel({ category: c, gradient }) {
         </p>
         <div className="flex flex-wrap gap-3">
           <WhatsAppButton
-            href={waLink(`Hola! Quiero una invitación digital para ${c.name}. ¿Me pasan info y precios?`)}
+            href={waLink(
+              c.consultOnly
+                ? 'Hola! Quiero consultar por una invitación digital para mi evento (no es boda ni cumple XV). ¿Me cuentan qué pueden armar?'
+                : `Hola! Quiero una invitación digital para ${c.name}. ¿Me pasan info y precios?`
+            )}
             className="py-3 px-6 text-sm"
             iconClassName="w-4 h-4"
           >
             Consultar
           </WhatsAppButton>
-          <Link
-            to={`/catalogo?evento=${c.slug}`}
-            className="border border-white/35 text-white py-3 px-6 rounded-full font-sans text-xs font-semibold tracking-wide hover:bg-white/10 hover:border-white/60 transition-all text-center"
-          >
-            Ver demos
-          </Link>
+          {!c.consultOnly && (
+            <Link
+              to={`/catalogo?evento=${c.slug}`}
+              className="border border-white/35 text-white py-3 px-6 rounded-full font-sans text-xs font-semibold tracking-wide hover:bg-white/10 hover:border-white/60 transition-all text-center"
+            >
+              Ver demos
+            </Link>
+          )}
         </div>
       </div>
     </motion.div>

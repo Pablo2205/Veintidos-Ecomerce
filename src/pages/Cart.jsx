@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import { useCart } from '../context/CartContext.jsx'
-import { originalPrice } from '../data/site.js'
+import { originalPrice, TRANSFER_DISCOUNT_PERCENT } from '../data/site.js'
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
+const savingsPercent = (price) => Math.round(100 - (price / originalPrice(price)) * 100)
 
 export default function Cart() {
   const { items, remove, setQty, subtotal } = useCart()
@@ -68,10 +69,15 @@ export default function Cart() {
                         </button>
                       </div>
                       <div className="text-right">
-                        <span className="block text-xs font-sans line-through text-onSurfaceVariant/60">
-                          {money(originalPrice(item.price) * qty)}
+                        <span className="flex items-center justify-end gap-2">
+                          <span className="text-sm font-sans line-through text-onSurfaceVariant/70">
+                            {money(originalPrice(item.price) * qty)}
+                          </span>
+                          <span className="bg-error text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+                            -{savingsPercent(item.price)}%
+                          </span>
                         </span>
-                        <span className="font-serif text-headline-md text-primary">{money(item.price * qty)}</span>
+                        <span className="font-serif text-headline-md font-bold text-primary">{money(item.price * qty)}</span>
                       </div>
                     </div>
                   </div>
@@ -146,12 +152,21 @@ export default function Cart() {
                 <div className="flex justify-between items-baseline pt-4 border-t border-outlineVariant/30">
                   <span className="font-bold text-primary">Total</span>
                   <div className="text-right">
-                    <span className="block text-xs font-sans line-through text-onSurfaceVariant/50">
+                    <span className="block text-sm font-sans line-through text-onSurfaceVariant/70">
                       {money(originalSubtotal - promoDiscount)}
                     </span>
-                    <span className="font-serif text-headline-md text-primary">{money(total)}</span>
+                    <span className="font-serif text-headline-lg font-bold text-primary">{money(total)}</span>
                   </div>
                 </div>
+              </div>
+
+              <div className="flex items-center gap-2 bg-error/10 border border-error/30 rounded-xl px-4 py-3">
+                <span className="bg-error text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">
+                  -{TRANSFER_DISCOUNT_PERCENT}%
+                </span>
+                <p className="font-sans text-xs text-onSurfaceVariant">
+                  Pagando por transferencia bancaria obtenés un {TRANSFER_DISCOUNT_PERCENT}% de descuento adicional.
+                </p>
               </div>
 
               <Link

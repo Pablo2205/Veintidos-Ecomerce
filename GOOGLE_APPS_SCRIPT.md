@@ -13,8 +13,12 @@ uno nuevo.
 2. En la primera fila (fila 1) poné estos encabezados, en este orden:
 
 ```
-Fecha | Referencia | Plan | Nombres | WhatsApp | Email | Tipo de evento | Fecha del evento | Lugar | Dirección | Maps | Regalos | Dress code | Música | Galería (link) | Video | Personalización | Pedido (resumen) | Comprobante (link)
+Fecha | Referencia | Método de pago | Total pagado | Plan | Nombres | WhatsApp | Email | Tipo de evento | Fecha del evento | Lugar | Dirección | Maps | Regalos | Dress code | Música | Galería (link) | Video | Personalización | Pedido (resumen) | Comprobante (link)
 ```
+
+> Si ya tenías la planilla creada con los encabezados viejos (sin "Método de pago" ni "Total
+> pagado"), insertá esas dos columnas nuevas después de "Referencia" y antes de "Plan" — el
+> orden tiene que coincidir con el `appendRow` del script de abajo.
 
 ## 2. Pegar el script
 
@@ -48,6 +52,8 @@ function doPost(e) {
     sheet.appendRow([
       new Date(),
       data.orderRef || '',
+      data.paymentMethod === 'mercadopago' ? 'Mercado Pago' : 'Transferencia',
+      data.totalPaid || '',
       data.plan || '',
       data.names || '',
       data.whatsapp || '',
@@ -120,6 +126,8 @@ Gracias por elegir veintidós ✦
   const cuerpoDueno = `Nuevo pedido recibido.
 
 Referencia: ${data.orderRef || '-'}
+Método de pago: ${data.paymentMethod === 'mercadopago' ? 'Mercado Pago' : 'Transferencia'}
+Total pagado: ${data.totalPaid || '-'}
 Plan: ${data.plan || '-'}
 Nombres: ${data.names || '-'}
 WhatsApp: ${data.whatsapp || '-'}
@@ -179,5 +187,13 @@ con el comprobante guardado en Drive y linkeado, y salen los dos mails automáti
   más si es Google Workspace) — de sobra para el volumen de un negocio como este.
 - Si el cliente no cargó email, simplemente no se manda el mail de confirmación a él (el aviso a
   vos sí llega siempre).
+- **Cruzar pagos con pedidos:** para transferencias, cada fila tiene la "Referencia" (`orderRef`,
+  ej. `VD-123456`) y el checkout le pide al cliente que la use como concepto de la transferencia —
+  buscala en el resumen del banco. Para Mercado Pago no hay forma de inyectar esa referencia en el
+  link de pago (es un link de monto fijo, no una integración con API), así que ahí el cruce es
+  manual: como cada plan tiene un precio distinto, y el detalle del pago en tu cuenta de Mercado
+  Pago muestra nombre/email del pagador, alcanza con comparar monto + nombre/email contra la fila
+  de la planilla con "Método de pago" = Mercado Pago y sin comprobante (no se pide, porque el
+  formulario no muestra ese paso cuando se pagó por Mercado Pago).
 - Los comprobantes pesados (fotos de alta resolución) pueden tardar unos segundos en subir — es
   esperable, no es un error.

@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
-import { PROMO_PERCENT, currentMonthLabel } from '../data/site.js'
+import { PROMO_PERCENT, TRANSFER_DISCOUNT_PERCENT, currentMonthLabel } from '../data/site.js'
 
 export default function PromoBar() {
-  const message = `✦ ${PROMO_PERCENT}% OFF durante todo ${currentMonthLabel()}`
+  const message = `✦ ${PROMO_PERCENT}% OFF durante todo ${currentMonthLabel()} ✦ +${TRANSFER_DISCOUNT_PERCENT}% OFF adicional pagando por transferencia`
   // 6 repeticiones por mitad para que la tira nunca se corte, incluso en
   // pantallas anchas. Las dos mitades son idénticas: al animar x de 0% a
   // -50% (el ancho de una mitad), el loop queda perfectamente continuo.

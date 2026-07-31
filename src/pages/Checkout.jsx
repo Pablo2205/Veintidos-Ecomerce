@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import { useCart } from '../context/CartContext.jsx'
-import { BANK_DATA, MP_LINKS, TRANSFER_SURCHARGE_PERCENT, transferPrice, originalPrice } from '../data/site.js'
+import { BANK_DATA, MP_LINKS, TRANSFER_DISCOUNT_PERCENT, transferPrice, originalPrice } from '../data/site.js'
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 
@@ -42,6 +42,11 @@ export default function Checkout() {
   const [method, setMethod] = useState('mercadopago')
   const [mpConfirming, setMpConfirming] = useState(false)
 
+  // Se genera una sola vez por sesión de checkout (no en cada render) para que
+  // la referencia que el cliente ve y copia sea siempre la misma que viaja al
+  // formulario y a la planilla — es la clave para cruzar pagos con pedidos.
+  const orderRef = useMemo(() => `VD-${Date.now().toString().slice(-6)}`, [])
+
   if (items.length === 0) {
     return (
       <div className="wrap py-24 text-center">
@@ -52,8 +57,6 @@ export default function Checkout() {
       </div>
     )
   }
-
-  const orderRef = `VD-${Date.now().toString().slice(-6)}`
 
   // Los links de pago de Mercado Pago son de monto fijo por plan: no soportan
   // cantidad ni combinar varios ítems. Solo se ofrecen cuando el carrito trae
@@ -100,11 +103,14 @@ export default function Checkout() {
                 </button>
                 <button
                   onClick={() => setMethod('transferencia')}
-                  className={`px-6 py-2.5 rounded-full font-sans text-label transition-colors ${
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-sans text-label transition-colors ${
                     activeMethod === 'transferencia' ? 'bg-primary text-onPrimary' : 'text-onSurfaceVariant hover:text-primary'
                   }`}
                 >
                   Transferencia
+                  <span className="bg-error text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    -{TRANSFER_DISCOUNT_PERCENT}%
+                  </span>
                 </button>
               </div>
             </Reveal>
@@ -156,24 +162,39 @@ export default function Checkout() {
                     </motion.button>
                   </Reveal>
                 )}
+
+                <button
+                  onClick={() => setMethod('transferencia')}
+                  className="font-sans text-sm text-secondary hover:text-primary underline underline-offset-4 transition-colors"
+                >
+                  ¿Preferís transferencia? Ahorrás {TRANSFER_DISCOUNT_PERCENT}% adicional
+                </button>
               </section>
             </Reveal>
           ) : (
             <Reveal delay={0.05}>
               <section className="space-y-6">
-                <h2 className="font-serif text-headline-md text-primary flex items-center gap-3">
-                  <Icon name="account_balance" /> Datos para transferir
-                </h2>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h2 className="font-serif text-headline-md text-primary flex items-center gap-3">
+                    <Icon name="account_balance" /> Datos para transferir
+                  </h2>
+                  <span className="bg-error text-white text-label font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+                    -{TRANSFER_DISCOUNT_PERCENT}% de descuento
+                  </span>
+                </div>
                 <div className="space-y-3">
                   <CopyField label="Alias" value={BANK_DATA.alias} />
                   <CopyField label="CBU" value={BANK_DATA.cbu} />
                   <CopyField label="Titular" value={BANK_DATA.titular} />
+                  <CopyField label="Concepto / referencia (importante)" value={orderRef} />
                 </div>
                 <div className="flex items-start gap-3 bg-creamSurface border border-secondaryFixed rounded-xl p-5">
                   <Icon name="info" className="text-secondary flex-shrink-0 mt-0.5" />
                   <p className="font-sans text-sm text-onSurfaceVariant">
-                    La transferencia directa tiene un recargo del {TRANSFER_SURCHARGE_PERCENT}% sobre el precio de
-                    Mercado Pago (ya reflejado en el total). Después de transferir, tocá{' '}
+                    Pagando por transferencia directa obtenés <strong className="text-error">{TRANSFER_DISCOUNT_PERCENT}% de descuento</strong>{' '}
+                    adicional sobre el precio de Mercado Pago (ya reflejado en el total). Poné{' '}
+                    <strong>{orderRef}</strong> como concepto o motivo de la transferencia si tu banco lo permite —
+                    así podemos cruzarla con tu pedido más rápido. Después tocá{' '}
                     <strong>"Ya transferí, continuar"</strong>. En la siguiente pantalla cargás los datos de tu
                     evento y subís una foto o captura del comprobante. Validamos el pago y te confirmamos por
                     WhatsApp en el día.
@@ -212,10 +233,10 @@ export default function Checkout() {
                         <p className="font-bold text-primary font-sans">{item.name}</p>
                         <p className="text-label text-onSurfaceVariant mt-1 font-sans">{item.plan}</p>
                         <p className="mt-2 font-sans">
-                          <span className="line-through text-onSurfaceVariant/50 text-xs mr-2">
+                          <span className="line-through text-onSurfaceVariant/70 text-sm mr-2">
                             {money(originalPrice(item.price) * qty)}
                           </span>
-                          <span className="text-primary font-semibold">{money(item.price * qty)}</span>
+                          <span className="text-primary font-bold">{money(item.price * qty)}</span>
                         </p>
                       </div>
                     </div>
@@ -228,14 +249,26 @@ export default function Checkout() {
                   {activeMethod === 'mercadopago' ? 'Total a pagar' : 'Total a transferir'}
                 </p>
                 <div className="text-right">
-                  <p className="text-xs font-sans line-through text-onSurfaceVariant/50">
+                  <p className="text-sm font-sans line-through text-onSurfaceVariant/70">
                     {money(items.reduce((sum, i) => sum + originalPrice(i.price) * (i.qty || 1), 0))}
                   </p>
-                  <p className="font-serif text-headline-lg text-primary">
+                  <p className="font-serif text-headline-lg font-bold text-primary">
                     {money(activeMethod === 'mercadopago' ? subtotal : transferTotal)}
                   </p>
                 </div>
               </div>
+
+              {activeMethod === 'transferencia' && (
+                <div className="flex items-center gap-2 bg-error/10 border border-error/30 rounded-xl px-4 py-3">
+                  <span className="bg-error text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">
+                    -{TRANSFER_DISCOUNT_PERCENT}%
+                  </span>
+                  <p className="font-sans text-xs text-onSurfaceVariant">
+                    Ahorrás <strong className="text-error">{money(subtotal - transferTotal)}</strong> pagando por
+                    transferencia.
+                  </p>
+                </div>
+              )}
 
               <p className="text-center text-[11px] text-onSurfaceVariant px-2 font-sans">
                 Referencia de tu pedido: <span className="font-semibold">{orderRef}</span> — mencionala si nos

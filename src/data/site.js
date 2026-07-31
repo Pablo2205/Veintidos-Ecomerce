@@ -30,11 +30,12 @@ export const MP_LINKS = {
   Premium: 'https://mpago.la/1JqVsJL',
 }
 
-// La transferencia bancaria directa tiene un recargo respecto del precio de
-// Mercado Pago (que ya descuenta la comisión de la plataforma).
-export const TRANSFER_SURCHARGE_PERCENT = 10
+// La transferencia bancaria directa tiene un descuento adicional respecto del
+// precio de Mercado Pago (se evita la comisión de la plataforma, y ese ahorro
+// se traslada al cliente).
+export const TRANSFER_DISCOUNT_PERCENT = 10
 export const transferPrice = (price) =>
-  Math.round((price * (1 + TRANSFER_SURCHARGE_PERCENT / 100)) / 10) * 10
+  Math.round((price * (1 - TRANSFER_DISCOUNT_PERCENT / 100)) / 10) * 10
 
 // --- Google Sheets (formulario post-compra) ---------------------------
 // URL del Web App de Google Apps Script (Implementar > Nueva implementación >
@@ -120,6 +121,15 @@ export const categories = [
     name: 'Cumple XV',
     desc: 'Diseños llenos de magia y brillo para una noche que se recuerda toda la vida.',
     image: '/images/XV.jpg',
+  },
+  {
+    slug: 'otro',
+    name: 'Otro evento',
+    desc: '¿Cumpleaños, aniversario, baby shower u otra celebración? Contanos qué estás festejando y te asesoramos.',
+    // Sin catálogo propio (el catálogo solo tiene diseños para Boda y Cumple XV) —
+    // este panel siempre deriva a consulta directa por WhatsApp. Ver `consultOnly`
+    // en `Categories.jsx`.
+    consultOnly: true,
   },
 ]
 

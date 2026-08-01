@@ -6,95 +6,135 @@
 <title>Camila & Sebastián — Nos casamos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream:#FBF7F0;
-    --ink:#3A2C1E;
-    --ink-soft:#8C7A65;
-    --brown-deep:#7A5230;
-    --brown:#A9784C;
-    --brown-light:#EFE1CC;
-    --line:#E6D6BC;
+    --cream:#FBF3EC;
+    --cream-deep:#F3E2D3;
+    --terracotta:#A85338;
+    --terracotta-deep:#6E3320;
+    --tajibo:#D98BA5;
+    --tajibo-deep:#8B3F56;
+    --ink:#3A2A22;
+    --ink-soft:#8C7565;
+    --line:#E7D3C4;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   .page{max-width:480px;margin:0 auto;overflow:hidden;position:relative}
-  .serif{font-family:'Playfair Display',serif}
-  .script{font-family:'Alex Brush',cursive}
-  .eyebrow{font-size:.68rem;letter-spacing:.32em;text-transform:uppercase;font-weight:500;color:var(--brown-deep)}
+  .display{font-family:'Fraunces',serif;font-style:italic}
+  .eyebrow{font-size:.68rem;letter-spacing:.32em;text-transform:uppercase;font-weight:500}
 
-  .progress{position:fixed;top:0;left:0;height:2px;background:var(--brown-deep);z-index:50;width:0%;transition:width .1s linear}
+  .progress{position:fixed;top:0;left:0;height:2px;background:var(--terracotta-deep);z-index:50;width:0%;transition:width .1s linear}
   .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
   .reveal.is-visible{opacity:1;transform:translateY(0)}
   @media (prefers-reduced-motion: reduce){.reveal{transition:none;opacity:1;transform:none}}
 
-  section{padding:38px 26px;position:relative}
+  section{padding:44px 28px;position:relative}
   .center{text-align:center}
+  .band-cream{background:var(--cream)}
+  .band-cream-deep{background:var(--cream-deep)}
+  .band-terracotta{background:var(--terracotta-deep);color:var(--cream)}
+  .band-terracotta .eyebrow, .band-terracotta .ink-soft{color:#E9C9BB}
 
-  /* envelope hero */
-  .envelope{position:relative;height:220px;background:linear-gradient(160deg,var(--brown),var(--brown-deep));overflow:hidden}
-  .envelope::before{content:'';position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(160deg,var(--brown-deep),var(--brown));clip-path:polygon(0 0,50% 78%,100% 0)}
-  .envelope-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:22px;color:#fff}
-  .envelope-content .names{font-family:'Alex Brush',cursive;font-size:2.2rem;text-align:center;line-height:1.1}
-  .envelope-content .amp{font-family:'Jost',sans-serif;font-size:1rem;opacity:.8}
-  .envelope-content .date{margin-top:10px;font-size:.85rem;letter-spacing:.15em}
+  /* ── divisor con flor de tajibo — el motivo que se repite en toda la invitación ── */
+  .divider{display:flex;align-items:center;justify-content:center;gap:14px;margin:22px auto}
+  .divider .ln{width:34px;height:1px;background:var(--line)}
+  .band-terracotta .divider .ln{background:rgba(255,255,255,.28)}
+  .divider svg{width:18px;height:18px}
 
-  .monogram{width:56px;height:56px;border:1.5px solid var(--brown-deep);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--brown-deep);letter-spacing:.05em}
+  /* ── hero ── */
+  .hero{position:relative;height:100svh;min-height:560px;max-height:760px;overflow:hidden;background:linear-gradient(160deg,var(--terracotta),var(--terracotta-deep))}
+  .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to top, var(--terracotta-deep) 4%, rgba(110,51,32,.45) 34%, rgba(110,51,32,.05) 62%, transparent 78%)}
+  .hero-corner{position:absolute;top:18px;left:18px;width:40px;height:40px;color:#F3D9C9;opacity:.9;z-index:2}
+  .hero-content{position:absolute;left:0;right:0;bottom:34px;z-index:2;text-align:center;color:var(--cream);padding:0 24px}
+  .hero-content .eyebrow{color:#F3D9C9;margin-bottom:10px}
+  .hero-names{font-size:2.5rem;line-height:1.12}
+  .hero-date{margin-top:14px;display:inline-flex;align-items:center;gap:10px;font-size:.78rem;letter-spacing:.2em;padding:8px 18px;border:1px solid rgba(255,255,255,.4);border-radius:999px}
 
-  .msg{color:var(--ink-soft);font-size:.9rem;line-height:1.7;max-width:300px;margin:16px auto 0;font-style:italic}
+  /* pétalos cayendo — ambiente sutil, desactivado con reduced motion */
+  .petal-fall{position:absolute;top:-6%;width:14px;height:14px;color:var(--tajibo);opacity:.85;animation:fall linear infinite;z-index:1}
+  @keyframes fall{
+    0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:0}
+    8%{opacity:.85}
+    92%{opacity:.6}
+    100%{transform:translateY(112vh) translateX(var(--drift,24px)) rotate(200deg);opacity:0}
+  }
+  @media (prefers-reduced-motion: reduce){.petal-fall{display:none}}
 
-  .photo{width:100%;border-radius:14px;overflow:hidden;background:linear-gradient(160deg,var(--brown),var(--brown-deep));margin-top:18px}
+  /* ── sello / monograma ── */
+  .seal{text-align:center}
+  .seal svg{width:54px;height:54px;color:var(--tajibo)}
+  .seal-initials{font-family:'Fraunces',serif;font-style:italic;font-size:1.05rem;color:var(--terracotta-deep);letter-spacing:.1em;margin-top:6px}
+
+  .msg{color:var(--ink-soft);font-size:.92rem;line-height:1.75;max-width:290px;margin:14px auto 0}
+  .msg.display{font-size:1.05rem;color:var(--terracotta-deep);font-style:italic}
+
+  .photo{width:100%;overflow:hidden;background:linear-gradient(160deg,var(--terracotta),var(--terracotta-deep))}
   .photo img{width:100%;height:100%;object-fit:cover;display:block}
-  .photo.sq{height:300px}
-  .photo.tall{height:340px}
+  .photo.tall{height:360px}
 
-  .player{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px}
-  .player-label{font-size:.68rem;letter-spacing:.15em;color:var(--ink-soft);text-align:center;margin-bottom:8px}
-  .player button{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--brown-deep);background:none;color:var(--brown-deep);display:flex;align-items:center;justify-content:center;cursor:pointer}
-  .player .play{width:44px;height:44px;background:var(--brown-deep);color:#fff}
+  .player{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:22px}
+  .player-label{font-size:.68rem;letter-spacing:.15em;text-align:center;margin-bottom:10px}
+  .player button{width:34px;height:34px;border-radius:50%;border:1.5px solid currentColor;background:none;color:inherit;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .player .play{width:46px;height:46px;background:var(--tajibo-deep);border-color:var(--tajibo-deep);color:#fff}
+  .band-terracotta .player button{color:var(--cream)}
+  .band-terracotta .player .play{background:var(--cream);color:var(--terracotta-deep)}
 
-  .date-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:22px}
-  .date-row .d{font-size:.7rem;letter-spacing:.2em;color:var(--ink-soft)}
-  .date-row .num{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--brown-deep);font-weight:600}
+  .date-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:6px}
+  .date-row .d{font-size:.72rem;letter-spacing:.2em}
+  .date-row .num{font-family:'Fraunces',serif;font-weight:600;font-size:1.6rem}
 
-  .countdown-label{font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--brown-deep);text-align:center;margin-top:20px}
-  .countdown{display:flex;justify-content:center;gap:16px;margin-top:8px}
-  .cd-num{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--ink);font-weight:600}
+  .countdown-label{font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;text-align:center;margin-top:26px}
+  .countdown{display:flex;justify-content:center;gap:18px;margin-top:12px}
+  .cd-num{font-family:'Fraunces',serif;font-weight:600;font-size:1.9rem}
   .cd-num.tick{animation:tick .35s ease}
   @keyframes tick{0%{transform:scale(1.2);opacity:.5}100%{transform:scale(1);opacity:1}}
-  .cd-label{font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-soft);text-align:center;margin-top:2px}
+  .cd-label{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-top:4px;opacity:.75}
 
-  .cal-wrap{margin-top:26px}
-  .cal-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--brown-deep);text-align:center}
+  .cal-wrap{margin-top:6px}
+  .cal-title{font-family:'Fraunces',serif;font-style:italic;font-size:1.3rem;color:var(--terracotta-deep);text-align:center}
   .cal-month{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);text-align:center;margin-top:2px}
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px;max-width:280px;margin-left:auto;margin-right:auto}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:16px;max-width:280px;margin-left:auto;margin-right:auto}
   .cal-grid .dow{font-size:.6rem;color:var(--ink-soft);text-transform:uppercase;text-align:center}
-  .cal-day{font-size:.78rem;color:var(--ink);padding:4px 0;border-radius:50%;text-align:center}
-  .cal-day.active{background:var(--brown-deep);color:#fff;font-weight:600}
+  .cal-day{font-size:.78rem;color:var(--ink);padding:5px 0;border-radius:50%;text-align:center}
+  .cal-day.active{background:var(--tajibo-deep);color:#fff;font-weight:600}
   .cal-day.empty{visibility:hidden}
 
-  h4.h-title{font-family:'Playfair Display',serif;color:var(--brown-deep);font-size:1.2rem}
-  .addr{color:var(--ink-soft);font-size:.86rem;margin-top:4px}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--brown-deep);color:#fff;text-decoration:none;padding:12px 22px;border-radius:999px;font-size:.78rem;letter-spacing:.03em;border:none;cursor:pointer;font-family:'Jost',sans-serif;margin-top:14px}
+  h4.h-title{font-family:'Fraunces',serif;font-style:italic;color:var(--terracotta-deep);font-size:1.35rem}
+  .band-terracotta h4.h-title{color:var(--cream)}
+  .addr{color:var(--ink-soft);font-size:.86rem;margin-top:6px;line-height:1.6}
+  .icon-line{width:30px;height:30px;color:var(--tajibo-deep);margin:0 auto}
+  .band-terracotta .icon-line{color:var(--tajibo)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--terracotta-deep);color:#fff;text-decoration:none;padding:13px 26px;border-radius:999px;font-size:.78rem;letter-spacing:.05em;border:none;cursor:pointer;font-family:'Jost',sans-serif;margin-top:16px;transition:transform .25s ease}
+  .btn:active{transform:scale(.97)}
   .btn.whatsapp{background:#25D366}
+  .band-terracotta .btn{background:var(--cream);color:var(--terracotta-deep)}
 
-  .dress-icons{display:flex;justify-content:center;gap:22px;margin-top:14px}
-  .dress-icons svg{width:30px;height:40px;color:var(--brown-deep)}
-  .code{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--brown-deep);margin-top:6px}
-  .dress-note{text-align:left;max-width:300px;margin:16px auto 0;font-size:.82rem;color:var(--ink-soft);line-height:1.6}
-  .dress-note strong{color:var(--ink)}
+  .dress-icons{display:flex;justify-content:center;gap:26px;margin-top:16px}
+  .dress-icons svg{width:30px;height:40px;color:var(--cream)}
+  .code{font-family:'Fraunces',serif;font-style:italic;font-size:1.3rem;margin-top:8px}
+  .dress-note{text-align:left;max-width:290px;margin:18px auto 0;font-size:.83rem;line-height:1.7}
+  .dress-note strong{font-weight:600}
 
-  .copy-field{margin-top:16px;background:var(--brown-light);border-radius:14px;padding:16px 18px;text-align:left;max-width:280px;margin-left:auto;margin-right:auto}
-  .copy-field .label{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--brown-deep);font-weight:600}
-  .copy-field .value{font-family:'Playfair Display',serif;font-size:1rem;color:var(--ink);margin-top:2px}
-  .copy-btn{margin-top:8px;background:none;border:none;color:var(--brown-deep);font-size:.76rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:'Jost',sans-serif}
+  .copy-field{margin-top:18px;background:var(--cream-deep);border:1px solid var(--line);border-radius:16px;padding:18px 20px;text-align:left;max-width:280px;margin-left:auto;margin-right:auto}
+  .copy-field .label{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--terracotta-deep);font-weight:600}
+  .copy-field .value{font-family:'Fraunces',serif;font-size:1.05rem;color:var(--ink);margin-top:3px}
+  .copy-btn{margin-top:10px;background:none;border:none;color:var(--terracotta-deep);font-size:.76rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:'Jost',sans-serif}
 
-  .note-box{background:var(--brown-light);border-radius:14px;padding:16px 20px;margin-top:18px;font-size:.82rem;color:var(--ink-soft);line-height:1.6}
+  .note-box{background:var(--cream-deep);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-top:20px;font-size:.83rem;color:var(--ink-soft);line-height:1.7;text-align:left}
+  .note-box strong{color:var(--ink)}
 
-  footer{padding:44px 26px 60px;text-align:center}
-  footer .thanks{font-family:'Alex Brush',cursive;font-size:2.4rem;color:var(--brown-deep)}
+  footer{position:relative;padding:0 0 60px;text-align:center;overflow:hidden}
+  .footer-photo{position:relative;height:340px}
+  .footer-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .footer-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom, transparent 55%, var(--terracotta-deep) 100%)}
+  footer .foot-content{background:var(--terracotta-deep);color:var(--cream);padding:8px 26px 52px;margin-top:-2px}
+  footer .thanks{font-family:'Fraunces',serif;font-style:italic;font-size:2.1rem}
+  footer svg.bloom-large{width:64px;height:64px;color:var(--tajibo);margin:0 auto 10px}
 </style>
 </head>
 <body>
@@ -102,68 +142,89 @@
 <div class="progress" id="progress"></div>
 
 <svg width="0" height="0" style="position:absolute">
+  <symbol id="petal" viewBox="-10 -20 20 20"><path fill="currentColor" d="M0,-1 C5,-7 5,-15 0,-19 C-5,-15 -5,-7 0,-1 Z"/></symbol>
+  <symbol id="blossom" viewBox="-24 -24 48 48">
+    <g fill="currentColor">
+      <use href="#petal" transform="rotate(0)"/>
+      <use href="#petal" transform="rotate(72)"/>
+      <use href="#petal" transform="rotate(144)"/>
+      <use href="#petal" transform="rotate(216)"/>
+      <use href="#petal" transform="rotate(288)"/>
+    </g>
+    <circle r="3.2" fill="#E7B84F"/>
+  </symbol>
   <symbol id="icon-suit" viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 3 L12 6 L16 3 L20 6 V29 H4 V6 Z M12 6 L9 10 L12 14 L15 10 Z"/></symbol>
   <symbol id="icon-vestido" viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M9 2 L12 5 L15 2 M9 2 L6 6 L8 9 L8 30 L16 30 L16 9 L18 6 L15 2"/></symbol>
   <symbol id="icon-sobre" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="13" rx="1.5"/><path d="M3 7 L12 14 L21 7"/></symbol>
   <symbol id="icon-calendario" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10 H21 M8 3 V7 M16 3 V7"/></symbol>
-  <symbol id="icon-anillos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="14" r="6"/><circle cx="15" cy="14" r="6"/></symbol>
+  <symbol id="icon-lugar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></symbol>
 </svg>
 
 <div class="page">
 
-  <div class="envelope reveal is-visible">
-    <div class="envelope-content">
-      <div class="names">Camila <span class="amp">&amp;</span> Sebastián</div>
-      <div class="date">19.04.2026</div>
+  <div class="hero reveal is-visible">
+    <img src="foto-hero.jpg" alt="Camila y Sebastián" onerror="this.style.display='none'">
+    <svg class="hero-corner" viewBox="-24 -24 48 48"><use href="#blossom"/></svg>
+    <div class="petal-fall" style="left:12%;--drift:30px;animation-duration:9s;animation-delay:0s"><svg viewBox="-10 -20 20 20" width="100%" height="100%"><use href="#petal"/></svg></div>
+    <div class="petal-fall" style="left:34%;--drift:-18px;animation-duration:12s;animation-delay:3s"><svg viewBox="-10 -20 20 20" width="100%" height="100%"><use href="#petal"/></svg></div>
+    <div class="petal-fall" style="left:68%;--drift:22px;animation-duration:10s;animation-delay:1.5s"><svg viewBox="-10 -20 20 20" width="100%" height="100%"><use href="#petal"/></svg></div>
+    <div class="petal-fall" style="left:85%;--drift:-26px;animation-duration:8s;animation-delay:5s"><svg viewBox="-10 -20 20 20" width="100%" height="100%"><use href="#petal"/></svg></div>
+    <div class="hero-content">
+      <p class="eyebrow">Nos casamos</p>
+      <h1 class="display hero-names">Camila &amp; Sebastián</h1>
+      <div class="hero-date">19 · 04 · 2026</div>
     </div>
   </div>
 
-  <section class="center reveal">
-    <p class="msg" style="font-style:normal">Nos complace anunciar nuestro matrimonio y queremos compartir contigo este momento.</p>
-    <div class="monogram" style="margin-top:18px">C | S</div>
-    <div class="photo sq" style="margin-top:20px"><img src="foto-hero.jpg" alt="¡Nos casamos!" onerror="this.parentElement.style.display='none'"></div>
-    <p class="msg">"Nuestro amor nació en Dios, crece en Cristo y permanecerá por su gracia."</p>
+  <section class="center band-cream reveal">
+    <div class="seal">
+      <svg viewBox="-24 -24 48 48"><use href="#blossom"/></svg>
+      <div class="seal-initials">C &amp; S</div>
+    </div>
+    <p class="msg display">"Nuestro amor nació en Dios, crece en Cristo y permanecerá por su gracia."</p>
 
-    <div class="player-label" style="margin-top:22px">Dale play a nuestra canción</div>
-    <div class="player">
+    <div class="player-label" style="margin-top:26px;color:var(--ink-soft)">Dale play a nuestra canción</div>
+    <div class="player" style="color:var(--terracotta-deep)">
       <button aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12 L5 21 V3 Z" transform="scale(-1,1) translate(-24,0)"/></svg></button>
       <button class="play" id="play-btn" aria-label="Reproducir canción"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" id="play-icon"><path d="M8 5 L19 12 L8 19 Z"/></svg></button>
       <button aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12 L5 21 V3 Z"/></svg></button>
     </div>
     <audio id="bg-audio" src="cancion.mp3" loop></audio>
+  </section>
 
-    <p class="msg" style="margin-top:24px">Con la bendición y el amor de Dios, él escribió nuestra historia, y queremos que seas parte de este hermoso día.</p>
-
-    <div class="date-row"><span class="d">ABRIL</span><span class="num">19</span><span class="d">2026</span></div>
-    <div class="countdown-label">Faltan</div>
+  <section class="center band-terracotta reveal">
+    <p class="eyebrow">Faltan</p>
     <div class="countdown">
       <div><div class="cd-num" id="cd-d">--</div><div class="cd-label">Días</div></div>
       <div><div class="cd-num" id="cd-h">--</div><div class="cd-label">Horas</div></div>
       <div><div class="cd-num" id="cd-m">--</div><div class="cd-label">Min</div></div>
       <div><div class="cd-num" id="cd-s">--</div><div class="cd-label">Seg</div></div>
     </div>
+    <div class="divider"><span class="ln"></span><svg style="color:var(--tajibo)"><use href="#blossom"/></svg><span class="ln"></span></div>
+    <div class="date-row"><span class="d">ABRIL</span><span class="num">19</span><span class="d">2026</span></div>
   </section>
 
-  <section class="reveal">
+  <section class="center band-cream-deep reveal">
     <div class="cal-wrap">
       <div class="cal-title">El Gran Día</div>
       <div class="cal-month" id="cal-month"></div>
       <div class="cal-grid" id="cal-grid"></div>
     </div>
+    <p class="msg" style="margin-top:24px">Con la bendición y el amor de Dios, él escribió nuestra historia, y queremos que seas parte de este hermoso día.</p>
   </section>
 
-  <div class="photo tall reveal" style="margin:0"><img src="foto-1.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
+  <div class="photo tall reveal"><img src="foto-1.jpg" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
 
-  <section class="center reveal">
-    <svg class="dress-icons" style="margin:0 auto"><use href="#icon-anillos"/></svg>
-    <h4 class="h-title" style="margin-top:10px">Lugar</h4>
+  <section class="center band-cream reveal">
+    <svg class="icon-line"><use href="#icon-lugar"/></svg>
+    <h4 class="h-title" style="margin-top:12px">Lugar</h4>
     <p class="addr">5:30 PM — Salón Tajibos<br>Urubó, Santa Cruz de la Sierra</p>
     <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Sal%C3%B3n+Tajibos+Urub%C3%B3" target="_blank" rel="noopener">Ver ubicación</a>
   </section>
 
-  <div class="photo tall reveal" style="margin:0"><img src="foto-2.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
+  <div class="photo tall reveal"><img src="foto-2.jpg" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
 
-  <section class="center reveal">
+  <section class="center band-terracotta reveal">
     <h4 class="h-title">Código de vestimenta</h4>
     <div class="code">Formal</div>
     <div class="dress-icons"><svg><use href="#icon-suit"/></svg><svg><use href="#icon-vestido"/></svg></div>
@@ -173,11 +234,11 @@
     </div>
   </section>
 
-  <section class="center reveal">
-    <svg class="dress-icons" style="margin:0 auto"><use href="#icon-sobre"/></svg>
-    <h4 class="h-title" style="margin-top:10px">Sugerencia de regalo</h4>
+  <section class="center band-cream reveal">
+    <svg class="icon-line"><use href="#icon-sobre"/></svg>
+    <h4 class="h-title" style="margin-top:12px">Sugerencia de regalo</h4>
     <p class="msg" style="font-style:normal">El mejor regalo es tu presencia, pero si deseás tener un detalle con nosotros, te dejamos estas opciones:</p>
-    <p style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--brown-deep);margin-top:14px;font-weight:600">Lluvia de sobres</p>
+    <p style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--terracotta-deep);margin-top:16px;font-weight:600">Lluvia de sobres</p>
     <div class="copy-field">
       <div class="label">Transferencia — Alias</div>
       <div class="value" id="alias-value">CAMILA.SEBA.BODA</div>
@@ -188,28 +249,31 @@
     </div>
   </section>
 
-  <section class="center reveal">
-    <svg class="dress-icons" style="margin:0 auto"><use href="#icon-calendario"/></svg>
-    <h4 class="h-title" style="margin-top:10px">Confirmación</h4>
+  <section class="center band-cream-deep reveal">
+    <svg class="icon-line"><use href="#icon-calendario"/></svg>
+    <h4 class="h-title" style="margin-top:12px">Confirmación</h4>
     <p class="msg" style="font-style:normal">Agradecemos que confirmes tu asistencia antes del 19 de marzo.</p>
-    <a class="btn whatsapp" href="https://wa.me/5491100000000?text=Hola!%20Confirmo%20mi%20asistencia%20a%20la%20boda%20de%20Camila%20y%20Sebasti%C3%A1n" target="_blank" rel="noopener">Confirmar aquí</a>
+    <a class="btn" style="background:#25D366" href="https://wa.me/5491100000000?text=Hola!%20Confirmo%20mi%20asistencia%20a%20la%20boda%20de%20Camila%20y%20Sebasti%C3%A1n" target="_blank" rel="noopener">Confirmar aquí</a>
 
     <div class="note-box">
-      <strong style="color:var(--ink)">Sin niños</strong><br>
+      <strong>Sin niños</strong><br>
       Es nuestro día especial y, aunque amamos a los niños, nuestra boda será solo para adultos. Queremos que puedan tomarse un descanso y disfrutar con nosotros.
     </div>
   </section>
 
   <footer class="reveal">
-    <div class="thanks">¡Muchas gracias!</div>
-    <p style="color:var(--ink-soft);font-size:.85rem;margin-top:6px">Esperamos contar con su presencia</p>
-    <div class="photo sq" style="margin-top:20px"><img src="foto-3.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
+    <div class="footer-photo"><img src="foto-3.jpg" alt="" loading="lazy" onerror="this.style.display='none'"></div>
+    <div class="foot-content">
+      <svg class="bloom-large" viewBox="-24 -24 48 48"><use href="#blossom"/></svg>
+      <div class="thanks">¡Muchas gracias!</div>
+      <p style="opacity:.8;font-size:.85rem;margin-top:8px">Esperamos contar con su presencia</p>
+    </div>
   </footer>
 
 </div>
 
 <script>
-  var FECHA_EVENTO = new Date('2027-04-19T17:30:00');
+  var FECHA_EVENTO = new Date('2026-04-19T17:30:00');
   function pad(n){ return String(n).padStart(2,'0'); }
   function actualizar(){
     var diff = FECHA_EVENTO.getTime() - new Date().getTime();

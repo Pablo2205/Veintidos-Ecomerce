@@ -105,7 +105,7 @@ export default function Catalog() {
 
       <div className="flex flex-col lg:flex-row gap-gutter">
         {/* Filtros */}
-        <aside className="w-full lg:w-64 space-y-8 mb-12 lg:mb-0">
+        <aside className="w-full lg:w-64 space-y-8 mb-12 lg:mb-0 lg:sticky lg:top-32 lg:self-start lg:bg-creamSurface/50 lg:rounded-2xl lg:p-6 lg:border lg:border-outlineVariant/30">
           <div>
             <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Tipo de evento</h3>
             <div className="space-y-2">

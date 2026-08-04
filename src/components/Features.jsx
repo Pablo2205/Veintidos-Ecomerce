@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion'
 import Reveal, { Stagger, staggerItem } from './Reveal.jsx'
 import Icon from './Icon.jsx'
+import TornDivider from './TornDivider.jsx'
 import { features } from '../data/site.js'
 
 export default function Features() {
   return (
-    <section className="py-section bg-primary">
+    <section className="relative py-section bg-primary">
       <div className="wrap">
         <Reveal className="flex flex-col lg:flex-row justify-between items-end mb-14 gap-8">
           <div className="max-w-2xl">
@@ -40,6 +41,7 @@ export default function Features() {
           ))}
         </Stagger>
       </div>
+      <TornDivider className="absolute left-0 right-0 top-full -mt-px" color="fill-primary" seed={0} />
     </section>
   )
 }

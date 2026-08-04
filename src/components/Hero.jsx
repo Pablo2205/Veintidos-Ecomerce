@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { waLink } from '../data/site.js'
 import WhatsAppButton from './WhatsAppButton.jsx'
+import TornDivider from './TornDivider.jsx'
 
 const item = {
   hidden: { opacity: 0, y: 26 },
@@ -14,6 +15,8 @@ export default function Hero() {
     <section className="flex flex-col bg-background">
       {/* Content */}
       <div className="relative min-h-[82vh] flex items-center py-16 lg:py-12 overflow-hidden">
+        {/* Grilla punteada de marca, muy sutil, solo en la mitad derecha */}
+        <div className="absolute inset-y-0 right-0 w-1/2 dot-grid text-outlineVariant/40 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
         {/* Soft botanical circle behind phones */}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[60vw] max-w-[680px] aspect-square rounded-full bg-secondaryContainer/20 blur-3xl pointer-events-none" />
 
@@ -72,7 +75,7 @@ export default function Hero() {
 
       {/* Stats band — dark green ground, the signature element */}
       <motion.div
-        className="bg-primary"
+        className="relative bg-primary"
         initial={reduce ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.9 }}
@@ -94,6 +97,9 @@ export default function Hero() {
             </div>
           ))}
         </div>
+        {/* Borde de "papel roto" — la banda se rasga hacia la sección de eventos,
+            mismo lenguaje visual que el producto (ver public/demos/) */}
+        <TornDivider className="absolute left-0 right-0 top-full -mt-px" color="fill-primary" seed={2} />
       </motion.div>
     </section>
   )

@@ -64,4 +64,12 @@
   .btn-outline {
     @apply border border-outline rounded-full font-sans font-semibold transition-all hover:border-secondary hover:bg-surfaceContainer;
   }
+
+  /* Grilla punteada sutil — textura de fondo de marca (ver CLAUDE.md,
+     "estilo visual general"). Puntos de 1px cada 22px, muy baja opacidad
+     para no competir con el contenido. */
+  .dot-grid {
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
 }

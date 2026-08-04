@@ -191,8 +191,10 @@ ${paidWithMp ? '' : file ? 'Adjunto el comprobante en este mismo chat.' : 'Te ma
 
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-12">
         <aside className="md:col-span-4 space-y-8">
-          <div className="aspect-[3/4] rounded-xl border border-outlineVariant/30 sticky top-32 overflow-hidden bg-gradient-to-br from-[#2a392e] to-[#152419] flex items-end p-6">
-            <p className="text-white font-serif italic">Diseñando cada detalle con vos.</p>
+          <div className="relative aspect-[3/4] rounded-xl border border-outlineVariant/30 sticky top-32 overflow-hidden bg-gradient-to-br from-[#2a392e] to-[#152419] flex items-end p-6">
+            <div className="absolute inset-0 dot-grid text-primaryFixed/10 pointer-events-none" />
+            <span aria-hidden="true" className="absolute top-6 left-6 text-promoGold/60 font-serif italic text-2xl">✦</span>
+            <p className="relative text-white font-serif italic">Diseñando cada detalle con vos.</p>
           </div>
           {cartSummary.length > 0 && (
             <div className="bg-surfaceContainer p-6 rounded-xl space-y-3 border border-promoGold/30">

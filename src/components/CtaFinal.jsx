@@ -1,12 +1,14 @@
 import Reveal from './Reveal.jsx'
 import WhatsAppButton from './WhatsAppButton.jsx'
+import TornDivider from './TornDivider.jsx'
 import { waLink } from '../data/site.js'
 
 export default function CtaFinal() {
   return (
-    <section className="py-section bg-primary border-t border-primaryFixed/10">
+    <section className="relative py-section bg-primary border-t border-primaryFixed/10">
       <div className="wrap text-center">
         <Reveal>
+          <p aria-hidden="true" className="ornament mb-5 text-sm">✦</p>
           <h2
             className="font-serif italic font-normal text-primaryFixed mb-6"
             style={{ fontSize: 'clamp(1.8rem, 4vw, 3.5rem)', lineHeight: 1.1 }}
@@ -27,6 +29,7 @@ export default function CtaFinal() {
           </WhatsAppButton>
         </Reveal>
       </div>
+      <TornDivider className="absolute left-0 right-0 top-full -mt-px" color="fill-primary" seed={1} />
     </section>
   )
 }

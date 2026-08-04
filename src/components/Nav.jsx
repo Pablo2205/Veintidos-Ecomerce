@@ -19,7 +19,7 @@ export default function Nav() {
   const count = items.reduce((n, i) => n + (i.qty || 1), 0)
 
   return (
-    <header className="bg-background border-b border-outlineVariant/30 sticky top-[48px] z-50">
+    <header className="relative bg-background sticky top-[48px] z-50">
       {/* Fila 1: menú a la izquierda, logo centrado, carrito a la derecha —
           columnas separadas (no ambos íconos juntos de un mismo lado), así
           quedan lejos del logo en vez de pegados. */}
@@ -30,8 +30,10 @@ export default function Nav() {
           </button>
         </div>
 
-        <Link to="/" className="flex items-center justify-self-center">
+        <Link to="/" className="flex items-center gap-2.5 justify-self-center group">
+          <span aria-hidden="true" className="hidden sm:inline text-promoGold/50 font-serif italic text-lg transition-colors group-hover:text-promoGold">✦</span>
           <img src={logoWordmark} alt="veintidós" className="h-10 sm:h-11 md:h-14 w-auto" />
+          <span aria-hidden="true" className="hidden sm:inline text-promoGold/50 font-serif italic text-lg transition-colors group-hover:text-promoGold">✦</span>
         </Link>
 
         <div className="justify-self-end">

@@ -11,6 +11,7 @@ export default function Plans() {
       <div className="absolute -top-40 -right-40 w-96 h-96 bg-secondaryContainer/20 rounded-full blur-3xl pointer-events-none" />
       <div className="wrap relative z-10">
         <Reveal className="text-center mb-16">
+          <p aria-hidden="true" className="ornament mb-4 text-sm">✦</p>
           <p className="font-sans text-label text-secondary uppercase tracking-widest mb-4">Nuestros Planes</p>
           <h2
             className="font-serif italic font-normal text-primary"
@@ -31,9 +32,10 @@ export default function Plans() {
               <motion.div
                 key={p.name}
                 variants={staggerItem}
+                whileHover={{ y: -4 }}
                 className={`rounded-2xl p-8 flex flex-col relative transition-all ${
                   isHighlight
-                    ? 'bg-primary border border-promoGold/25'
+                    ? 'bg-primary border border-promoGold/25 lg:scale-[1.045] shadow-xl shadow-primary/10 z-10'
                     : isDark
                     ? 'bg-primaryContainer border border-primaryContainer hover:border-primaryFixed/20'
                     : 'bg-white border border-outlineVariant hover:border-secondary/40'

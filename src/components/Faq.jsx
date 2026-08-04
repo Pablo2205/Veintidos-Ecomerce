@@ -36,6 +36,7 @@ export default function Faq() {
     <section id="preguntas" className="py-section bg-background">
       <div className="max-w-3xl mx-auto px-mobile md:px-gutter">
         <Reveal className="text-center mb-16">
+          <p aria-hidden="true" className="ornament mb-4 text-sm">✦</p>
           <h2 className="font-serif text-headline-lg text-primary">Preguntas frecuentes</h2>
         </Reveal>
         <Reveal delay={0.1} className="space-y-4">

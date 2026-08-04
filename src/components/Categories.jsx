@@ -87,6 +87,7 @@ export default function Categories() {
     <section id="eventos" className="bg-background">
       <div className="wrap">
         <Reveal className="text-center pt-16 pb-12">
+          <p aria-hidden="true" className="ornament mb-4 text-sm">✦</p>
           <p className="font-sans text-label text-secondary uppercase tracking-widest mb-4">¿Qué vas a festejar?</p>
           <h2
             className="font-serif italic font-normal text-primary"

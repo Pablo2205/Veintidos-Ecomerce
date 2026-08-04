@@ -9,6 +9,7 @@ export default function HowItWorks() {
     <section className="py-section bg-creamSurface/40">
       <div className="wrap">
         <Reveal className="text-center mb-16">
+          <p aria-hidden="true" className="ornament mb-4 text-sm">✦</p>
           <p className="font-sans text-label text-secondary uppercase tracking-widest mb-4">Paso a paso</p>
           <h2
             className="font-serif italic font-normal text-primary"
@@ -26,7 +27,9 @@ export default function HowItWorks() {
                 key={caption}
                 variants={staggerItem}
                 whileHover={{ y: -4 }}
-                className="rounded-2xl p-6 flex flex-col gap-5 bg-primaryFixed/70 border border-transparent hover:border-promoGold/30 hover:bg-primaryFixed transition-all duration-300 cursor-default"
+                className={`rounded-2xl p-6 flex flex-col gap-5 bg-primaryFixed/70 border border-transparent transition-all duration-300 cursor-default ${
+                  isWa ? 'hover:border-whatsapp/40 hover:bg-primaryFixed' : 'hover:border-promoGold/30 hover:bg-primaryFixed'
+                }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="w-10 h-10 rounded-full bg-white/70 border border-white/80 flex items-center justify-center flex-shrink-0">

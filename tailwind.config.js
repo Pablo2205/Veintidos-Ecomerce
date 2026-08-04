@@ -4,13 +4,20 @@ export default {
   theme: {
     extend: {
       colors: {
+        // primary y promoGold quedan anclados al logo real (PNG fijo con esos
+        // hex exactos, ver CLAUDE.md sección 2) — cambiarlos generaría un
+        // choque de color entre el isotipo y el resto del sitio.
         primary: '#182317',
         primaryContainer: '#2d392b',
         primaryFixed: '#d9e7d2',
         onPrimary: '#ffffff',
-        secondary: '#52634d',
-        secondaryContainer: '#d2e5ca',
-        secondaryFixed: '#d5e8cc',
+        // `secondary` sí es libre (no depende de ningún asset fijo) — antes
+        // era un oliva casi igual al verde primario, dejando el sitio
+        // prácticamente monocromático. Terracota/rosa cálido rompe eso y
+        // suma una segunda voz de color con carácter propio para bodas/XV.
+        secondary: '#A3634F',
+        secondaryContainer: '#F1DED4',
+        secondaryFixed: '#EDD9CD',
         tertiary: '#152419',
         tertiaryContainer: '#2a392e',
         background: '#fbf9f4',
@@ -30,8 +37,8 @@ export default {
         error: '#ba1a1a',
       },
       fontFamily: {
-        serif: ['"Playfair Display"', 'serif'],
-        sans: ['Montserrat', 'sans-serif'],
+        serif: ['Fraunces', 'serif'],
+        sans: ['Archivo', 'sans-serif'],
       },
       spacing: {
         gutter: '24px',

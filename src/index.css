@@ -13,7 +13,7 @@
   }
   body {
     @apply bg-background text-onSurface antialiased;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Archivo', sans-serif;
   }
   ::selection {
     @apply bg-secondaryContainer text-onSurface;

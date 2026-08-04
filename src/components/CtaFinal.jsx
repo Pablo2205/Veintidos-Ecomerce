@@ -5,13 +5,20 @@ import { waLink } from '../data/site.js'
 
 export default function CtaFinal() {
   return (
-    <section className="relative py-section bg-primary border-t border-primaryFixed/10">
-      <div className="wrap text-center">
+    <section className="relative py-section bg-primary border-t border-primaryFixed/10 overflow-hidden">
+      <span
+        aria-hidden="true"
+        className="hidden md:block absolute -left-[4vw] -bottom-[10vw] font-serif italic font-bold text-primaryFixed/[0.04] leading-none select-none pointer-events-none"
+        style={{ fontSize: '32vw' }}
+      >
+        22
+      </span>
+      <div className="wrap relative text-center">
         <Reveal>
           <p aria-hidden="true" className="ornament mb-5 text-sm">✦</p>
           <h2
             className="font-serif italic font-normal text-primaryFixed mb-6"
-            style={{ fontSize: 'clamp(1.8rem, 4vw, 3.5rem)', lineHeight: 1.1 }}
+            style={{ fontSize: 'clamp(2.25rem, 5.5vw, 4.5rem)', lineHeight: 0.98 }}
           >
             Tu evento merece una invitación{' '}
             <span className="text-promoGold">inolvidable</span>

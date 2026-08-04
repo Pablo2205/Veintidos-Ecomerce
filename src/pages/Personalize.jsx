@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Icon from '../components/Icon.jsx'
 import WhatsAppIcon from '../components/WhatsAppIcon.jsx'
 import WhatsAppButton from '../components/WhatsAppButton.jsx'
+import ProductCover from '../components/ProductCover.jsx'
 import {
   waLink,
   GOOGLE_SHEETS_URL,
@@ -102,7 +103,16 @@ ${paidWithMp ? '' : file ? 'Adjunto el comprobante en este mismo chat.' : 'Te ma
         orderRef,
         paymentMethod,
         totalPaid: location.state?.totalPaid ?? '',
-        cartSummary: cartSummary.map((i) => ({ name: i.name, plan: i.plan, price: i.price, qty: i.qty || 1 })),
+        // id + code viajan para trazabilidad: permiten saber exactamente qué
+        // diseño se compró sin depender de que el nombre no cambie nunca.
+        cartSummary: cartSummary.map((i) => ({
+          id: i.id,
+          code: i.code || '',
+          name: i.name,
+          plan: i.plan,
+          price: i.price,
+          qty: i.qty || 1,
+        })),
         ...data,
         comprobanteNombre: file?.name || '',
         comprobanteBase64,
@@ -139,7 +149,10 @@ ${paidWithMp ? '' : file ? 'Adjunto el comprobante en este mismo chat.' : 'Te ma
   return (
     <div className="wrap py-12 md:py-20 flex flex-col items-center">
       <header className="text-center mb-16 max-w-2xl">
-        <h1 className="font-serif text-headline-lg md:text-display text-primary mb-4">
+        <h1
+          className="font-serif italic text-primary mb-4 leading-[0.98]"
+          style={{ fontSize: 'clamp(2.25rem, 5.5vw, 4.5rem)' }}
+        >
           Completá los datos de tu invitación
         </h1>
         <p className="font-sans text-onSurfaceVariant italic">
@@ -191,18 +204,39 @@ ${paidWithMp ? '' : file ? 'Adjunto el comprobante en este mismo chat.' : 'Te ma
 
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-12">
         <aside className="md:col-span-4 space-y-8">
-          <div className="relative aspect-[3/4] rounded-xl border border-outlineVariant/30 sticky top-32 overflow-hidden bg-gradient-to-br from-[#2a392e] to-[#152419] flex items-end p-6">
+          {/* Muestra la invitación real que se compró (imagen del primer ítem
+              del carrito), no un fondo verde genérico — así el cliente ve su
+              propio diseño mientras carga los datos. Si no hay imagen (o se
+              llegó sin pasar por Checkout), cae al degradé oscuro de antes. */}
+          <div className="aspect-[3/4] rounded-xl border border-outlineVariant/30 sticky top-32 overflow-hidden flex items-end">
+            <ProductCover
+              image={cartSummary[0]?.image}
+              gradient={cartSummary[0]?.gradient || 'from-[#2a392e] to-[#152419]'}
+              name=""
+              className="absolute inset-0"
+            />
             <div className="absolute inset-0 dot-grid text-primaryFixed/10 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent pointer-events-none" />
             <span aria-hidden="true" className="absolute top-6 left-6 text-promoGold/60 font-serif italic text-2xl">✦</span>
-            <p className="relative text-white font-serif italic">Diseñando cada detalle con vos.</p>
+            {cartSummary[0]?.code && (
+              <span className="absolute top-6 right-6 bg-black/50 backdrop-blur-sm text-white font-sans text-[10px] px-2.5 py-1 rounded-full tracking-wider">
+                {cartSummary[0].code}
+              </span>
+            )}
+            <p className="relative text-white font-serif italic p-6">
+              {cartSummary[0]?.name || 'Diseñando cada detalle con vos.'}
+            </p>
           </div>
           {cartSummary.length > 0 && (
             <div className="bg-surfaceContainer p-6 rounded-xl space-y-3 border border-promoGold/30">
               <h3 className="font-serif text-headline-md text-primary text-lg">Tu pedido</h3>
               {cartSummary.map((it) => (
-                <div key={it.id} className="flex justify-between text-sm font-sans text-onSurfaceVariant">
-                  <span>{it.name}</span>
-                  <span>x{it.qty || 1}</span>
+                <div key={it.id} className="flex justify-between items-start gap-3 text-sm font-sans text-onSurfaceVariant">
+                  <span>
+                    {it.name}
+                    {it.code && <span className="block text-[10px] text-promoGold tracking-wide mt-0.5">{it.code}</span>}
+                  </span>
+                  <span className="flex-shrink-0">x{it.qty || 1}</span>
                 </div>
               ))}
             </div>

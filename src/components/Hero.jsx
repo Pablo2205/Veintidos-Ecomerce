@@ -15,26 +15,37 @@ export default function Hero() {
     <section className="flex flex-col bg-background">
       {/* Content */}
       <div className="relative min-h-[82vh] flex items-center py-16 lg:py-12 overflow-hidden">
+        {/* "22" — el número detrás del nombre de la marca, como marca de agua
+            editorial. Firma visual propia del sitio, no decoración genérica:
+            veinti-DÓS. Se repite (más chico) en CtaFinal y Footer. */}
+        <span
+          aria-hidden="true"
+          className="hidden md:block absolute -right-[3vw] -top-[8vw] font-serif italic font-bold text-primary/[0.05] leading-none select-none pointer-events-none"
+          style={{ fontSize: '46vw' }}
+        >
+          22
+        </span>
         {/* Grilla punteada de marca, muy sutil, solo en la mitad derecha */}
-        <div className="absolute inset-y-0 right-0 w-1/2 dot-grid text-outlineVariant/40 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
+        <div className="absolute inset-y-0 right-0 w-1/2 dot-grid text-outlineVariant/50 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
         {/* Soft botanical circle behind phones */}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[60vw] max-w-[680px] aspect-square rounded-full bg-secondaryContainer/20 blur-3xl pointer-events-none" />
 
-        <div className="wrap grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div className="wrap relative grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <motion.div
             className="order-2 lg:order-1"
             initial={reduce ? false : 'hidden'}
             animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
           >
-            <motion.span variants={item} className="inline-block font-sans text-label text-secondary tracking-widest mb-5 uppercase">
+            <motion.span variants={item} className="inline-flex items-center gap-3 font-sans text-label text-secondary tracking-widest mb-5 uppercase">
+              <span className="h-px w-8 bg-promoGold" aria-hidden="true" />
               Invitaciones digitales
             </motion.span>
 
             <motion.h1
               variants={item}
-              className="font-serif italic font-normal text-primary leading-[1.05] tracking-tight mb-6"
-              style={{ fontSize: 'clamp(2.75rem, 6.5vw, 5.5rem)' }}
+              className="font-serif italic font-normal text-primary leading-[0.98] tracking-tight mb-6"
+              style={{ fontSize: 'clamp(3.25rem, 8.5vw, 7.5rem)' }}
             >
               Cada fiesta<br />
               empieza con<br />

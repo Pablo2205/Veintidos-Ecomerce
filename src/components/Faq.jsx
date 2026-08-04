@@ -37,7 +37,12 @@ export default function Faq() {
       <div className="max-w-3xl mx-auto px-mobile md:px-gutter">
         <Reveal className="text-center mb-16">
           <p aria-hidden="true" className="ornament mb-4 text-sm">✦</p>
-          <h2 className="font-serif text-headline-lg text-primary">Preguntas frecuentes</h2>
+          <h2
+            className="font-serif italic font-normal text-primary leading-[0.98]"
+            style={{ fontSize: 'clamp(2.25rem, 5vw, 4rem)' }}
+          >
+            Preguntas frecuentes
+          </h2>
         </Reveal>
         <Reveal delay={0.1} className="space-y-4">
           {faqs.map((f, i) => (

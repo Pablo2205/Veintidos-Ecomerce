@@ -21,7 +21,7 @@ export default function TornDivider({ flip = false, color = 'fill-background', s
       viewBox="0 0 100 8"
       preserveAspectRatio="none"
       aria-hidden="true"
-      className={`block w-full h-4 md:h-6 ${flip ? 'rotate-180' : ''} ${className}`}
+      className={`block w-full h-8 md:h-12 ${flip ? 'rotate-180' : ''} ${className}`}
     >
       <polygon points={`0,8 ${tornPath(seed)} 100,8`} className={color} />
     </svg>

@@ -11,14 +11,15 @@ const panelGradients = [
   'from-[#C5A059] to-[#182317]',
 ]
 
-function CategoryPanel({ category: c, gradient }) {
+function CategoryPanel({ category: c, gradient, weight }) {
   const [broken, setBroken] = useState(false)
   const showImage = c.image && !broken
 
   return (
     <motion.div
       variants={staggerItem}
-      className="relative flex-1 min-h-[440px] lg:min-h-[520px] overflow-hidden group"
+      style={{ flexGrow: weight }}
+      className="relative flex-1 min-h-[480px] lg:min-h-[600px] overflow-hidden group"
     >
       {/* Background image or gradient */}
       <div
@@ -48,8 +49,8 @@ function CategoryPanel({ category: c, gradient }) {
           {c.name}
         </p>
         <h3
-          className="font-serif italic font-normal text-white leading-[1.1] mb-4"
-          style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)' }}
+          className="font-serif italic font-normal text-white leading-[0.95] mb-4"
+          style={{ fontSize: 'clamp(2.5rem, 4.5vw, 4.25rem)' }}
         >
           {c.name}
         </h3>
@@ -98,12 +99,16 @@ export default function Categories() {
         </Reveal>
       </div>
 
+      {/* Asimétrico a propósito: Boda y Cumple XV (con catálogo propio) pesan
+          más que "Otro evento" (solo deriva a consulta) — la jerarquía visual
+          refleja la jerarquía real del negocio. */}
       <Stagger className="flex flex-col lg:flex-row">
         {categories.map((c, i) => (
           <CategoryPanel
             key={c.slug}
             category={c}
             gradient={panelGradients[i % panelGradients.length]}
+            weight={c.consultOnly ? 0.7 : 1.3}
           />
         ))}
       </Stagger>

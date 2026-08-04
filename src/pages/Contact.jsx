@@ -35,7 +35,12 @@ Mensaje: ${form.message || '-'}`
     <div className="wrap py-16 md:py-24">
       <Reveal>
         <p aria-hidden="true" className="ornament mb-4 text-sm justify-start">✦</p>
-        <h1 className="font-serif text-display-mobile md:text-display text-primary mb-6">Contacto</h1>
+        <h1
+          className="font-serif italic text-primary mb-6 leading-[0.95]"
+          style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}
+        >
+          Contacto
+        </h1>
       </Reveal>
 
       {/* Redes — debajo del título, arriba de todo lo demás */}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
+import ProductCover from '../components/ProductCover.jsx'
 import { useCart } from '../context/CartContext.jsx'
 import { BANK_DATA, MP_LINKS, TRANSFER_DISCOUNT_PERCENT, transferPrice, originalPrice } from '../data/site.js'
 
@@ -86,7 +87,12 @@ export default function Checkout() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         <div className="lg:col-span-7 space-y-10">
           <Reveal>
-            <h1 className="font-serif text-display-mobile md:text-display text-primary">Finalizar compra</h1>
+            <h1
+              className="font-serif italic text-primary leading-[0.95]"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}
+            >
+              Finalizar compra
+            </h1>
             <p className="mt-4 text-onSurfaceVariant font-sans text-body-lg max-w-lg">
               Elegí cómo preferís pagar tu invitación.
             </p>
@@ -229,13 +235,21 @@ export default function Checkout() {
                   const qty = item.qty || 1
                   return (
                     <div key={item.id} className="flex gap-4 items-start">
-                      <div
-                        className={`w-20 h-28 rounded-lg flex-shrink-0 bg-gradient-to-br ${
-                          item.gradient || 'from-secondaryContainer to-primaryContainer'
-                        }`}
+                      <ProductCover
+                        image={item.image}
+                        gradient={item.gradient}
+                        name={item.name}
+                        className="relative w-20 h-28 rounded-lg flex-shrink-0"
                       />
                       <div className="flex-1">
-                        <p className="font-bold text-primary font-sans">{item.name}</p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="font-bold text-primary font-sans">{item.name}</p>
+                          {item.code && (
+                            <span className="font-sans text-[10px] text-promoGold border border-promoGold/40 rounded px-1.5 py-0.5 tracking-wide">
+                              {item.code}
+                            </span>
+                          )}
+                        </div>
                         <p className="text-label text-onSurfaceVariant mt-1 font-sans">{item.plan}</p>
                         <p className="mt-2 font-sans">
                           <span className="line-through text-onSurfaceVariant/70 text-sm mr-2">

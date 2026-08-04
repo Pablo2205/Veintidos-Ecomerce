@@ -14,8 +14,8 @@ export default function Plans() {
           <p aria-hidden="true" className="ornament mb-4 text-sm">✦</p>
           <p className="font-sans text-label text-secondary uppercase tracking-widest mb-4">Nuestros Planes</p>
           <h2
-            className="font-serif italic font-normal text-primary"
-            style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
+            className="font-serif italic font-normal text-primary leading-[0.98]"
+            style={{ fontSize: 'clamp(2.25rem, 5.5vw, 4.5rem)' }}
           >
             Tu entrada a una invitación <span className="text-secondary">inolvidable</span>
           </h2>
@@ -53,7 +53,7 @@ export default function Plans() {
                   </span>
                   <h3
                     className={`font-serif italic font-normal mt-2 ${isPlain ? 'text-primary' : 'text-primaryFixed'}`}
-                    style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2rem)' }}
+                    style={{ fontSize: 'clamp(2rem, 3.5vw, 2.75rem)' }}
                   >
                     {p.name}
                   </h3>
@@ -84,7 +84,7 @@ export default function Plans() {
                 </ul>
 
                 <div className={`pt-6 border-t ${isPlain ? 'border-outlineVariant' : 'border-primaryFixed/10'}`}>
-                  <PriceTag price={p.price} dark={isDarkCard} />
+                  <PriceTag price={p.price} dark={isDarkCard} size="text-5xl" />
                 </div>
               </motion.div>
             )

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
+import ProductCover from '../components/ProductCover.jsx'
 import { useCart } from '../context/CartContext.jsx'
 import { originalPrice, TRANSFER_DISCOUNT_PERCENT } from '../data/site.js'
 
@@ -26,7 +27,12 @@ export default function Cart() {
     <div className="wrap py-12 md:py-20 flex flex-col md:flex-row gap-gutter">
       <div className="flex-grow">
         <Reveal>
-          <h1 className="font-serif text-headline-lg mb-2">Tu Carrito</h1>
+          <h1
+            className="font-serif italic text-primary mb-2 leading-[0.95]"
+            style={{ fontSize: 'clamp(2.25rem, 5.5vw, 4.5rem)' }}
+          >
+            Tu Carrito
+          </h1>
           <p className="text-onSurfaceVariant font-sans">Revisá tus invitaciones seleccionadas antes de proceder al pago.</p>
           <div className="mt-6 flex items-center text-secondary">
             <span className="text-xl">✦</span>
@@ -47,11 +53,23 @@ export default function Cart() {
                   exit={{ opacity: 0, x: -20, transition: { duration: 0.2 } }}
                   className="flex flex-col md:flex-row gap-6 p-6 bg-surfaceContainerLow rounded-xl border border-outlineVariant/20"
                 >
-                  <div className={`w-full md:w-28 h-36 rounded-lg flex-shrink-0 bg-gradient-to-br ${item.gradient || 'from-secondaryContainer to-primaryContainer'}`} />
+                  <ProductCover
+                    image={item.image}
+                    gradient={item.gradient}
+                    name={item.name}
+                    className="relative w-full md:w-28 h-36 rounded-lg flex-shrink-0"
+                  />
                   <div className="flex-grow flex flex-col justify-between">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="font-serif text-headline-md text-primary">{item.name}</h3>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-serif text-headline-md text-primary">{item.name}</h3>
+                          {item.code && (
+                            <span className="font-sans text-[10px] text-promoGold border border-promoGold/40 rounded px-1.5 py-0.5 tracking-wide">
+                              {item.code}
+                            </span>
+                          )}
+                        </div>
                         <p className="text-label font-sans text-secondary uppercase tracking-widest mt-1">{item.plan}</p>
                       </div>
                       <button onClick={() => remove(item.id)} className="text-onSurfaceVariant hover:text-error transition-colors" aria-label="Quitar">

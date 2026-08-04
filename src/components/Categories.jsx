@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useMotionTemplate, useReducedMotion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Reveal, { Stagger, staggerItem } from './Reveal.jsx'
 import WhatsAppButton from './WhatsAppButton.jsx'
@@ -14,11 +14,25 @@ const panelGradients = [
 function CategoryPanel({ category: c, gradient, weight }) {
   const [broken, setBroken] = useState(false)
   const showImage = c.image && !broken
+  const reduce = useReducedMotion()
+
+  // Spotlight de cursor: un resplandor dorado que sigue al mouse dentro del
+  // panel, como si el visitante "iluminara" la foto con una linterna.
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+  const spotlightBg = useMotionTemplate`radial-gradient(380px circle at ${mouseX}px ${mouseY}px, rgba(197,160,89,0.35), transparent 70%)`
+  const handleMouseMove = (e) => {
+    if (reduce) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    mouseX.set(e.clientX - rect.left)
+    mouseY.set(e.clientY - rect.top)
+  }
 
   return (
     <motion.div
       variants={staggerItem}
       style={{ flexGrow: weight }}
+      onMouseMove={handleMouseMove}
       className="relative flex-1 min-h-[480px] lg:min-h-[600px] overflow-hidden group"
     >
       {/* Background image or gradient */}
@@ -39,6 +53,15 @@ function CategoryPanel({ category: c, gradient, weight }) {
 
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/25 to-transparent transition-opacity duration-500 group-hover:from-primary/75" />
+
+      {/* Spotlight de cursor — solo visible en hover, desktop (mouse real) */}
+      {!reduce && (
+        <motion.div
+          aria-hidden="true"
+          style={{ background: spotlightBg }}
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none mix-blend-soft-light"
+        />
+      )}
 
       {/* Thin divider line between panels on desktop */}
       <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-px bg-primaryFixed/10 z-10" />

@@ -41,6 +41,17 @@ export default {
       maxWidth: {
         container: '1200px',
       },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+      },
+      animation: {
+        // 50% porque el contenido está duplicado una vez (ver Marquee.jsx) —
+        // recorrer la mitad del ancho total = un loop perfecto sin salto.
+        marquee: 'marquee 28s linear infinite',
+      },
       fontSize: {
         'display-mobile': ['36px', { lineHeight: '1.2', fontWeight: '700' }],
         display: ['56px', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '700' }],

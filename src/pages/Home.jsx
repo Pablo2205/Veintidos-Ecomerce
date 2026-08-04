@@ -1,4 +1,5 @@
 import Hero from '../components/Hero.jsx'
+import Marquee from '../components/Marquee.jsx'
 import Categories from '../components/Categories.jsx'
 import HowItWorks from '../components/HowItWorks.jsx'
 import Features from '../components/Features.jsx'
@@ -10,6 +11,9 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <div className="bg-background text-primary py-6 border-b border-outlineVariant/20">
+        <Marquee />
+      </div>
       <Categories />
       <HowItWorks />
       <Features />

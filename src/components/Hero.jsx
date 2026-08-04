@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { waLink } from '../data/site.js'
 import WhatsAppButton from './WhatsAppButton.jsx'
@@ -9,22 +10,54 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
 }
 
+// Título armado por palabras (no por línea) para que el stagger de entrada
+// sea una cascada palabra a palabra — más editorial que animar bloques
+// enteros de texto de una.
+const headlineLines = [
+  { words: ['Cada', 'fiesta'] },
+  { words: ['empieza', 'con'] },
+  { words: ['una', 'gran'], accent: true },
+  { words: ['invitación'], accent: true },
+]
+
+const word = {
+  hidden: { opacity: 0, y: '100%' },
+  show: { opacity: 1, y: '0%', transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+}
+
 export default function Hero() {
   const reduce = useReducedMotion()
+  const sectionRef = useRef(null)
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] })
+
+  // Parallax real ligado al scroll: el "22" de fondo baja más lento que el
+  // contenido (sensación de profundidad), los teléfonos suben y se achican
+  // un poco al salir del viewport. Framer Motion ya es dependencia del
+  // proyecto — no se suma ninguna librería nueva para esto.
+  const numberY = useTransform(scrollYProgress, [0, 1], [0, 220])
+  const numberRotate = useTransform(scrollYProgress, [0, 1], [0, 6])
+  const phonesY = useTransform(scrollYProgress, [0, 1], [0, -90])
+  const phonesScale = useTransform(scrollYProgress, [0, 1], [1, 0.92])
+  const textY = useTransform(scrollYProgress, [0, 1], [0, 60])
+  // Hook llamado siempre (nunca condicionalmente) — reglas de hooks. Se usa
+  // más abajo solo dentro del JSX que se renderiza cuando `!reduce`.
+  const scrollCueOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0])
+
   return (
-    <section className="flex flex-col bg-background">
+    <section ref={sectionRef} className="relative flex flex-col bg-background">
       {/* Content */}
       <div className="relative min-h-[82vh] flex items-center py-16 lg:py-12 overflow-hidden">
         {/* "22" — el número detrás del nombre de la marca, como marca de agua
-            editorial. Firma visual propia del sitio, no decoración genérica:
-            veinti-DÓS. Se repite (más chico) en CtaFinal y Footer. */}
-        <span
+            editorial con parallax propio. Firma visual del sitio, no
+            decoración genérica: veinti-DÓS. Se repite (más chico) en
+            CtaFinal y Footer. */}
+        <motion.span
           aria-hidden="true"
+          style={{ fontSize: '46vw', ...(reduce ? {} : { y: numberY, rotate: numberRotate }) }}
           className="hidden md:block absolute -right-[3vw] -top-[8vw] font-serif italic font-bold text-primary/[0.05] leading-none select-none pointer-events-none"
-          style={{ fontSize: '46vw' }}
         >
           22
-        </span>
+        </motion.span>
         {/* Grilla punteada de marca, muy sutil, solo en la mitad derecha */}
         <div className="absolute inset-y-0 right-0 w-1/2 dot-grid text-outlineVariant/50 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
         {/* Soft botanical circle behind phones */}
@@ -33,6 +66,7 @@ export default function Hero() {
         <div className="wrap relative grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <motion.div
             className="order-2 lg:order-1"
+            style={reduce ? undefined : { y: textY }}
             initial={reduce ? false : 'hidden'}
             animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
@@ -43,13 +77,21 @@ export default function Hero() {
             </motion.span>
 
             <motion.h1
-              variants={item}
+              variants={{ hidden: {}, show: { transition: { staggerChildren: 0.045, delayChildren: 0.1 } } }}
               className="font-serif italic font-normal text-primary leading-[0.98] tracking-tight mb-6"
               style={{ fontSize: 'clamp(3.25rem, 8.5vw, 7.5rem)' }}
             >
-              Cada fiesta<br />
-              empieza con<br />
-              <span className="text-secondary">una gran<br />invitación</span>
+              {headlineLines.map((line, li) => (
+                <span key={li} className={`block overflow-hidden ${line.accent ? 'text-secondary' : ''}`}>
+                  {line.words.map((w, wi) => (
+                    <span key={wi} className="inline-block overflow-hidden mr-[0.22em] align-top">
+                      <motion.span variants={reduce ? undefined : word} className="inline-block">
+                        {w}
+                      </motion.span>
+                    </span>
+                  ))}
+                </span>
+              ))}
             </motion.h1>
 
             <motion.p variants={item} className="font-sans text-onSurfaceVariant text-base leading-relaxed max-w-md mb-10">
@@ -70,18 +112,43 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
+          {/* Dos wrappers separados a propósito: el externo lleva el parallax
+              de scroll (y/scale ligados a scrollYProgress), el interno lleva
+              la animación de entrada (opacity/scale al montar). Mezclar
+              ambas en el mismo elemento hace que el `style` con MotionValue
+              gane silenciosamente sobre `initial`/`animate` para esa misma
+              propiedad — separarlos evita el conflicto. */}
           <motion.div
             className="order-1 lg:order-2 flex justify-center lg:justify-end"
-            initial={reduce ? false : { opacity: 0, scale: 0.94 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+            style={reduce ? undefined : { y: phonesY, scale: phonesScale }}
           >
-            <div className="flex gap-6 md:gap-8 items-start">
+            <motion.div
+              initial={reduce ? false : { opacity: 0, scale: 0.94 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+              className="flex gap-6 md:gap-8 items-start"
+            >
               <IPhoneMock rotate="-6deg" image="/demos/boda/olivia-ralph/foto-hero.jpg" />
               <IPhoneMock rotate="6deg" marginTop="mt-14" image="/demos/boda/lucia-juan/foto-hero.jpg" />
-            </div>
+            </motion.div>
           </motion.div>
         </div>
+
+        {/* Cue de scroll — sutil, desaparece apenas se empieza a scrollear */}
+        {!reduce && (
+          <motion.div
+            aria-hidden="true"
+            style={{ opacity: scrollCueOpacity }}
+            className="hidden lg:flex absolute bottom-6 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-onSurfaceVariant/50"
+          >
+            <span className="font-sans text-[10px] uppercase tracking-[0.2em]">Descubrí más</span>
+            <motion.span
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+              className="w-px h-8 bg-outlineVariant"
+            />
+          </motion.div>
+        )}
       </div>
 
       {/* Stats band — dark green ground, the signature element */}

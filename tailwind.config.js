@@ -13,11 +13,18 @@ export default {
         onPrimary: '#ffffff',
         // `secondary` sí es libre (no depende de ningún asset fijo) — antes
         // era un oliva casi igual al verde primario, dejando el sitio
-        // prácticamente monocromático. Terracota/rosa cálido rompe eso y
-        // suma una segunda voz de color con carácter propio para bodas/XV.
-        secondary: '#A3634F',
-        secondaryContainer: '#F1DED4',
-        secondaryFixed: '#EDD9CD',
+        // prácticamente monocromático. Se probó terracota primero; se
+        // reemplazó por este rosa mauve apagado según data real de
+        // ui-ux-pro-max/colors.csv: las entradas de Florería (verde +
+        // rosa/magenta, "Natural green + floral pink") y Wedding/Event
+        // Planning (rosa + dorado, "Romantic pink + elegant gold") son las
+        // más cercanas a esta categoría, y ambas usan rosa, no terracota —
+        // además el rosa está más lejos del dorado en el círculo cromático
+        // (más contraste) que el terracota, que competía con el dorado por
+        // el mismo territorio cálido.
+        secondary: '#A8677A',
+        secondaryContainer: '#F3E1E5',
+        secondaryFixed: '#EFD7DC',
         tertiary: '#152419',
         tertiaryContainer: '#2a392e',
         background: '#fbf9f4',

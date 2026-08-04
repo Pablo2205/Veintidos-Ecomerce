@@ -15,15 +15,23 @@ function tornPath(seed = 0) {
   return pts.map((v, i) => `${(i * step).toFixed(2)},${v}`).join(' ')
 }
 
+// BUG YA CORREGIDO (no repetir): con `preserveAspectRatio="none"` el
+// viewBox se estira para llenar el contenedor en ambos ejes. En una vuelta
+// anterior se subió la altura del contenedor (h-8/h-12) sin tocar el
+// viewBox ni la amplitud del path — el estirado vertical convirtió el
+// "papel roto" sutil en picos gigantes que tapaban el contenido de abajo
+// (reportado por Pablo con captura). El viewBox ahora es más alto (0 0 100
+// 16, el doble) para que el contenedor pueda crecer sin que cada unidad de
+// amplitud se estire tanto.
 export default function TornDivider({ flip = false, color = 'fill-background', seed = 0, className = '' }) {
   return (
     <svg
-      viewBox="0 0 100 8"
+      viewBox="0 0 100 16"
       preserveAspectRatio="none"
       aria-hidden="true"
-      className={`block w-full h-8 md:h-12 ${flip ? 'rotate-180' : ''} ${className}`}
+      className={`block w-full h-5 md:h-7 ${flip ? 'rotate-180' : ''} ${className}`}
     >
-      <polygon points={`0,8 ${tornPath(seed)} 100,8`} className={color} />
+      <polygon points={`0,16 ${tornPath(seed)} 100,16`} className={color} />
     </svg>
   )
 }

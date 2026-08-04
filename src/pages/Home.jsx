@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <div className="bg-background text-primary py-6 border-b border-outlineVariant/20">
+      <div className="bg-background text-primary pt-10 pb-6 border-b border-outlineVariant/20">
         <Marquee />
       </div>
       <Categories />

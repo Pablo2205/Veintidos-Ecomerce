@@ -3,7 +3,6 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { Link } from 'react-router-dom'
 import { waLink } from '../data/site.js'
 import WhatsAppButton from './WhatsAppButton.jsx'
-import TornDivider from './TornDivider.jsx'
 
 const item = {
   hidden: { opacity: 0, y: 26 },
@@ -175,9 +174,6 @@ export default function Hero() {
             </div>
           ))}
         </div>
-        {/* Borde de "papel roto" — la banda se rasga hacia la sección de eventos,
-            mismo lenguaje visual que el producto (ver public/demos/) */}
-        <TornDivider className="absolute left-0 right-0 top-full -mt-px" color="fill-primary" seed={2} />
       </motion.div>
     </section>
   )

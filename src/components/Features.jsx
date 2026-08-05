@@ -1,18 +1,19 @@
 import { motion } from 'framer-motion'
 import Reveal, { Stagger, staggerItem } from './Reveal.jsx'
 import Icon from './Icon.jsx'
+import TornDivider from './TornDivider.jsx'
 import { features } from '../data/site.js'
 
 export default function Features() {
   return (
-    <section className="py-section bg-primary">
+    <section className="relative py-section bg-primary">
       <div className="wrap">
         <Reveal className="flex flex-col lg:flex-row justify-between items-end mb-14 gap-8">
           <div className="max-w-2xl">
             <p className="font-sans text-label text-promoGold uppercase tracking-widest mb-4">Todo en un solo link</p>
             <h2
-              className="font-serif italic font-normal text-primaryFixed leading-tight"
-              style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
+              className="font-serif italic font-normal text-primaryFixed leading-[0.98]"
+              style={{ fontSize: 'clamp(2.25rem, 5vw, 4rem)' }}
             >
               ¿Qué puede incluir <span className="text-promoGold/80">tu invitación?</span>
             </h2>
@@ -40,6 +41,7 @@ export default function Features() {
           ))}
         </Stagger>
       </div>
+      <TornDivider className="absolute left-0 right-0 top-full -mt-px" color="fill-primary" seed={0} />
     </section>
   )
 }

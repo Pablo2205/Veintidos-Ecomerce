@@ -4,6 +4,7 @@ import Nav from './components/Nav.jsx'
 import Footer from './components/Footer.jsx'
 import WaFab from './components/WaFab.jsx'
 import PromoBar from './components/PromoBar.jsx'
+import ScrollProgress from './components/ScrollProgress.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import Home from './pages/Home.jsx'
 import Catalog from './pages/Catalog.jsx'
@@ -34,6 +35,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <ScrollManager />
+      <ScrollProgress />
       <PromoBar />
       <Nav />
       <main>

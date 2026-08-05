@@ -34,7 +34,13 @@ Mensaje: ${form.message || '-'}`
   return (
     <div className="wrap py-16 md:py-24">
       <Reveal>
-        <h1 className="font-serif text-display-mobile md:text-display text-primary mb-6">Contacto</h1>
+        <p aria-hidden="true" className="ornament mb-4 text-sm justify-start">✦</p>
+        <h1
+          className="font-serif italic text-primary mb-6 leading-[0.95]"
+          style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}
+        >
+          Contacto
+        </h1>
       </Reveal>
 
       {/* Redes — debajo del título, arriba de todo lo demás */}
@@ -167,7 +173,12 @@ Mensaje: ${form.message || '-'}`
                 required
               />
             </div>
-            <button type="submit" className="btn-primary px-10 py-4 flex items-center gap-2 w-full sm:w-auto justify-center">
+            {/* Dirige a WhatsApp (abre wa.me al enviar) — por regla del proyecto lleva el
+                verde de marca de WhatsApp, no btn-primary (verde institucional). */}
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center gap-2.5 rounded-full font-sans font-bold transition-all active:scale-95 bg-whatsapp text-white hover:brightness-95 px-10 py-4 w-full sm:w-auto"
+            >
               <WhatsAppIcon className="w-5 h-5" />
               Enviar por WhatsApp
             </button>

@@ -266,9 +266,16 @@ export const faqs = [
 // "category" tiene que ser "boda" o "xv-anos" (son los únicos eventos
 // habilitados, ver `categories` arriba). "color" es la clave de
 // `productColors` de arriba.
+//
+// "code" = código de referencia del diseño, para trazabilidad de pedidos.
+// Formato: {categoría}-{abreviatura del estilo}-{secuencial}. Viaja con el
+// producto en el carrito y se manda en el pedido a Sheets (ver
+// `submitToSheets` en Personalize.jsx y GOOGLE_APPS_SCRIPT.md) — así se sabe
+// exactamente qué diseño compró cada cliente sin tener que abrir el link.
 export const products = [
   {
     id: 7,
+    code: 'BOD-VIP-01',
     name: 'Invitación Boda — Pablo & Lucila',
     category: 'boda',
     plan: 'Premium',
@@ -281,6 +288,7 @@ export const products = [
   },
   {
     id: 8,
+    code: 'BOD-EDI-01',
     name: 'Invitación Boda — Lucía & Juan',
     category: 'boda',
     plan: 'Premium',
@@ -295,6 +303,7 @@ export const products = [
   },
   {
     id: 9,
+    code: 'BOD-CLA-01',
     name: 'Invitación Boda — Olivia & Ralph',
     category: 'boda',
     plan: 'Premium',
@@ -309,6 +318,7 @@ export const products = [
   },
   {
     id: 10,
+    code: 'BOD-JUG-01',
     name: 'Invitación Boda — Juan & Ana',
     category: 'boda',
     plan: 'Premium',
@@ -323,6 +333,7 @@ export const products = [
   },
   {
     id: 11,
+    code: 'BOD-BOT-01',
     name: 'Invitación Boda — Lorena & Gustavo',
     category: 'boda',
     plan: 'Premium',
@@ -337,6 +348,7 @@ export const products = [
   },
   {
     id: 12,
+    code: 'XV-FLO-01',
     name: 'Invitación XV — Katherina',
     category: 'xv-anos',
     plan: 'Premium',
@@ -351,6 +363,7 @@ export const products = [
   },
   {
     id: 13,
+    code: 'XV-FOT-01',
     name: 'Invitación XV — Adriana',
     category: 'xv-anos',
     plan: 'Premium',
@@ -365,6 +378,7 @@ export const products = [
   },
   {
     id: 14,
+    code: 'XV-FLO-02',
     name: 'Invitación XV — Mariana',
     category: 'xv-anos',
     plan: 'Premium',
@@ -379,6 +393,7 @@ export const products = [
   },
   {
     id: 15,
+    code: 'XV-ELE-01',
     name: 'Invitación XV — Ximena',
     category: 'xv-anos',
     plan: 'Premium',
@@ -393,6 +408,7 @@ export const products = [
   },
   {
     id: 16,
+    code: 'XV-CRE-01',
     name: 'Invitación XV — Marianel',
     category: 'xv-anos',
     plan: 'Premium',
@@ -407,6 +423,7 @@ export const products = [
   },
   {
     id: 17,
+    code: 'BOD-BOA-01',
     name: 'Invitación Boda — Lauren & Marco',
     category: 'boda',
     plan: 'Premium',
@@ -421,6 +438,7 @@ export const products = [
   },
   {
     id: 18,
+    code: 'BOD-DOR-01',
     name: 'Invitación Boda — Valeria & Eugenio',
     category: 'boda',
     plan: 'Premium',
@@ -435,6 +453,7 @@ export const products = [
   },
   {
     id: 19,
+    code: 'BOD-MAR-01',
     name: 'Invitación Boda — Camila & Sebastián',
     category: 'boda',
     plan: 'Premium',
@@ -449,6 +468,7 @@ export const products = [
   },
   {
     id: 20,
+    code: 'BOD-VER-01',
     name: 'Invitación Boda — Alexandra & Nicolás',
     category: 'boda',
     plan: 'Premium',
@@ -463,6 +483,7 @@ export const products = [
   },
   {
     id: 21,
+    code: 'BOD-TER-01',
     name: 'Invitación Boda — Sofía & Tomás',
     category: 'boda',
     plan: 'Essential',
@@ -477,6 +498,7 @@ export const products = [
   },
   {
     id: 22,
+    code: 'BOD-AZU-01',
     name: 'Invitación Boda — Valentina & Ignacio',
     category: 'boda',
     plan: 'Standard',
@@ -491,6 +513,7 @@ export const products = [
   },
   {
     id: 23,
+    code: 'XV-COR-01',
     name: 'Invitación XV — Delfina',
     category: 'xv-anos',
     plan: 'Essential',
@@ -505,6 +528,7 @@ export const products = [
   },
   {
     id: 24,
+    code: 'XV-MEN-01',
     name: 'Invitación XV — Camila',
     category: 'xv-anos',
     plan: 'Standard',

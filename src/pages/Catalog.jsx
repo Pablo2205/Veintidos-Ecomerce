@@ -5,6 +5,7 @@ import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import WhatsAppButton from '../components/WhatsAppButton.jsx'
 import DemoPreviewModal from '../components/DemoPreviewModal.jsx'
+import ProductCover from '../components/ProductCover.jsx'
 import { products, productColors, originalPrice, waLink } from '../data/site.js'
 import { useCart } from '../context/CartContext.jsx'
 
@@ -19,31 +20,6 @@ const planOptions = ['Todos', 'Essential', 'Standard', 'Premium']
 const LIGHT_SWATCHES = new Set(['blanco', 'beige', 'amarillo', 'celeste'])
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
-
-// Portada de cada producto: si `image` (una foto real de la demo) no carga
-// todavía, cae solo al degradé de color de siempre — mismo criterio que
-// CategoryCover en la Home.
-function ProductCover({ image, gradient, name }) {
-  const [broken, setBroken] = useState(false)
-  const showImage = image && !broken
-  return (
-    <div className={`absolute inset-0 ${showImage ? '' : `bg-gradient-to-br ${gradient}`}`}>
-      {showImage && (
-        <img
-          src={image}
-          alt={name}
-          onError={() => setBroken(true)}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-      )}
-      {!showImage && (
-        <span className="absolute inset-0 flex items-center justify-center font-serif italic text-white/90 text-lg px-4 text-center">
-          {name}
-        </span>
-      )}
-    </div>
-  )
-}
 
 export default function Catalog() {
   const [searchParams] = useSearchParams()
@@ -92,7 +68,10 @@ export default function Catalog() {
   return (
     <div className="wrap py-20">
       <section className="text-center mb-12">
-        <h1 className="font-serif text-display-mobile md:text-display text-primary mb-6">
+        <h1
+          className="font-serif text-primary mb-6 leading-[0.95]"
+          style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}
+        >
           Encontrá tu invitación <br className="hidden md:block" />
           <span className="italic text-secondary">perfecta</span>
         </h1>
@@ -105,7 +84,7 @@ export default function Catalog() {
 
       <div className="flex flex-col lg:flex-row gap-gutter">
         {/* Filtros */}
-        <aside className="w-full lg:w-64 space-y-8 mb-12 lg:mb-0">
+        <aside className="w-full lg:w-64 space-y-8 mb-12 lg:mb-0 lg:sticky lg:top-32 lg:self-start lg:bg-creamSurface/50 lg:rounded-2xl lg:p-6 lg:border lg:border-outlineVariant/30">
           <div>
             <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Tipo de evento</h3>
             <div className="space-y-2">
@@ -207,10 +186,15 @@ export default function Catalog() {
                   className="group"
                 >
                   <div className={`relative aspect-[3/4] overflow-hidden rounded-xl mb-4 flex items-center justify-center ring-1 ring-transparent group-hover:ring-2 group-hover:ring-promoGold transition-all`}>
-                    <ProductCover image={p.image} gradient={p.gradient} name={p.name} />
+                    <ProductCover image={p.image} gradient={p.gradient} name={p.name} className="absolute inset-0" />
                     {p.badge && (
                       <span className="absolute top-4 left-4 bg-promoGold text-white font-sans text-[10px] px-3 py-1 rounded-full uppercase tracking-widest z-10">
                         {p.badge}
+                      </span>
+                    )}
+                    {p.code && (
+                      <span className="absolute top-4 right-4 bg-black/55 backdrop-blur-sm text-white font-sans text-[10px] px-2.5 py-1 rounded-full tracking-wider z-10">
+                        {p.code}
                       </span>
                     )}
                     {p.demoUrl ? (
@@ -228,7 +212,14 @@ export default function Catalog() {
                   </div>
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-sans text-label text-primary uppercase">{p.name}</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-sans text-label text-primary uppercase">{p.name}</h3>
+                        {p.code && (
+                          <span className="font-sans text-[10px] text-promoGold border border-promoGold/40 rounded px-1.5 py-0.5 tracking-wide">
+                            {p.code}
+                          </span>
+                        )}
+                      </div>
                       <p className="font-sans text-xs text-onSurfaceVariant mt-1">Sugerido: Plan {p.plan}</p>
                       {p.style && (
                         <div className="flex items-center gap-2 mt-1.5">

@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion'
 import Reveal, { Stagger, staggerItem } from './Reveal.jsx'
 import Icon from './Icon.jsx'
 import PriceTag from './PriceTag.jsx'
 import WhatsAppButton from './WhatsAppButton.jsx'
+import TiltCard from './TiltCard.jsx'
 import { plans, waLink } from '../data/site.js'
 
 export default function Plans() {
@@ -11,10 +11,11 @@ export default function Plans() {
       <div className="absolute -top-40 -right-40 w-96 h-96 bg-secondaryContainer/20 rounded-full blur-3xl pointer-events-none" />
       <div className="wrap relative z-10">
         <Reveal className="text-center mb-16">
+          <p aria-hidden="true" className="ornament mb-4 text-sm">✦</p>
           <p className="font-sans text-label text-secondary uppercase tracking-widest mb-4">Nuestros Planes</p>
           <h2
-            className="font-serif italic font-normal text-primary"
-            style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
+            className="font-serif italic font-normal text-primary leading-[0.98]"
+            style={{ fontSize: 'clamp(2.25rem, 5.5vw, 4.5rem)' }}
           >
             Tu entrada a una invitación <span className="text-secondary">inolvidable</span>
           </h2>
@@ -28,17 +29,25 @@ export default function Plans() {
             const isDarkCard = isHighlight || isDark
 
             return (
-              <motion.div
-                key={p.name}
-                variants={staggerItem}
-                className={`rounded-2xl p-8 flex flex-col relative transition-all ${
-                  isHighlight
-                    ? 'bg-primary border border-promoGold/25'
-                    : isDark
-                    ? 'bg-primaryContainer border border-primaryContainer hover:border-primaryFixed/20'
-                    : 'bg-white border border-outlineVariant hover:border-secondary/40'
-                }`}
-              >
+              // El scale del plan destacado vive en este wrapper (Tailwind,
+              // estático) en vez de en TiltCard: TiltCard ya controla
+              // `transform` vía style inline para el tilt (rotateX/rotateY),
+              // y un inline style siempre gana sobre una clase de Tailwind
+              // para la misma propiedad — mezclarlos ahí hubiera hecho que
+              // el scale desapareciera apenas se activa el tilt.
+              <div key={p.name} className={isHighlight ? 'lg:scale-[1.045] z-10' : ''}>
+                <TiltCard
+                  variants={staggerItem}
+                  whileHover={{ y: -4 }}
+                  max={isHighlight ? 6 : 8}
+                  className={`rounded-2xl p-8 flex flex-col relative h-full transition-[border-color,background-color,box-shadow] ${
+                    isHighlight
+                      ? 'bg-primary border border-promoGold/25 shadow-xl shadow-primary/10'
+                      : isDark
+                      ? 'bg-primaryContainer border border-primaryContainer hover:border-primaryFixed/20'
+                      : 'bg-white border border-outlineVariant hover:border-secondary/40'
+                  }`}
+                >
                 {p.highlight && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-promoGold text-primary px-5 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase font-sans whitespace-nowrap">
                     {p.highlight}
@@ -51,7 +60,7 @@ export default function Plans() {
                   </span>
                   <h3
                     className={`font-serif italic font-normal mt-2 ${isPlain ? 'text-primary' : 'text-primaryFixed'}`}
-                    style={{ fontSize: 'clamp(1.5rem, 2.5vw, 2rem)' }}
+                    style={{ fontSize: 'clamp(2rem, 3.5vw, 2.75rem)' }}
                   >
                     {p.name}
                   </h3>
@@ -82,9 +91,10 @@ export default function Plans() {
                 </ul>
 
                 <div className={`pt-6 border-t ${isPlain ? 'border-outlineVariant' : 'border-primaryFixed/10'}`}>
-                  <PriceTag price={p.price} dark={isDarkCard} />
+                  <PriceTag price={p.price} dark={isDarkCard} size="text-5xl" />
                 </div>
-              </motion.div>
+                </TiltCard>
+              </div>
             )
           })}
         </Stagger>

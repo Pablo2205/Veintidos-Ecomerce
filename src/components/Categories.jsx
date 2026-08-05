@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useMotionTemplate, useReducedMotion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Reveal, { Stagger, staggerItem } from './Reveal.jsx'
 import WhatsAppButton from './WhatsAppButton.jsx'
@@ -11,14 +11,29 @@ const panelGradients = [
   'from-[#C5A059] to-[#182317]',
 ]
 
-function CategoryPanel({ category: c, gradient }) {
+function CategoryPanel({ category: c, gradient, weight }) {
   const [broken, setBroken] = useState(false)
   const showImage = c.image && !broken
+  const reduce = useReducedMotion()
+
+  // Spotlight de cursor: un resplandor dorado que sigue al mouse dentro del
+  // panel, como si el visitante "iluminara" la foto con una linterna.
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+  const spotlightBg = useMotionTemplate`radial-gradient(380px circle at ${mouseX}px ${mouseY}px, rgba(197,160,89,0.35), transparent 70%)`
+  const handleMouseMove = (e) => {
+    if (reduce) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    mouseX.set(e.clientX - rect.left)
+    mouseY.set(e.clientY - rect.top)
+  }
 
   return (
     <motion.div
       variants={staggerItem}
-      className="relative flex-1 min-h-[440px] lg:min-h-[520px] overflow-hidden group"
+      style={{ flexGrow: weight }}
+      onMouseMove={handleMouseMove}
+      className="relative flex-1 min-h-[480px] lg:min-h-[600px] overflow-hidden group"
     >
       {/* Background image or gradient */}
       <div
@@ -39,6 +54,15 @@ function CategoryPanel({ category: c, gradient }) {
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/25 to-transparent transition-opacity duration-500 group-hover:from-primary/75" />
 
+      {/* Spotlight de cursor — solo visible en hover, desktop (mouse real) */}
+      {!reduce && (
+        <motion.div
+          aria-hidden="true"
+          style={{ background: spotlightBg }}
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none mix-blend-soft-light"
+        />
+      )}
+
       {/* Thin divider line between panels on desktop */}
       <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-px bg-primaryFixed/10 z-10" />
 
@@ -48,8 +72,8 @@ function CategoryPanel({ category: c, gradient }) {
           {c.name}
         </p>
         <h3
-          className="font-serif italic font-normal text-white leading-[1.1] mb-4"
-          style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)' }}
+          className="font-serif italic font-normal text-white leading-[0.95] mb-4"
+          style={{ fontSize: 'clamp(2.5rem, 4.5vw, 4.25rem)' }}
         >
           {c.name}
         </h3>
@@ -87,6 +111,7 @@ export default function Categories() {
     <section id="eventos" className="bg-background">
       <div className="wrap">
         <Reveal className="text-center pt-16 pb-12">
+          <p aria-hidden="true" className="ornament mb-4 text-sm">✦</p>
           <p className="font-sans text-label text-secondary uppercase tracking-widest mb-4">¿Qué vas a festejar?</p>
           <h2
             className="font-serif italic font-normal text-primary"
@@ -97,12 +122,16 @@ export default function Categories() {
         </Reveal>
       </div>
 
+      {/* Asimétrico a propósito: Boda y Cumple XV (con catálogo propio) pesan
+          más que "Otro evento" (solo deriva a consulta) — la jerarquía visual
+          refleja la jerarquía real del negocio. */}
       <Stagger className="flex flex-col lg:flex-row">
         {categories.map((c, i) => (
           <CategoryPanel
             key={c.slug}
             category={c}
             gradient={panelGradients[i % panelGradients.length]}
+            weight={c.consultOnly ? 0.7 : 1.3}
           />
         ))}
       </Stagger>

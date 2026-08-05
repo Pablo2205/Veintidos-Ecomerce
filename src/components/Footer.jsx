@@ -5,8 +5,9 @@ import { CONTACT_EMAIL, CONTACT_LOCATION, INSTAGRAM_URL, FACEBOOK_URL, TIKTOK_UR
 
 export default function Footer() {
   return (
-    <footer className="bg-surfaceContainer border-t border-outlineVariant/20 py-section">
-      <div className="wrap grid grid-cols-1 md:grid-cols-4 gap-gutter">
+    <footer className="relative bg-surfaceContainer border-t border-outlineVariant/20 py-section overflow-hidden">
+      <div className="absolute inset-0 dot-grid text-outlineVariant/30 pointer-events-none [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+      <div className="wrap relative grid grid-cols-1 md:grid-cols-4 gap-gutter">
         <div className="md:col-span-1 space-y-4">
           <img src={logoWordmark} alt="veintidós — invitaciones digitales" className="h-14 w-auto" />
           <p className="font-sans text-sm text-onSurfaceVariant max-w-xs">

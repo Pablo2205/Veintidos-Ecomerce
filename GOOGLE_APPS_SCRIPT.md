@@ -73,8 +73,11 @@ function doPost(e) {
       comprobanteLink = guardarComprobante(data.comprobanteBase64, data.comprobanteNombre, data.orderRef)
     }
 
+    // Incluye el código de referencia del diseño (ej. "BOD-EDI-01") cuando
+    // viene en el pedido, para poder identificar exactamente qué invitación
+    // se compró sin tener que abrir el link del catálogo.
     const pedidoResumen = (data.cartSummary || [])
-      .map((it) => `${it.name} (${it.plan}) x${it.qty}`)
+      .map((it) => `${it.code ? it.code + ' — ' : ''}${it.name} (${it.plan}) x${it.qty}`)
       .join(' | ')
 
     sheet.appendRow([
@@ -205,6 +208,13 @@ con el comprobante guardado en Drive y linkeado, y salen los dos mails automáti
 
 ## Notas
 
+- **Cambio reciente (código de referencia por diseño):** el frontend ahora manda `id` y
+  `code` de cada producto dentro de `cartSummary`, y la línea de `pedidoResumen` de este
+  script ya los incluye. Si tu Web App en script.google.com todavía tiene la versión
+  vieja de `pedidoResumen`, pegá el bloque de código actualizado de este documento y
+  hacé **Implementar → Gestionar implementaciones → editar → Nueva versión** — si no,
+  el "Pedido (resumen)" de la planilla va a seguir mostrando solo nombre/plan, sin el
+  código.
 - El `fetch` desde el navegador usa `mode: 'no-cors'`, así que el frontend nunca sabe si el envío
   falló del lado de Google (Apps Script no siempre expone headers CORS legibles). Por eso el
   formulario **siempre** te ofrece confirmar por WhatsApp al final, como red de seguridad — aunque

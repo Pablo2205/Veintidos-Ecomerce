@@ -5,7 +5,7 @@ import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import ProductCover from '../components/ProductCover.jsx'
 import { useCart } from '../context/CartContext.jsx'
-import { originalPrice, TRANSFER_DISCOUNT_PERCENT } from '../data/site.js'
+import { originalPrice, TRANSFER_DISCOUNT_PERCENT, DISCOUNT_CODE, DISCOUNT_CODE_PERCENT } from '../data/site.js'
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 const savingsPercent = (price) => Math.round(100 - (price / originalPrice(price)) * 100)
@@ -14,13 +14,22 @@ export default function Cart() {
   const { items, remove, setQty, subtotal } = useCart()
   const [promo, setPromo] = useState('')
   const [applied, setApplied] = useState(false)
+  const [codeError, setCodeError] = useState(false)
 
   const originalSubtotal = useMemo(
     () => items.reduce((sum, i) => sum + originalPrice(i.price) * (i.qty || 1), 0),
     [items]
   )
 
-  const promoDiscount = applied ? Math.round(subtotal * 0.1) : 0
+  // Valida contra el código real (sin importar mayúsculas/espacios) en vez
+  // de aceptar cualquier texto — antes cualquier cosa tipeada daba -10%.
+  const handleApplyPromo = () => {
+    const isValid = promo.trim().toUpperCase() === DISCOUNT_CODE
+    setApplied(isValid)
+    setCodeError(!isValid)
+  }
+
+  const promoDiscount = applied ? Math.round(subtotal * (DISCOUNT_CODE_PERCENT / 100)) : 0
   const total = subtotal - promoDiscount
 
   return (
@@ -115,25 +124,43 @@ export default function Cart() {
         </div>
 
         {items.length > 0 && (
-          <Reveal delay={0.1} className="mt-12 p-8 border border-dashed border-outlineVariant rounded-xl flex flex-col md:flex-row items-center gap-6">
-            <div className="flex-grow">
-              <h4 className="font-bold text-primary mb-1 font-sans">¿Tenés un código de descuento?</h4>
-              <p className="text-onSurfaceVariant text-sm font-sans">Aplicalo ahora para actualizar tu resumen.</p>
+          <Reveal delay={0.1} className="mt-12 p-8 border border-dashed border-outlineVariant rounded-xl">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="flex-grow">
+                <h4 className="font-bold text-primary mb-1 font-sans">¿Tenés un código de descuento?</h4>
+                <p className="text-onSurfaceVariant text-sm font-sans">Aplicalo ahora para actualizar tu resumen.</p>
+              </div>
+              <div className="flex w-full md:w-auto">
+                <input
+                  value={promo}
+                  onChange={(e) => {
+                    setPromo(e.target.value)
+                    if (codeError) setCodeError(false)
+                    if (applied) setApplied(false)
+                  }}
+                  className={`bg-transparent border-b px-4 py-2 w-full md:w-48 outline-none font-sans text-sm transition-colors ${
+                    codeError ? 'border-error text-error' : 'border-outline focus:border-primary'
+                  }`}
+                  placeholder="Código"
+                />
+                <button
+                  onClick={handleApplyPromo}
+                  className="ml-4 px-6 py-2 bg-primary text-onPrimary rounded-full font-sans text-label hover:opacity-90 transition-all"
+                >
+                  Aplicar
+                </button>
+              </div>
             </div>
-            <div className="flex w-full md:w-auto">
-              <input
-                value={promo}
-                onChange={(e) => setPromo(e.target.value)}
-                className="bg-transparent border-b border-outline focus:border-primary px-4 py-2 w-full md:w-48 outline-none font-sans text-sm"
-                placeholder="Código"
-              />
-              <button
-                onClick={() => setApplied(true)}
-                className="ml-4 px-6 py-2 bg-primary text-onPrimary rounded-full font-sans text-label hover:opacity-90 transition-all"
-              >
-                Aplicar
-              </button>
-            </div>
+            {applied && (
+              <p className="mt-3 text-secondary text-sm font-sans flex items-center gap-1.5">
+                <Icon name="check_circle" className="text-base" /> Código aplicado — {DISCOUNT_CODE_PERCENT}% adicional
+              </p>
+            )}
+            {codeError && (
+              <p className="mt-3 text-error text-sm font-sans">
+                Ese código no existe. Revisá que esté bien escrito.
+              </p>
+            )}
           </Reveal>
         )}
       </div>

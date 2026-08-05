@@ -68,6 +68,11 @@ export const PLAN_PRICING = {
 }
 export const TRANSFER_DISCOUNT_PERCENT = 10 // etiqueta de marketing (el número exacto varía un poco por plan)
 
+// --- Cupón de descuento del Carrito (a prueba) ---------------------------
+// El código se compara sin importar mayúsculas/espacios — ver Cart.jsx.
+export const DISCOUNT_CODE = 'VEINTIDOS'
+export const DISCOUNT_CODE_PERCENT = 5
+
 const pricingRowByPrice = (price) => Object.values(PLAN_PRICING).find((row) => row.price === price)
 
 // El tachado y el precio de transferencia son fijos por plan (ver

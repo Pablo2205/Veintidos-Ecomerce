@@ -185,88 +185,73 @@ export default function Catalog() {
                   transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                   className="group"
                 >
-                  <div className={`relative aspect-[3/4] overflow-hidden rounded-xl mb-4 flex items-center justify-center ring-1 ring-transparent group-hover:ring-2 group-hover:ring-promoGold transition-all`}>
-                    <ProductCover image={p.image} gradient={p.gradient} name={p.name} className="absolute inset-0" />
-                    {p.badge && (
-                      <span className="absolute top-4 left-4 bg-promoGold text-white font-sans text-[10px] px-3 py-1 rounded-full uppercase tracking-widest z-10">
-                        {p.badge}
-                      </span>
-                    )}
-                    {p.code && (
-                      <span className="absolute top-4 right-4 bg-black/55 backdrop-blur-sm text-white font-sans text-[10px] px-2.5 py-1 rounded-full tracking-wider z-10">
-                        {p.code}
-                      </span>
-                    )}
-                    {p.demoUrl ? (
-                      <button
-                        onClick={() => setPreviewDemo({ url: p.demoUrl, name: p.name })}
-                        className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm text-primary py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-white z-10"
-                      >
-                        Ver demo
-                      </button>
-                    ) : (
-                      <span className="absolute bottom-4 left-4 right-4 bg-white/70 backdrop-blur-sm text-onSurfaceVariant py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-10">
-                        Demo próximamente
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <div className="flex items-center gap-2">
+                  <div className="bg-creamSurface rounded-2xl shadow-xl border border-outlineVariant/20 p-5 flex flex-col h-full transition-shadow hover:shadow-2xl">
+                    <div className="relative aspect-[3/4] overflow-hidden rounded-xl mb-4 flex items-center justify-center ring-1 ring-transparent group-hover:ring-2 group-hover:ring-promoGold transition-all">
+                      <ProductCover image={p.image} gradient={p.gradient} name={p.name} className="absolute inset-0" />
+                      {p.demoUrl ? (
+                        <button
+                          onClick={() => setPreviewDemo({ url: p.demoUrl, name: p.name })}
+                          className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm text-primary py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-white z-10"
+                        >
+                          Ver demo
+                        </button>
+                      ) : (
+                        <span className="absolute bottom-4 left-4 right-4 bg-white/70 backdrop-blur-sm text-onSurfaceVariant py-3 rounded-full font-sans text-label uppercase tracking-widest text-center opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-10">
+                          Demo próximamente
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex justify-between items-start">
+                      <div>
                         <h3 className="font-sans text-label text-primary uppercase">{p.name}</h3>
-                        {p.code && (
-                          <span className="font-sans text-[10px] text-promoGold border border-promoGold/40 rounded px-1.5 py-0.5 tracking-wide">
-                            {p.code}
-                          </span>
+                        <p className="font-sans text-xs text-onSurfaceVariant mt-1">Sugerido: Plan {p.plan}</p>
+                        {p.style && (
+                          <div className="flex items-center gap-2 mt-1.5">
+                            <span className="font-sans text-[11px] italic text-onSurfaceVariant/80">{p.style}</span>
+                            {p.palette && (
+                              <div className="flex gap-1">
+                                {p.palette.map((c, i) => (
+                                  <span
+                                    key={i}
+                                    className="w-2.5 h-2.5 rounded-full border border-black/10"
+                                    style={{ backgroundColor: c }}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         )}
                       </div>
-                      <p className="font-sans text-xs text-onSurfaceVariant mt-1">Sugerido: Plan {p.plan}</p>
-                      {p.style && (
-                        <div className="flex items-center gap-2 mt-1.5">
-                          <span className="font-sans text-[11px] italic text-onSurfaceVariant/80">{p.style}</span>
-                          {p.palette && (
-                            <div className="flex gap-1">
-                              {p.palette.map((c, i) => (
-                                <span
-                                  key={i}
-                                  className="w-2.5 h-2.5 rounded-full border border-black/10"
-                                  style={{ backgroundColor: c }}
-                                />
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      )}
+                      <div className="text-right flex-shrink-0">
+                        <span className="block text-[11px] font-sans line-through text-onSurfaceVariant/60">
+                          {money(originalPrice(p.price))}
+                        </span>
+                        <span className="font-sans text-label text-primary">{money(p.price)}</span>
+                      </div>
                     </div>
-                    <div className="text-right flex-shrink-0">
-                      <span className="block text-[11px] font-sans line-through text-onSurfaceVariant/60">
-                        {money(originalPrice(p.price))}
-                      </span>
-                      <span className="font-sans text-label text-primary">{money(p.price)}</span>
-                    </div>
+                    <button
+                      onClick={() => handleAdd(p)}
+                      className="w-full mt-4 flex items-center justify-center gap-2 border border-outlineVariant py-2 rounded-full font-sans text-label uppercase text-onSurfaceVariant hover:border-primary hover:text-primary transition-all"
+                    >
+                      <AnimatePresence mode="wait" initial={false}>
+                        {added === p.id ? (
+                          <motion.span
+                            key="ok"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="flex items-center gap-2 text-secondary"
+                          >
+                            <Icon name="check" className="text-sm" /> Agregado
+                          </motion.span>
+                        ) : (
+                          <motion.span key="add" className="flex items-center gap-2" exit={{ opacity: 0 }}>
+                            <Icon name="shopping_cart" className="text-sm" /> Agregar al carrito
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                    </button>
                   </div>
-                  <button
-                    onClick={() => handleAdd(p)}
-                    className="w-full mt-4 flex items-center justify-center gap-2 border border-outlineVariant py-2 rounded-full font-sans text-label uppercase text-onSurfaceVariant hover:border-primary hover:text-primary transition-all"
-                  >
-                    <AnimatePresence mode="wait" initial={false}>
-                      {added === p.id ? (
-                        <motion.span
-                          key="ok"
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0 }}
-                          className="flex items-center gap-2 text-secondary"
-                        >
-                          <Icon name="check" className="text-sm" /> Agregado
-                        </motion.span>
-                      ) : (
-                        <motion.span key="add" className="flex items-center gap-2" exit={{ opacity: 0 }}>
-                          <Icon name="shopping_cart" className="text-sm" /> Agregar al carrito
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                  </button>
                 </motion.div>
               ))}
             </AnimatePresence>

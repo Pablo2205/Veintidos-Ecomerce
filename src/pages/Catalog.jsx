@@ -21,6 +21,99 @@ const LIGHT_SWATCHES = new Set(['blanco', 'beige', 'amarillo', 'celeste'])
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 
+// Grupos de filtro factorizados para no duplicar el JSX entre la versión
+// siempre visible de desktop y la colapsable de mobile (ver <Catalog>).
+function FilterGroups({ activeCats, toggleCat, activeColors, toggleColor, activePlan, setActivePlan }) {
+  return (
+    <>
+      <div>
+        <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Tipo de evento</h3>
+        <div className="space-y-2">
+          {Object.entries(categoryLabels).map(([slug, label]) => (
+            <label key={slug} className="flex items-center gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={activeCats.includes(slug)}
+                onChange={() => toggleCat(slug)}
+                className="rounded border-outline text-primary focus:ring-primary w-4 h-4"
+              />
+              <span className="font-sans text-onSurfaceVariant group-hover:text-primary transition-colors">
+                {label}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Color</h3>
+        <div className="flex flex-wrap gap-3">
+          {productColors.map((c) => {
+            const active = activeColors.includes(c.key)
+            return (
+              <button
+                key={c.key}
+                type="button"
+                onClick={() => toggleColor(c.key)}
+                aria-label={c.label}
+                aria-pressed={active}
+                title={c.label}
+                className={`relative w-8 h-8 rounded-full transition-transform ${
+                  active ? 'scale-110 ring-2 ring-primary ring-offset-2 ring-offset-background' : 'hover:scale-105'
+                }`}
+                style={{
+                  backgroundColor: c.hex,
+                  border: c.border ? `1.5px solid ${c.border}` : '1px solid rgba(0,0,0,0.08)',
+                }}
+              >
+                {active && (
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <Icon
+                      name="check"
+                      className={`text-sm ${LIGHT_SWATCHES.has(c.key) ? 'text-primary' : 'text-white'}`}
+                    />
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <div>
+        <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Plan</h3>
+        <div className="space-y-2">
+          {planOptions.map((plan) => (
+            <label key={plan} className="flex items-center gap-3 cursor-pointer group">
+              <input
+                type="radio"
+                name="plan"
+                checked={activePlan === plan}
+                onChange={() => setActivePlan(plan)}
+                className="rounded-full border-outline text-primary focus:ring-primary w-4 h-4"
+              />
+              <span className="font-sans text-onSurfaceVariant group-hover:text-primary transition-colors">
+                {plan}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="pt-8 border-t border-outlineVariant/30">
+        <p className="font-sans text-label text-primary mb-4 uppercase tracking-widest">¿Buscás algo único?</p>
+        <WhatsAppButton
+          href={waLink('Hola! Quiero cotizar un diseño personalizado.')}
+          className="w-full py-3 text-sm"
+          iconClassName="w-4 h-4"
+        >
+          Diseño personalizado
+        </WhatsAppButton>
+      </div>
+    </>
+  )
+}
+
 export default function Catalog() {
   const [searchParams] = useSearchParams()
   // Si se llegó desde "Ver demos" de una categoría puntual en la Home
@@ -32,6 +125,11 @@ export default function Catalog() {
   })
   const [activeColors, setActiveColors] = useState([])
   const [activePlan, setActivePlan] = useState('Todos')
+  // Filtros escondidos por default en mobile/tablet — se expanden al tocar
+  // el botón "Filtros". En desktop (lg+) el panel sigue siempre visible,
+  // como antes, así no se pierde el patrón de sidebar sticky que ya andaba
+  // bien ahí.
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const { add } = useCart()
   const [added, setAdded] = useState(null)
   const [previewDemo, setPreviewDemo] = useState(null)
@@ -57,6 +155,10 @@ export default function Catalog() {
       return categoryMatch && colorMatch && planMatch
     })
   }, [activeCats, activeColors, activePlan])
+
+  // Cuántos filtros no-default hay activos, para el badge del botón mobile.
+  const activeFilterCount =
+    activeColors.length + (activePlan !== 'Todos' ? 1 : 0) + (activeCats.length < 2 ? 1 : 0)
 
   const handleAdd = (p) => {
     add(p)
@@ -84,90 +186,61 @@ export default function Catalog() {
 
       <div className="flex flex-col lg:flex-row gap-gutter">
         {/* Filtros */}
-        <aside className="w-full lg:w-64 space-y-8 mb-12 lg:mb-0 lg:sticky lg:top-32 lg:self-start lg:bg-creamSurface/50 lg:rounded-2xl lg:p-6 lg:border lg:border-outlineVariant/30">
-          <div>
-            <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Tipo de evento</h3>
-            <div className="space-y-2">
-              {Object.entries(categoryLabels).map(([slug, label]) => (
-                <label key={slug} className="flex items-center gap-3 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={activeCats.includes(slug)}
-                    onChange={() => toggleCat(slug)}
-                    className="rounded border-outline text-primary focus:ring-primary w-4 h-4"
+        <aside className="w-full lg:w-64 mb-6 lg:mb-0 lg:sticky lg:top-32 lg:self-start">
+          {/* Botón "Filtros" — solo mobile/tablet. En desktop el panel de
+              abajo ya queda siempre visible, no hace falta el botón. */}
+          <button
+            type="button"
+            onClick={() => setFiltersOpen((v) => !v)}
+            aria-expanded={filtersOpen}
+            className="lg:hidden w-full flex items-center justify-between gap-2 bg-creamSurface border border-outlineVariant/30 rounded-xl px-5 py-3.5"
+          >
+            <span className="flex items-center gap-2 font-sans text-label text-primary uppercase tracking-widest">
+              <Icon name="tune" className="text-secondary text-lg" />
+              Filtros
+              {activeFilterCount > 0 && (
+                <span className="bg-promoGold text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center normal-case tracking-normal">
+                  {activeFilterCount}
+                </span>
+              )}
+            </span>
+            <Icon name={filtersOpen ? 'expand_less' : 'expand_more'} className="text-onSurfaceVariant" />
+          </button>
+
+          {/* Mobile/tablet: colapsable, arranca escondido */}
+          <AnimatePresence initial={false}>
+            {filtersOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                className="lg:hidden overflow-hidden"
+              >
+                <div className="space-y-8 bg-creamSurface/50 rounded-xl border border-outlineVariant/30 p-6 mt-3">
+                  <FilterGroups
+                    activeCats={activeCats}
+                    toggleCat={toggleCat}
+                    activeColors={activeColors}
+                    toggleColor={toggleColor}
+                    activePlan={activePlan}
+                    setActivePlan={setActivePlan}
                   />
-                  <span className="font-sans text-onSurfaceVariant group-hover:text-primary transition-colors">
-                    {label}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          <div>
-            <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Color</h3>
-            <div className="flex flex-wrap gap-3">
-              {productColors.map((c) => {
-                const active = activeColors.includes(c.key)
-                return (
-                  <button
-                    key={c.key}
-                    type="button"
-                    onClick={() => toggleColor(c.key)}
-                    aria-label={c.label}
-                    aria-pressed={active}
-                    title={c.label}
-                    className={`relative w-8 h-8 rounded-full transition-transform ${
-                      active ? 'scale-110 ring-2 ring-primary ring-offset-2 ring-offset-background' : 'hover:scale-105'
-                    }`}
-                    style={{
-                      backgroundColor: c.hex,
-                      border: c.border ? `1.5px solid ${c.border}` : '1px solid rgba(0,0,0,0.08)',
-                    }}
-                  >
-                    {active && (
-                      <span className="absolute inset-0 flex items-center justify-center">
-                        <Icon
-                          name="check"
-                          className={`text-sm ${LIGHT_SWATCHES.has(c.key) ? 'text-primary' : 'text-white'}`}
-                        />
-                      </span>
-                    )}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          <div>
-            <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Plan</h3>
-            <div className="space-y-2">
-              {planOptions.map((plan) => (
-                <label key={plan} className="flex items-center gap-3 cursor-pointer group">
-                  <input
-                    type="radio"
-                    name="plan"
-                    checked={activePlan === plan}
-                    onChange={() => setActivePlan(plan)}
-                    className="rounded-full border-outline text-primary focus:ring-primary w-4 h-4"
-                  />
-                  <span className="font-sans text-onSurfaceVariant group-hover:text-primary transition-colors">
-                    {plan}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-outlineVariant/30">
-            <p className="font-sans text-label text-primary mb-4 uppercase tracking-widest">¿Buscás algo único?</p>
-            <WhatsAppButton
-              href={waLink('Hola! Quiero cotizar un diseño personalizado.')}
-              className="w-full py-3 text-sm"
-              iconClassName="w-4 h-4"
-            >
-              Diseño personalizado
-            </WhatsAppButton>
+          {/* Desktop: siempre visible, como antes */}
+          <div className="hidden lg:block space-y-8 lg:bg-creamSurface/50 lg:rounded-2xl lg:p-6 lg:border lg:border-outlineVariant/30">
+            <FilterGroups
+              activeCats={activeCats}
+              toggleCat={toggleCat}
+              activeColors={activeColors}
+              toggleColor={toggleColor}
+              activePlan={activePlan}
+              setActivePlan={setActivePlan}
+            />
           </div>
         </aside>
 

@@ -1,35 +1,35 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import ProductCover from '../components/ProductCover.jsx'
 import { useCart } from '../context/CartContext.jsx'
-import { originalPrice, TRANSFER_DISCOUNT_PERCENT, DISCOUNT_CODE, DISCOUNT_CODE_PERCENT } from '../data/site.js'
+import { originalPrice, TRANSFER_DISCOUNT_PERCENT, DISCOUNT_CODE_PERCENT } from '../data/site.js'
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 const savingsPercent = (price) => Math.round(100 - (price / originalPrice(price)) * 100)
 
 export default function Cart() {
-  const { items, remove, setQty, subtotal } = useCart()
-  const [promo, setPromo] = useState('')
-  const [applied, setApplied] = useState(false)
-  const [codeError, setCodeError] = useState(false)
+  const {
+    items,
+    remove,
+    setQty,
+    subtotal,
+    promoCode,
+    promoApplied: applied,
+    promoError: codeError,
+    applyPromo: handleApplyPromo,
+    updatePromoCode,
+    applyPromoToTotal,
+  } = useCart()
 
   const originalSubtotal = useMemo(
     () => items.reduce((sum, i) => sum + originalPrice(i.price) * (i.qty || 1), 0),
     [items]
   )
 
-  // Valida contra el código real (sin importar mayúsculas/espacios) en vez
-  // de aceptar cualquier texto — antes cualquier cosa tipeada daba -10%.
-  const handleApplyPromo = () => {
-    const isValid = promo.trim().toUpperCase() === DISCOUNT_CODE
-    setApplied(isValid)
-    setCodeError(!isValid)
-  }
-
-  const promoDiscount = applied ? Math.round(subtotal * (DISCOUNT_CODE_PERCENT / 100)) : 0
+  const promoDiscount = applyPromoToTotal(subtotal)
   const total = subtotal - promoDiscount
 
   return (
@@ -132,12 +132,8 @@ export default function Cart() {
               </div>
               <div className="flex w-full md:w-auto">
                 <input
-                  value={promo}
-                  onChange={(e) => {
-                    setPromo(e.target.value)
-                    if (codeError) setCodeError(false)
-                    if (applied) setApplied(false)
-                  }}
+                  value={promoCode}
+                  onChange={(e) => updatePromoCode(e.target.value)}
                   className={`bg-transparent border-b px-4 py-2 w-full md:w-48 outline-none font-sans text-sm transition-colors ${
                     codeError ? 'border-error text-error' : 'border-outline focus:border-primary'
                   }`}

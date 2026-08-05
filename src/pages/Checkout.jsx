@@ -5,7 +5,7 @@ import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import ProductCover from '../components/ProductCover.jsx'
 import { useCart } from '../context/CartContext.jsx'
-import { BANK_DATA, MP_LINKS, TRANSFER_DISCOUNT_PERCENT, transferPrice, originalPrice } from '../data/site.js'
+import { BANK_DATA, MP_LINKS, TRANSFER_DISCOUNT_PERCENT, DISCOUNT_CODE_PERCENT, transferPrice, originalPrice } from '../data/site.js'
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 
@@ -38,7 +38,7 @@ function CopyField({ label, value }) {
 }
 
 export default function Checkout() {
-  const { items, subtotal } = useCart()
+  const { items, subtotal, promoApplied, applyPromoToTotal } = useCart()
   const navigate = useNavigate()
   const [method, setMethod] = useState('mercadopago')
   const [mpConfirming, setMpConfirming] = useState(false)
@@ -67,12 +67,21 @@ export default function Checkout() {
   const mpLink = mpEligible ? MP_LINKS[singleItem.plan] : null
   const activeMethod = mpEligible ? method : 'transferencia'
 
-  const mpTotal = subtotal
   // Se suma por ítem (no transferPrice(subtotal) directo) para que el
   // descuento se aplique correctamente incluso si el carrito llegara a tener
   // más de un ítem o cantidad — cada precio de plan tiene su propio valor de
   // transferencia fijo, no es un porcentaje aplicado al total.
-  const transferTotal = items.reduce((sum, i) => sum + transferPrice(i.price) * (i.qty || 1), 0)
+  const transferSubtotal = items.reduce((sum, i) => sum + transferPrice(i.price) * (i.qty || 1), 0)
+
+  // El código de descuento del Carrito viaja acá vía CartContext (antes se
+  // perdía al pasar de página) y se acumula como % adicional sobre el total
+  // de CADA método de pago — así queda sumado tanto al 30% del mes (ya
+  // adentro de `price`) como al -10% de transferencia (ya adentro de
+  // `transferSubtotal`), sea cual sea el método que el cliente termine eligiendo.
+  const mpPromoDiscount = applyPromoToTotal(subtotal)
+  const transferPromoDiscount = applyPromoToTotal(transferSubtotal)
+  const mpTotal = subtotal - mpPromoDiscount
+  const transferTotal = transferSubtotal - transferPromoDiscount
 
   const goToForm = (paymentMethod, totalPaid) =>
     navigate('/completar-datos', { state: { orderRef, cartSummary: items, paymentMethod, totalPaid } })
@@ -262,6 +271,16 @@ export default function Checkout() {
                   )
                 })}
               </div>
+
+              {promoApplied && (
+                <div className="flex items-center gap-2 bg-secondary/10 border border-secondary/30 rounded-xl px-4 py-3">
+                  <Icon name="check_circle" className="text-secondary flex-shrink-0" />
+                  <p className="font-sans text-xs text-onSurfaceVariant">
+                    Código de descuento aplicado — <strong className="text-secondary">-{DISCOUNT_CODE_PERCENT}%</strong>{' '}
+                    adicional sobre {activeMethod === 'mercadopago' ? 'el total' : 'el total de transferencia'}.
+                  </p>
+                </div>
+              )}
 
               <div className="pt-6 border-t border-outlineVariant/30 flex justify-between items-end">
                 <p className="font-bold text-primary font-sans">

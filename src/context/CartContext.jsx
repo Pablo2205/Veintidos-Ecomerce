@@ -1,9 +1,17 @@
 import { createContext, useContext, useState, useMemo } from 'react'
+import { DISCOUNT_CODE, DISCOUNT_CODE_PERCENT } from '../data/site.js'
 
 const CartContext = createContext(null)
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([])
+
+  // El código de descuento vive acá (no en Cart.jsx) para que sobreviva la
+  // navegación a Checkout — antes se perdía al cambiar de página porque era
+  // estado local del componente Cart.
+  const [promoCode, setPromoCode] = useState('')
+  const [promoApplied, setPromoApplied] = useState(false)
+  const [promoError, setPromoError] = useState(false)
 
   const add = (product) => {
     setItems((prev) => {
@@ -22,8 +30,42 @@ export function CartProvider({ children }) {
 
   const subtotal = useMemo(() => items.reduce((sum, i) => sum + i.price * (i.qty || 1), 0), [items])
 
+  const applyPromo = () => {
+    const isValid = promoCode.trim().toUpperCase() === DISCOUNT_CODE
+    setPromoApplied(isValid)
+    setPromoError(!isValid)
+  }
+
+  const updatePromoCode = (value) => {
+    setPromoCode(value)
+    if (promoError) setPromoError(false)
+    if (promoApplied) setPromoApplied(false)
+  }
+
+  // Descuento acumulable: se aplica como % adicional sobre CUALQUIER total ya
+  // calculado (precio de lista, o precio de transferencia con su -10% ya
+  // adentro) — así queda acumulado con el 30% del mes y con el método de
+  // pago elegido, sea cual sea.
+  const applyPromoToTotal = (total) => (promoApplied ? Math.round(total * (DISCOUNT_CODE_PERCENT / 100)) : 0)
+
   return (
-    <CartContext.Provider value={{ items, add, remove, setQty, subtotal }}>{children}</CartContext.Provider>
+    <CartContext.Provider
+      value={{
+        items,
+        add,
+        remove,
+        setQty,
+        subtotal,
+        promoCode,
+        promoApplied,
+        promoError,
+        applyPromo,
+        updatePromoCode,
+        applyPromoToTotal,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
   )
 }
 

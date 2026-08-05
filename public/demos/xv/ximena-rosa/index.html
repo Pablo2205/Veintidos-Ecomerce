@@ -8,109 +8,109 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Tangerine:wght@700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* ── Medianoche Dorada: reinvención total del demo original (rosa pastel
-       + floral). Glam nocturno — verde noche + dorado + estrellas, nada de
-       rosa/floral, para diferenciarse del resto del catálogo (todo pastel
-       claro). Estrellas titilantes en vez de ramillete floral. ── */
+  /* ── Glam Rosa & Oro: segunda vuelta de la reinvención. La primera (verde
+       noche) ignoraba que el vestido real en las fotos es rosa vibrante con
+       tiara y bordado dorado — Pablo lo marcó y tenía toda la razón: el
+       diseño tiene que combinar con la foto real, no imponer un color
+       ajeno. Se mantiene la tipografía Cinzel/Tangerine y el motivo de
+       brillos (sí lo valida el tiara de strass de las fotos), pero sobre
+       una base clara rosa/crema en vez de un fondo oscuro. ── */
   :root{
-    --night:#151F19;
-    --night-deep:#0C130F;
-    --night-elevated:#1D2A22;
-    --gold:#C9A15C;
-    --gold-bright:#E8C77A;
-    --cream:#F5F0E6;
-    --ink:#F5F0E6;
-    --ink-soft:#B9AFA0;
-    --line:rgba(201,161,92,.25);
+    --blush:#FBEDE9;
+    --blush-deep:#F5DCD3;
+    --rose:#D8899A;
+    --rose-deep:#B65F73;
+    --gold:#B8935A;
+    --gold-deep:#8C6B3B;
+    --ink:#4A2E33;
+    --ink-soft:#9C7D80;
+    --line:rgba(184,95,115,.22);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{background:var(--night);color:var(--ink);font-family:'Jost',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body{background:var(--blush);color:var(--ink);font-family:'Jost',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   .page{max-width:480px;margin:0 auto;overflow:hidden;position:relative}
-  .script{font-family:'Tangerine',cursive;font-weight:700;color:var(--gold-bright)}
+  .script{font-family:'Tangerine',cursive;font-weight:700;color:var(--rose-deep)}
   .engrave{font-family:'Cinzel',serif}
-  .eyebrow{font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;font-weight:500;color:var(--gold)}
+  .eyebrow{font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;font-weight:500;color:var(--gold-deep)}
 
-  .progress{position:fixed;top:0;left:0;height:2px;background:var(--gold-bright);z-index:50;width:0%;transition:width .1s linear}
+  .progress{position:fixed;top:0;left:0;height:2px;background:var(--rose-deep);z-index:50;width:0%;transition:width .1s linear}
   .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
   .reveal.is-visible{opacity:1;transform:translateY(0)}
   @media (prefers-reduced-motion: reduce){.reveal{transition:none;opacity:1;transform:none}}
 
-  section{padding:44px 28px;position:relative}
-  .center{text-align:center}
-
-  /* ── campo de estrellas — reemplaza el ramillete floral del original ── */
+  /* ── brillos titilantes — el mismo motivo del tiara de strass en las
+       fotos reales, no decoración inventada ── */
   .stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-  .star{position:absolute;color:var(--gold-bright);opacity:0;animation:twinkle ease-in-out infinite}
+  .star{position:absolute;color:var(--gold);opacity:0;animation:twinkle ease-in-out infinite}
   @keyframes twinkle{0%,100%{opacity:0;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
   @media (prefers-reduced-motion: reduce){.star{display:none}}
 
-  .gold-rule{width:1px;height:40px;background:linear-gradient(var(--gold),transparent);margin:0 auto}
-  .divider{display:flex;align-items:center;justify-content:center;gap:12px;margin:20px auto}
-  .divider .ln{width:34px;height:1px;background:var(--line)}
-  .divider svg{width:14px;height:14px;color:var(--gold)}
+  section{padding:44px 28px;position:relative}
+  .center{text-align:center}
+  .hero-glow{background:linear-gradient(180deg,var(--blush-deep),var(--blush) 70%)}
 
-  .crown{width:24px;height:24px;color:var(--gold);margin:16px auto;display:block}
-  .photo-arch{width:220px;height:270px;border-radius:110px 110px 8px 8px;overflow:hidden;margin:14px auto 0;background:var(--night-elevated);border:2px solid var(--gold);position:relative;z-index:1}
+  .crown{width:24px;height:24px;color:var(--gold-deep);margin:16px auto;display:block}
+  .photo-arch{width:220px;height:270px;border-radius:110px 110px 8px 8px;overflow:hidden;margin:14px auto 0;background:linear-gradient(160deg,var(--rose),var(--rose-deep));border:3px solid var(--gold);position:relative;z-index:1}
   .photo-arch img{width:100%;height:100%;object-fit:cover;display:block}
 
   .quote{color:var(--ink-soft);font-size:.86rem;line-height:1.6;max-width:280px;margin:22px auto 0;font-style:italic;position:relative;z-index:1}
 
   .player{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:20px;position:relative;z-index:1}
-  .dale-play{font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
-  .player button{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--gold);background:none;color:var(--gold);display:flex;align-items:center;justify-content:center;cursor:pointer}
-  .player .play{width:42px;height:42px;background:var(--gold);color:var(--night-deep)}
+  .dale-play{font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:8px}
+  .player button{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--gold-deep);background:none;color:var(--gold-deep);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .player .play{width:42px;height:42px;background:var(--gold-deep);color:#fff}
 
   .intro{color:var(--ink-soft);font-size:.9rem;line-height:1.7;margin-top:22px;position:relative;z-index:1}
-  .intro strong{color:var(--cream);font-weight:600}
-  .intro .label{display:block;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-top:16px}
+  .intro strong{color:var(--ink);font-weight:600}
+  .intro .label{display:block;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--rose-deep);margin-top:16px}
 
   .date-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:22px;position:relative;z-index:1}
   .date-row .d{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.2em;color:var(--ink-soft)}
-  .date-row .num{font-family:'Cinzel',serif;font-size:1.4rem;color:var(--gold-bright);font-weight:600}
+  .date-row .num{font-family:'Cinzel',serif;font-size:1.4rem;color:var(--rose-deep);font-weight:600}
 
-  .countdown-label{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);text-align:center;margin-top:22px;position:relative;z-index:1}
+  .countdown-label{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-deep);text-align:center;margin-top:22px;position:relative;z-index:1}
   .countdown{display:flex;justify-content:center;gap:16px;margin-top:8px;position:relative;z-index:1}
-  .cd-num{font-family:'Cinzel',serif;font-size:1.5rem;color:var(--cream);font-weight:600}
+  .cd-num{font-family:'Cinzel',serif;font-size:1.5rem;color:var(--ink);font-weight:600}
   .cd-num.tick{animation:tick .35s ease}
   @keyframes tick{0%{transform:scale(1.2);opacity:.5}100%{transform:scale(1);opacity:1}}
   .cd-label{font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-soft);text-align:center;margin-top:2px}
 
   .cal-wrap{margin-top:28px;position:relative;z-index:1}
-  .cal-title{font-family:'Tangerine',cursive;font-weight:700;font-size:1.9rem;color:var(--gold-bright)}
+  .cal-title{font-family:'Tangerine',cursive;font-weight:700;font-size:1.9rem;color:var(--rose-deep)}
   .cal-month{font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:16px;max-width:280px;margin-left:auto;margin-right:auto}
   .cal-grid .dow{font-size:.58rem;color:var(--ink-soft);text-transform:uppercase}
   .cal-day{font-size:.78rem;color:var(--ink-soft);padding:4px 0;border-radius:50%}
-  .cal-day.active{background:var(--gold);color:var(--night-deep);font-weight:600}
+  .cal-day.active{background:var(--rose-deep);color:#fff;font-weight:600}
   .cal-day.empty{visibility:hidden}
 
-  .photo-tall{width:100%;height:48vh;min-height:320px;object-fit:cover;display:block;background:var(--night-elevated);filter:saturate(.92) contrast(1.05)}
+  .photo-tall{width:100%;height:48vh;min-height:320px;object-fit:cover;display:block;background:linear-gradient(160deg,var(--rose),var(--rose-deep))}
 
-  h4.h-title{font-family:'Cinzel',serif;color:var(--gold-bright);font-size:1rem;letter-spacing:.04em}
+  h4.h-title{font-family:'Cinzel',serif;color:var(--rose-deep);font-size:1rem;letter-spacing:.04em}
   .addr{color:var(--ink-soft);font-size:.86rem;margin-top:6px;line-height:1.6}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--gold);color:var(--night-deep);text-decoration:none;padding:12px 22px;border-radius:2px;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;font-family:'Cinzel',serif;font-weight:500;margin-top:14px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--gold-deep);color:#fff;text-decoration:none;padding:12px 22px;border-radius:999px;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;font-family:'Cinzel',serif;font-weight:500;margin-top:14px}
   .btn.whatsapp{background:#25D366;color:#fff}
 
   .timeline{margin-top:8px;position:relative;z-index:1}
   .tl-item{display:flex;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid var(--line)}
   .tl-item:last-child{border-bottom:none}
-  .tl-item svg{width:18px;height:18px;color:var(--gold);flex-shrink:0}
-  .tl-time{font-family:'Cinzel',serif;font-weight:600;color:var(--gold-bright);width:64px;flex-shrink:0;font-size:.76rem}
+  .tl-item svg{width:18px;height:18px;color:var(--gold-deep);flex-shrink:0}
+  .tl-time{font-family:'Cinzel',serif;font-weight:600;color:var(--rose-deep);width:64px;flex-shrink:0;font-size:.76rem}
   .tl-label{color:var(--ink-soft);font-size:.84rem}
 
   .dress-icons{display:flex;justify-content:center;gap:22px;margin-top:14px;position:relative;z-index:1}
-  .dress-icons svg{width:28px;height:38px;color:var(--gold)}
-  .code{font-family:'Cinzel',serif;font-size:1.05rem;color:var(--gold-bright);margin-top:10px;letter-spacing:.08em}
+  .dress-icons svg{width:28px;height:38px;color:var(--gold-deep)}
+  .code{font-family:'Cinzel',serif;font-size:1.05rem;color:var(--rose-deep);margin-top:10px;letter-spacing:.06em}
   .note{color:var(--ink-soft);font-size:.8rem;margin-top:10px;max-width:280px;margin-left:auto;margin-right:auto;position:relative;z-index:1}
 
-  .copy-field{margin-top:16px;background:var(--night-elevated);border:1px solid var(--line);border-radius:4px;padding:16px 20px;text-align:left;max-width:280px;margin-left:auto;margin-right:auto;position:relative;z-index:1}
-  .copy-field .label{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600}
-  .copy-field .value{font-family:'Cinzel',serif;font-size:.92rem;color:var(--cream);margin-top:4px;letter-spacing:.03em}
-  .copy-btn{margin-top:10px;background:none;border:none;color:var(--gold-bright);font-size:.74rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:'Jost',sans-serif}
+  .copy-field{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;text-align:left;max-width:280px;margin-left:auto;margin-right:auto;position:relative;z-index:1}
+  .copy-field .label{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600}
+  .copy-field .value{font-family:'Cinzel',serif;font-size:.92rem;color:var(--ink);margin-top:4px;letter-spacing:.03em}
+  .copy-btn{margin-top:10px;background:none;border:none;color:var(--rose-deep);font-size:.74rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:'Jost',sans-serif}
 
-  footer{padding:44px 28px 60px;text-align:center;position:relative}
-  footer .thanks{font-family:'Tangerine',cursive;font-weight:700;font-size:2.6rem;color:var(--gold-bright)}
+  footer{padding:44px 28px 60px;text-align:center;position:relative;background:linear-gradient(0deg,var(--blush-deep),var(--blush) 60%)}
+  footer .thanks{font-family:'Tangerine',cursive;font-weight:700;font-size:2.6rem;color:var(--rose-deep)}
 </style>
 </head>
 <body>
@@ -133,7 +133,7 @@
 
 <div class="page">
 
-  <section class="center reveal is-visible">
+  <section class="center reveal is-visible hero-glow">
     <div class="stars">
       <svg class="star" style="left:10%;top:8%;width:10px;height:10px;animation-duration:3.2s;animation-delay:0s"><use href="#icon-star4"/></svg>
       <svg class="star" style="left:82%;top:14%;width:14px;height:14px;animation-duration:4s;animation-delay:.8s"><use href="#icon-star4"/></svg>
@@ -141,7 +141,7 @@
       <svg class="star" style="left:88%;top:40%;width:9px;height:9px;animation-duration:3.6s;animation-delay:.4s"><use href="#icon-star4"/></svg>
       <svg class="star" style="left:6%;top:52%;width:11px;height:11px;animation-duration:3s;animation-delay:2.1s"><use href="#icon-star4"/></svg>
     </div>
-    <div class="mis engrave" style="font-size:1rem;letter-spacing:.2em;color:var(--gold);position:relative;z-index:1">MIS XV AÑOS</div>
+    <div class="mis engrave" style="font-size:1rem;letter-spacing:.2em;color:var(--gold-deep);position:relative;z-index:1">MIS XV AÑOS</div>
     <svg class="crown" style="position:relative;z-index:1"><use href="#icon-crown"/></svg>
     <div class="script" style="font-size:2.6rem;position:relative;z-index:1">Ximena</div>
     <div class="photo-arch"><img src="foto-hero.jpg" alt="Ximena" onerror="this.parentElement.style.display='none'"></div>

@@ -41,6 +41,15 @@ const WHATSAPP_LINK = 'https://wa.me/5491139126543'
 // Nombre de marca que ve el destinatario en el "De:" del mail (en vez de la
 // cuenta de Gmail cruda) — esto es lo que hace que se vea más profesional.
 const BRAND_NAME = 'veintidós — Invitaciones Digitales'
+// Secret key de reCAPTCHA v3 (console.google.com/recaptcha, no
+// google.com/recaptcha/admin viejo). A diferencia del site key (que sí va
+// en el frontend, en VITE_RECAPTCHA_SITE_KEY), esta NUNCA se comparte, no
+// se sube a ningún repo — se pega directo acá, en un script que solo vos
+// podés editar.
+const RECAPTCHA_SECRET_KEY = 'PEGAR_SECRET_KEY_ACA'
+// Puntaje mínimo de reCAPTCHA v3 (0 = seguro que es un bot, 1 = seguro que
+// es una persona). 0.5 es el default recomendado por Google.
+const RECAPTCHA_SCORE_MIN = 0.5
 // Logo en base64 (recorte "wordmark" sin tagline, fondo transparente — el
 // mismo que usa el Nav del sitio). Se manda como imagen embebida (inline),
 // no como link a una imagen externa, para que se vea siempre aunque el
@@ -63,9 +72,75 @@ function formatMoney(n) {
   return '$' + out
 }
 
+// --- Validación anti-spam / anti-abuso -------------------------------
+// Este Web App es, por naturaleza, un endpoint público sin login (lo tiene
+// que poder llamar cualquier visitante del sitio). Sin estas validaciones,
+// cualquiera podría mandarle datos falsos a la planilla o usarlo para
+// disparar el mail de "recibimos tu pedido" hacia el email de un tercero.
+function verificarRecaptcha(token) {
+  if (!RECAPTCHA_SECRET_KEY || RECAPTCHA_SECRET_KEY === 'PEGAR_SECRET_KEY_ACA') {
+    // Todavía no configuraste la secret key — no bloqueamos pedidos reales
+    // por accidente, pero esta es justamente la ventana de riesgo que se
+    // cierra al completarla. Ver GOOGLE_APPS_SCRIPT.md, sección reCAPTCHA.
+    return true
+  }
+  if (!token) return false
+  try {
+    const resp = UrlFetchApp.fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'post',
+      payload: { secret: RECAPTCHA_SECRET_KEY, response: token },
+      muteHttpExceptions: true,
+    })
+    const result = JSON.parse(resp.getContentText())
+    return result.success === true && (typeof result.score !== 'number' || result.score >= RECAPTCHA_SCORE_MIN)
+  } catch (err) {
+    // Si el servicio de Google no responde, no le hacemos perder un pedido
+    // real a alguien por un problema de red ajeno — se deja pasar.
+    return true
+  }
+}
+
+function esEmailValido(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+// Corta strings a un largo razonable antes de guardarlos — evita que un
+// payload malicioso o corrupto infle una celda de la planilla o el cuerpo
+// de un mail con megabytes de texto.
+function limitar(valor, maxLargo) {
+  return typeof valor === 'string' ? valor.slice(0, maxLargo) : valor
+}
+
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents)
+
+    if (!verificarRecaptcha(data.recaptchaToken)) {
+      return ContentService.createTextOutput(JSON.stringify({ ok: false, error: 'recaptcha' })).setMimeType(
+        ContentService.MimeType.JSON
+      )
+    }
+    if (!data.names || !data.whatsapp) {
+      return ContentService.createTextOutput(
+        JSON.stringify({ ok: false, error: 'faltan_campos_obligatorios' })
+      ).setMimeType(ContentService.MimeType.JSON)
+    }
+    if (data.email && !esEmailValido(data.email)) {
+      return ContentService.createTextOutput(JSON.stringify({ ok: false, error: 'email_invalido' })).setMimeType(
+        ContentService.MimeType.JSON
+      )
+    }
+    // Largos generosos para no molestar a nadie real, pero acotados.
+    data.names = limitar(data.names, 200)
+    data.whatsapp = limitar(data.whatsapp, 60)
+    data.email = limitar(data.email, 200)
+    data.venue = limitar(data.venue, 300)
+    data.address = limitar(data.address, 300)
+    data.gifts = limitar(data.gifts, 2000)
+    data.dressCode = limitar(data.dressCode, 500)
+    data.playlist = limitar(data.playlist, 500)
+    data.customization = limitar(data.customization, 2000)
+
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
 
     let comprobanteLink = ''
@@ -205,6 +280,29 @@ export const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycb.../e
 
 Volvé a hacer build/deploy y listo — cada envío del formulario agrega una fila a tu planilla,
 con el comprobante guardado en Drive y linkeado, y salen los dos mails automáticos.
+
+## 5. Activar reCAPTCHA v3 (recomendado, cierra el hueco de spam)
+
+Sin esto, el Web App sigue funcionando (`verificarRecaptcha` deja pasar todo mientras
+`RECAPTCHA_SECRET_KEY` no esté configurada) pero queda expuesto a que alguien lo llame
+directamente con datos falsos. Son 5 minutos:
+
+1. Andá a [google.com/recaptcha/admin](https://www.google.com/recaptcha/admin) con tu cuenta
+   de Google → **+** (crear sitio nuevo).
+2. Elegí **reCAPTCHA v3**, cargá el dominio real del sitio (ej. `veintidos.ar` o el que uses en
+   Vercel) y aceptá los términos.
+3. Te da dos claves:
+   - **Site key** (pública) → pegala en `.env` como `VITE_RECAPTCHA_SITE_KEY` (y en las
+     Environment Variables de Vercel, si no el login funciona local pero no en producción).
+   - **Secret key** (privada) → pegala en el script de Apps Script, en `RECAPTCHA_SECRET_KEY`
+     (arriba de todo del script, sección 2 de esta guía).
+4. Con el script ya actualizado: **Implementar → Gestionar implementaciones → editar → Nueva
+   versión** (si no, sigue corriendo la versión vieja sin la verificación).
+5. Rebuild/deploy del frontend para que tome el nuevo `VITE_RECAPTCHA_SITE_KEY`.
+
+No hace falta ningún checkbox ni desafío visual para quien completa el formulario — reCAPTCHA
+v3 es invisible, solo le pone un puntaje a la interacción y el script lo rechaza si parece un
+bot (`RECAPTCHA_SCORE_MIN`, default 0.5).
 
 ## Notas
 

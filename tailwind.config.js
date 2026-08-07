@@ -37,6 +37,13 @@ export default {
         promoGold: '#C5A059',
         whatsapp: '#25D366',
         error: '#ba1a1a',
+        // Verde vivo dedicado a precios/descuentos/ahorro (carrito, checkout,
+        // "-X%", "ahorrás $X") — a propósito distinto de `whatsapp` (más
+        // teal/celeste) para que nunca se confunda con un CTA de WhatsApp en
+        // la misma pantalla, y distinto de `primary` (verde muy oscuro de
+        // marca) porque para esto se buscó algo más llamativo/vivo, no el
+        // verde bosque apagado.
+        discount: '#16A34A',
       },
       fontFamily: {
         serif: ['Fraunces', 'serif'],

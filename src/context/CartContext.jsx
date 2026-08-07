@@ -1,5 +1,8 @@
-import { createContext, useContext, useState, useMemo } from 'react'
+import { createContext, useContext, useState, useMemo, useEffect, useRef } from 'react'
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { DISCOUNT_CODE, DISCOUNT_CODE_PERCENT } from '../data/site.js'
+import { db, firebaseEnabled } from '../lib/firebase.js'
+import { useAuth } from './AuthContext.jsx'
 
 const CartContext = createContext(null)
 
@@ -12,6 +15,55 @@ export function CartProvider({ children }) {
   const [promoCode, setPromoCode] = useState('')
   const [promoApplied, setPromoApplied] = useState(false)
   const [promoError, setPromoError] = useState(false)
+
+  // --- Persistencia en Firestore (solo con sesión iniciada) ----------------
+  // Objetivo: si alguien agrega una invitación al carrito y no llega a
+  // terminar la compra, no perder esos datos. Con cuenta creada, el carrito
+  // se guarda en `carts/{uid}` y se restaura solo al iniciar sesión — desde
+  // este dispositivo o cualquier otro. Ver `firestore.rules`: cada usuario
+  // solo puede leer/escribir su propio documento.
+  const auth = useAuth()
+  const user = auth?.user
+  const restoredForUid = useRef(null)
+  const saveTimer = useRef(null)
+
+  useEffect(() => {
+    if (!firebaseEnabled || !user) {
+      restoredForUid.current = null
+      return
+    }
+    if (restoredForUid.current === user.uid) return
+    restoredForUid.current = user.uid
+
+    getDoc(doc(db, 'carts', user.uid))
+      .then((snap) => {
+        const saved = snap.exists() ? snap.data()?.items : null
+        if (Array.isArray(saved) && saved.length) {
+          // Solo restauramos si el carrito local está vacío, para no pisar
+          // algo que la persona ya estaba armando en este mismo dispositivo.
+          setItems((current) => (current.length ? current : saved))
+        }
+      })
+      .catch(() => {
+        // Sin conexión, reglas de Firestore aún no desplegadas, etc. — el
+        // carrito local sigue funcionando igual, nunca bloqueamos la compra
+        // por esto.
+      })
+  }, [user])
+
+  useEffect(() => {
+    if (!firebaseEnabled || !user) return
+    clearTimeout(saveTimer.current)
+    // Debounce simple: evita escribir en Firestore en cada click de "+1".
+    saveTimer.current = setTimeout(() => {
+      setDoc(
+        doc(db, 'carts', user.uid),
+        { items, email: user.email || '', updatedAt: serverTimestamp() },
+        { merge: true }
+      ).catch(() => {})
+    }, 800)
+    return () => clearTimeout(saveTimer.current)
+  }, [items, user])
 
   const add = (product) => {
     setItems((prev) => {

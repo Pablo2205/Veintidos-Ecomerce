@@ -18,6 +18,31 @@
   ::selection {
     @apply bg-secondaryContainer text-onSurface;
   }
+
+  /* El navegador resalta los inputs autocompletados (usuario/contraseña
+     guardados) con un fondo celeste/amarillo propio que no se puede sacar
+     con background normal — solo se gana con un box-shadow inset enorme del
+     mismo color que el fondo real del input. Sin esto, el login se ve con
+     una franja azul ajena a la paleta del sitio apenas el navegador
+     autocompleta un campo. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px #fbf9f4 inset;
+    box-shadow: 0 0 0px 1000px #fbf9f4 inset;
+    -webkit-text-fill-color: #1b1c19;
+    caret-color: #1b1c19;
+    transition: background-color 9999s ease-in-out 0s;
+  }
+
+  /* Foco por teclado: el navegador dibuja un anillo azul por defecto en
+     cualquier botón/link sin estilo de foco propio (los inputs con
+     `.field-input*` ya lo pisan con el dorado de marca). Lo unificamos acá
+     en vez de dejar que cada botón nuevo herede el azul de Chrome/Edge. */
+  :focus-visible {
+    outline: 2px solid theme('colors.promoGold');
+    outline-offset: 2px;
+  }
 }
 
 @layer components {

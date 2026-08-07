@@ -94,8 +94,8 @@ export default function Hero() {
             </motion.h1>
 
             <motion.p variants={item} className="font-sans text-onSurfaceVariant text-base leading-relaxed max-w-md mb-10">
-              Bodas y XV años. Creamos una web única para tu evento con cuenta regresiva,
-              confirmación y música — todo en un link.
+              Bodas, XV años y baby showers. Creamos una web única para tu evento con cuenta
+              regresiva, confirmación y música — todo en un link.
             </motion.p>
 
             <motion.div variants={item} className="flex flex-col sm:flex-row gap-4">

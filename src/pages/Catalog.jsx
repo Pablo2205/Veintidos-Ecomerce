@@ -12,6 +12,7 @@ import { useCart } from '../context/CartContext.jsx'
 const categoryLabels = {
   boda: 'Boda',
   'xv-anos': 'Cumple XV',
+  'baby-shower': 'Baby Shower',
 }
 
 const planOptions = ['Todos', 'Essential', 'Standard', 'Premium']
@@ -117,11 +118,11 @@ function FilterGroups({ activeCats, toggleCat, activeColors, toggleColor, active
 export default function Catalog() {
   const [searchParams] = useSearchParams()
   // Si se llegó desde "Ver demos" de una categoría puntual en la Home
-  // (?evento=boda o ?evento=xv-anos), arrancar el filtro solo con esa
-  // categoría marcada. Si no, mostrar todo como siempre.
+  // (?evento=boda, ?evento=xv-anos o ?evento=baby-shower), arrancar el filtro
+  // solo con esa categoría marcada. Si no, mostrar todo como siempre.
   const [activeCats, setActiveCats] = useState(() => {
     const evento = searchParams.get('evento')
-    return evento === 'boda' || evento === 'xv-anos' ? [evento] : ['boda', 'xv-anos']
+    return evento && evento in categoryLabels ? [evento] : Object.keys(categoryLabels)
   })
   const [activeColors, setActiveColors] = useState([])
   const [activePlan, setActivePlan] = useState('Todos')

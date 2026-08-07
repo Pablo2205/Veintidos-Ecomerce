@@ -128,7 +128,7 @@ export default function Checkout() {
                   }`}
                 >
                   Transferencia
-                  <span className="text-error text-[11px] font-bold">
+                  <span className="text-discount text-[11px] font-bold">
                     -{TRANSFER_DISCOUNT_PERCENT}%
                   </span>
                 </button>
@@ -185,7 +185,7 @@ export default function Checkout() {
 
                 <button
                   onClick={() => setMethod('transferencia')}
-                  className="font-sans text-sm text-secondary hover:text-primary underline underline-offset-4 transition-colors"
+                  className="font-sans text-sm text-discount hover:opacity-70 underline underline-offset-4 transition-opacity"
                 >
                   ¿Preferís transferencia? Ahorrás {TRANSFER_DISCOUNT_PERCENT}% adicional
                 </button>
@@ -198,7 +198,7 @@ export default function Checkout() {
                   <h2 className="font-serif text-headline-md text-primary flex items-center gap-3">
                     <Icon name="account_balance" /> Datos para transferir
                   </h2>
-                  <span className="text-error text-label font-bold uppercase tracking-widest">
+                  <span className="text-discount text-label font-bold uppercase tracking-widest">
                     -{TRANSFER_DISCOUNT_PERCENT}% de descuento
                   </span>
                 </div>
@@ -209,9 +209,9 @@ export default function Checkout() {
                   <CopyField label="Concepto / referencia (importante)" value={orderRef} />
                 </div>
                 <div className="flex items-start gap-3 bg-creamSurface border border-secondaryFixed rounded-xl p-5">
-                  <Icon name="info" className="text-secondary flex-shrink-0 mt-0.5" />
+                  <Icon name="info" className="text-discount flex-shrink-0 mt-0.5" />
                   <p className="font-sans text-sm text-onSurfaceVariant">
-                    Pagando por transferencia directa obtenés <strong className="text-error">{TRANSFER_DISCOUNT_PERCENT}% de descuento</strong>{' '}
+                    Pagando por transferencia directa obtenés <strong className="text-discount">{TRANSFER_DISCOUNT_PERCENT}% de descuento</strong>{' '}
                     adicional sobre el precio de Mercado Pago (ya reflejado en el total). Poné{' '}
                     <strong>{orderRef}</strong> como concepto o motivo de la transferencia si tu banco lo permite —
                     así podemos cruzarla con tu pedido más rápido. Después tocá{' '}
@@ -273,10 +273,10 @@ export default function Checkout() {
               </div>
 
               {promoApplied && (
-                <div className="flex items-center gap-2 bg-secondary/10 border border-secondary/30 rounded-xl px-4 py-3">
-                  <Icon name="check_circle" className="text-secondary flex-shrink-0" />
+                <div className="flex items-center gap-2 bg-discount/10 border border-discount/30 rounded-xl px-4 py-3">
+                  <Icon name="check_circle" className="text-discount flex-shrink-0" />
                   <p className="font-sans text-xs text-onSurfaceVariant">
-                    Código de descuento aplicado — <strong className="text-secondary">-{DISCOUNT_CODE_PERCENT}%</strong>{' '}
+                    Código de descuento aplicado — <strong className="text-discount">-{DISCOUNT_CODE_PERCENT}%</strong>{' '}
                     adicional sobre {activeMethod === 'mercadopago' ? 'el total' : 'el total de transferencia'}.
                   </p>
                 </div>
@@ -297,18 +297,18 @@ export default function Checkout() {
               </div>
 
               {activeMethod === 'transferencia' ? (
-                <div className="flex items-center gap-2 bg-error/10 border border-error/30 rounded-xl px-4 py-3">
-                  <Icon name="local_offer" className="text-error flex-shrink-0" />
+                <div className="flex items-center gap-2 bg-discount/10 border border-discount/30 rounded-xl px-4 py-3">
+                  <Icon name="local_offer" className="text-discount flex-shrink-0" />
                   <p className="font-sans text-xs text-onSurfaceVariant">
-                    Ahorrás <strong className="text-error">{money(mpTotal - transferTotal)}</strong> pagando por
+                    Ahorrás <strong className="text-discount">{money(mpTotal - transferTotal)}</strong> pagando por
                     transferencia en vez de Mercado Pago.
                   </p>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 bg-creamSurface border border-outlineVariant/40 rounded-xl px-4 py-3">
-                  <Icon name="info" className="text-secondary text-base flex-shrink-0" />
+                  <Icon name="info" className="text-discount text-base flex-shrink-0" />
                   <p className="font-sans text-xs text-onSurfaceVariant">
-                    Con transferencia pagás <strong className="text-error">{money(mpTotal - transferTotal)} menos</strong>.
+                    Con transferencia pagás <strong className="text-discount">{money(mpTotal - transferTotal)} menos</strong>.
                   </p>
                 </div>
               )}

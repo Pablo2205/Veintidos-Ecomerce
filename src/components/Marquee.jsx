@@ -7,7 +7,7 @@ import { useReducedMotion } from 'framer-motion'
  * con CSS puro (no Framer Motion) para que el loop sea perfecto y liviano;
  * `prefers-reduced-motion` lo deja estático.
  */
-const DEFAULT_ITEMS = ['Bodas', 'Cumple XV', 'Invitaciones digitales', 'Diseño a medida']
+const DEFAULT_ITEMS = ['Bodas', 'Cumple XV', 'Baby Showers', 'Invitaciones digitales', 'Diseño a medida']
 
 export default function Marquee({ items = DEFAULT_ITEMS, className = '' }) {
   const reduce = useReducedMotion()

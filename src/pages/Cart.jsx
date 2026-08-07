@@ -5,6 +5,7 @@ import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import ProductCover from '../components/ProductCover.jsx'
 import { useCart } from '../context/CartContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import { originalPrice, TRANSFER_DISCOUNT_PERCENT, DISCOUNT_CODE_PERCENT } from '../data/site.js'
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
@@ -23,6 +24,7 @@ export default function Cart() {
     updatePromoCode,
     applyPromoToTotal,
   } = useCart()
+  const { user, firebaseEnabled } = useAuth() || {}
 
   const originalSubtotal = useMemo(
     () => items.reduce((sum, i) => sum + originalPrice(i.price) * (i.qty || 1), 0),
@@ -48,6 +50,18 @@ export default function Cart() {
             <div className="h-px flex-grow bg-outlineVariant/30 ml-4" />
           </div>
         </Reveal>
+
+        {firebaseEnabled && !user && items.length > 0 && (
+          <Reveal delay={0.04} className="mt-8 flex items-center gap-4 p-4 rounded-xl bg-secondaryContainer/30 border border-secondaryContainer">
+            <Icon name="bookmark" className="text-secondary flex-shrink-0" />
+            <p className="font-sans text-sm text-onSurfaceVariant flex-grow">
+              <Link to="/cuenta" state={{ from: '/carrito' }} className="font-semibold text-primary hover:underline">
+                Iniciá sesión o creá una cuenta
+              </Link>{' '}
+              para guardar este carrito y retomarlo después, sin perderlo.
+            </p>
+          </Reveal>
+        )}
 
         <div className="space-y-6 mt-10">
           <AnimatePresence initial={false}>
@@ -100,7 +114,7 @@ export default function Cart() {
                           <span className="text-sm font-sans line-through text-onSurfaceVariant/70">
                             {money(originalPrice(item.price) * qty)}
                           </span>
-                          <span className="text-error text-xs font-bold">
+                          <span className="text-discount text-xs font-bold">
                             -{savingsPercent(item.price)}%
                           </span>
                         </span>
@@ -148,7 +162,7 @@ export default function Cart() {
               </div>
             </div>
             {applied && (
-              <p className="mt-3 text-secondary text-sm font-sans flex items-center gap-1.5">
+              <p className="mt-3 text-discount text-sm font-sans flex items-center gap-1.5">
                 <Icon name="check_circle" className="text-base" /> Código aplicado — {DISCOUNT_CODE_PERCENT}% adicional
               </p>
             )}
@@ -187,7 +201,7 @@ export default function Cart() {
                 {applied && (
                   <div className="flex justify-between text-onSurfaceVariant">
                     <span>Código de descuento</span>
-                    <span className="text-secondary">-{money(promoDiscount)}</span>
+                    <span className="text-discount">-{money(promoDiscount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between items-baseline pt-4 border-t border-outlineVariant/30">
@@ -201,10 +215,10 @@ export default function Cart() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 bg-error/10 border border-error/30 rounded-xl px-4 py-3">
-                <Icon name="local_offer" className="text-error flex-shrink-0" />
+              <div className="flex items-center gap-2 bg-discount/10 border border-discount/30 rounded-xl px-4 py-3">
+                <Icon name="local_offer" className="text-discount flex-shrink-0" />
                 <p className="font-sans text-xs text-onSurfaceVariant">
-                  Pagando por transferencia bancaria obtenés <strong className="text-error">-{TRANSFER_DISCOUNT_PERCENT}%</strong> de descuento adicional.
+                  Pagando por transferencia bancaria obtenés <strong className="text-discount">-{TRANSFER_DISCOUNT_PERCENT}%</strong> de descuento adicional.
                 </p>
               </div>
 

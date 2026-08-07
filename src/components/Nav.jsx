@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Icon from './Icon.jsx'
 import { useCart } from '../context/CartContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import logoWordmark from '../assets/brand/veintidos-logo-on-light-wordmark-only.png'
 
 const links = [
@@ -16,6 +17,7 @@ const links = [
 export default function Nav() {
   const [open, setOpen] = useState(false)
   const { items } = useCart()
+  const { user } = useAuth() || {}
   const count = items.reduce((n, i) => n + (i.qty || 1), 0)
 
   return (
@@ -36,7 +38,17 @@ export default function Nav() {
           <span aria-hidden="true" className="hidden sm:inline text-promoGold/50 font-serif italic text-lg transition-colors group-hover:text-promoGold">✦</span>
         </Link>
 
-        <div className="justify-self-end">
+        <div className="justify-self-end flex items-center">
+          <Link
+            to="/cuenta"
+            className="flex items-center justify-center p-2 rounded-full hover:bg-primaryContainer/10 transition-all relative"
+            aria-label={user ? 'Mi cuenta' : 'Iniciar sesión'}
+          >
+            <Icon name="account_circle" className="text-primary" />
+            {user && (
+              <span className="absolute top-1.5 right-1.5 bg-secondary rounded-full w-2 h-2" aria-hidden="true" />
+            )}
+          </Link>
           <Link
             to="/carrito"
             className="flex items-center justify-center p-2 rounded-full hover:bg-primaryContainer/10 transition-all relative"

@@ -26,6 +26,14 @@ export const BANK_DATA = {
 // un único ítem con cantidad 1 — ver `Checkout.jsx`. El monto configurado
 // en cada link en el panel de Mercado Pago tiene que coincidir con
 // `PLAN_PRICING[plan].price` de acá abajo.
+//
+// ⚠️ TODO (baja de precios agosto 2026): estos 3 links todavía tienen
+// configurado el monto VIEJO (antes del -20%). Hay que entrar al panel de
+// Mercado Pago y regenerarlos (o editar el monto, si el panel lo permite)
+// para que coincidan con los `price` nuevos de `PLAN_PRICING` de abajo —
+// si no, alguien que pague por Mercado Pago va a pagar de más respecto a
+// lo que el sitio le muestra. Esto NO se puede arreglar desde el código,
+// es una acción manual en cuenta.mercadopago.com.
 export const MP_LINKS = {
   Essential: 'https://mpago.la/1tCkbgb',
   Standard: 'https://mpago.la/2YhQAwA',
@@ -41,6 +49,14 @@ export const GOOGLE_SHEETS_URL =
 
 // Tamaño máximo aceptado para el comprobante (en MB) antes de convertir a base64.
 export const MAX_COMPROBANTE_MB = 5
+
+// --- Google reCAPTCHA v3 (anti-spam del formulario post-compra) -----------
+// Site key pública (no es secreta, viaja igual en el bundle del cliente).
+// La secret key vive únicamente en el script de Google Apps Script, nunca
+// acá — ver GOOGLE_APPS_SCRIPT.md. Si no está configurada (falta el .env),
+// Personalize.jsx simplemente no la pide y el formulario sigue funcionando
+// sin esa capa extra, igual que pasa con GOOGLE_SHEETS_URL.
+export const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || ''
 
 // --- Promo del banner superior -------------------------------------------
 export const PROMO_PERCENT = 30
@@ -62,9 +78,9 @@ export const currentMonthLabel = () => {
 // - `transfer`: precio pagando por transferencia bancaria — con el 10% de
 //   descuento adicional ya aplicado.
 export const PLAN_PRICING = {
-  Essential: { original: 79980, price: 61600, transfer: 55970 },
-  Standard: { original: 111540, price: 85800, transfer: 77970 },
-  Premium: { original: 125840, price: 96800, transfer: 87970 },
+  Essential: { original: 63984, price: 49280, transfer: 44776 },
+  Standard: { original: 89232, price: 68640, transfer: 62376 },
+  Premium: { original: 100672, price: 77440, transfer: 70376 },
 }
 export const TRANSFER_DISCOUNT_PERCENT = 10 // etiqueta de marketing (el número exacto varía un poco por plan)
 
@@ -109,7 +125,7 @@ export const PLAN_RANK = { Essential: 1, Standard: 2, Premium: 3 }
 // --- Tipos de evento del FORMULARIO post-compra --------------------------
 // Distinto de `categories` (que son los eventos del Home/Catálogo). Acá van
 // las opciones del <select> "Tipo de evento" en Personalize.jsx.
-export const eventTypeOptions = ['Boda', 'Cumple XV', 'Otro']
+export const eventTypeOptions = ['Boda', 'Cumple XV', 'Baby Shower', 'Otro']
 
 // Qué preguntas mostrar en el paso "Contenido especial" del formulario,
 // según el plan comprado — no tiene sentido pedir dress code o playlist si
@@ -126,9 +142,9 @@ export const planFeatureFlags = (planName) => {
   }
 }
 
-// Solo estos dos tipos de evento están habilitados en todo el sitio
-// (Home, Catálogo, formulario). Para sumar uno nuevo, agregalo acá y
-// también como opción en el <select> de src/pages/Personalize.jsx.
+// Estos son los tipos de evento habilitados en todo el sitio (Home, Catálogo,
+// formulario). Para sumar uno nuevo, agregalo acá y también como opción en el
+// <select> de src/pages/Personalize.jsx.
 export const categories = [
   {
     slug: 'boda',
@@ -143,13 +159,20 @@ export const categories = [
     image: '/images/XV.jpg',
   },
   {
+    slug: 'baby-shower',
+    name: 'Baby Shower',
+    desc: 'Tiernas y coloridas, para celebrar la llegada de un bebé con familia y amigos.',
+    // TODO: sin foto real todavía — mientras tanto cae al degradé de color
+    // (ver fallback `onError` en CategoryPanel, Categories.jsx).
+  },
+  {
     slug: 'otro',
     name: 'Otro evento',
-    desc: '¿Cumpleaños, aniversario, baby shower u otra celebración? Contanos qué estás festejando y te asesoramos.',
+    desc: '¿Cumpleaños, aniversario u otra celebración? Contanos qué estás festejando y te asesoramos.',
     image: '/images/OTRO.jpg',
-    // Sin catálogo propio (el catálogo solo tiene diseños para Boda y Cumple XV) —
-    // este panel siempre deriva a consulta directa por WhatsApp. Ver `consultOnly`
-    // en `Categories.jsx`.
+    // Sin catálogo propio (el catálogo solo tiene diseños para Boda, Cumple XV
+    // y Baby Shower) — este panel siempre deriva a consulta directa por
+    // WhatsApp. Ver `consultOnly` en `Categories.jsx`.
     consultOnly: true,
   },
 ]
@@ -176,7 +199,7 @@ export const plans = [
   {
     name: 'Essential',
     tagline: 'Lo esencial, con estilo',
-    price: 61600,
+    price: 49280,
     items: [
       'Diseño adaptado a tu evento',
       'Cuenta regresiva',
@@ -191,7 +214,7 @@ export const plans = [
     name: 'Standard',
     tagline: 'La experiencia completa',
     highlight: 'Más elegida',
-    price: 85800,
+    price: 68640,
     items: [
       'Todo lo del plan Essential',
       'Música de fondo a elección',
@@ -206,7 +229,7 @@ export const plans = [
   {
     name: 'Premium',
     tagline: 'Para que no falte nada',
-    price: 96800,
+    price: 77440,
     items: [
       'Todo lo del plan Standard',
       'Panel de confirmaciones en tiempo real',
@@ -268,9 +291,9 @@ export const faqs = [
 ]
 
 // --- Catálogo — solo productos con demo real disponible ---------------
-// "category" tiene que ser "boda" o "xv-anos" (son los únicos eventos
-// habilitados, ver `categories` arriba). "color" es la clave de
-// `productColors` de arriba.
+// "category" tiene que ser "boda", "xv-anos" o "baby-shower" (son los únicos
+// eventos con catálogo propio, ver `categories` arriba — "otro" siempre deriva
+// a consulta). "color" es la clave de `productColors` de arriba.
 //
 // "code" = código de referencia del diseño, para trazabilidad de pedidos.
 // Formato: {categoría}-{abreviatura del estilo}-{secuencial}. Viaja con el
@@ -284,7 +307,7 @@ export const products = [
     name: 'Invitación Boda — Pablo & Lucila',
     category: 'boda',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'verde',
     gradient: 'from-[#3C5F41] to-[#1F2E1C]',
     badge: 'Demo real',
@@ -297,7 +320,7 @@ export const products = [
     name: 'Invitación Boda — Lucía & Juan',
     category: 'boda',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'marron',
     gradient: 'from-[#C79A6B] to-[#8A7A5E]',
     badge: 'Nuevo',
@@ -312,7 +335,7 @@ export const products = [
     name: 'Invitación Boda — Olivia & Ralph',
     category: 'boda',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'azul',
     gradient: 'from-[#5B7FA6] to-[#20375C]',
     badge: 'Nuevo',
@@ -327,7 +350,7 @@ export const products = [
     name: 'Invitación Boda — Juan & Ana',
     category: 'boda',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'rojo',
     gradient: 'from-[#6E1B26] to-[#4E1119]',
     badge: 'Nuevo',
@@ -342,7 +365,7 @@ export const products = [
     name: 'Invitación Boda — Lorena & Gustavo',
     category: 'boda',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'verde',
     gradient: 'from-[#8FA07A] to-[#3F4A34]',
     badge: 'Nuevo',
@@ -357,7 +380,7 @@ export const products = [
     name: 'Invitación XV — Katherina',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'azul',
     gradient: 'from-[#8FAEC9] to-[#3E5C76]',
     badge: 'Nuevo',
@@ -372,7 +395,7 @@ export const products = [
     name: 'Invitación XV — Adriana',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'celeste',
     gradient: 'from-[#6E93B5] to-[#243447]',
     badge: 'Nuevo',
@@ -387,7 +410,7 @@ export const products = [
     name: 'Invitación XV — Mariana',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'lila',
     gradient: 'from-[#A57FC4] to-[#7C5A9C]',
     badge: 'Nuevo',
@@ -402,7 +425,7 @@ export const products = [
     name: 'Invitación XV — Ximena',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'rosa',
     gradient: 'from-[#D8899A] to-[#B65F73]',
     badge: 'Nuevo',
@@ -417,7 +440,7 @@ export const products = [
     name: 'Invitación XV — Marianel',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'marron',
     gradient: 'from-[#B08A5E] to-[#7A5C3E]',
     badge: 'Nuevo',
@@ -432,7 +455,7 @@ export const products = [
     name: 'Invitación Boda — Lauren & Marco',
     category: 'boda',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'azul',
     gradient: 'from-[#1F3252] to-[#16233A]',
     badge: 'Nuevo',
@@ -447,7 +470,7 @@ export const products = [
     name: 'Invitación Boda — Valeria & Eugenio',
     category: 'boda',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'amarillo',
     gradient: 'from-[#B8935A] to-[#8C6B3B]',
     badge: 'Nuevo',
@@ -462,7 +485,7 @@ export const products = [
     name: 'Invitación Boda — Camila & Sebastián',
     category: 'boda',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'rojo',
     gradient: 'from-[#6B1F2E] to-[#4A121D]',
     badge: 'Nuevo',
@@ -477,7 +500,7 @@ export const products = [
     name: 'Invitación Boda — Alexandra & Nicolás',
     category: 'boda',
     plan: 'Premium',
-    price: 96800,
+    price: 77440,
     color: 'verde',
     gradient: 'from-[#6B7350] to-[#4B5138]',
     badge: 'Nuevo',
@@ -492,7 +515,7 @@ export const products = [
     name: 'Invitación Boda — Sofía & Tomás',
     category: 'boda',
     plan: 'Essential',
-    price: 61600,
+    price: 49280,
     color: 'naranja',
     gradient: 'from-[#C17A5D] to-[#9A5B41]',
     badge: 'Nuevo',
@@ -507,7 +530,7 @@ export const products = [
     name: 'Invitación Boda — Valentina & Ignacio',
     category: 'boda',
     plan: 'Standard',
-    price: 85800,
+    price: 68640,
     color: 'azul',
     gradient: 'from-[#7B93AB] to-[#4F657E]',
     badge: 'Nuevo',
@@ -522,7 +545,7 @@ export const products = [
     name: 'Invitación XV — Delfina',
     category: 'xv-anos',
     plan: 'Essential',
-    price: 61600,
+    price: 49280,
     color: 'naranja',
     gradient: 'from-[#E2A278] to-[#B5713F]',
     badge: 'Nuevo',
@@ -537,7 +560,7 @@ export const products = [
     name: 'Invitación XV — Camila',
     category: 'xv-anos',
     plan: 'Standard',
-    price: 85800,
+    price: 68640,
     color: 'verde',
     gradient: 'from-[#8FB8A8] to-[#4E7A67]',
     badge: 'Nuevo',
@@ -545,5 +568,95 @@ export const products = [
     image: '/demos/xv/camila-xv/foto-hero.jpg',
     style: 'Menta/crema — música, galería y dress code',
     palette: ['#F5FAF7', '#8FB8A8', '#4E7A67'],
+  },
+  {
+    id: 25,
+    code: 'BSH-NAU-01',
+    name: 'Baby Shower — Santino',
+    category: 'baby-shower',
+    plan: 'Premium',
+    price: 77440,
+    color: 'azul',
+    gradient: 'from-[#2050E0] to-[#16294A]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/baby-shower/santino-azul/',
+    image: '/demos/baby-shower/santino-azul/foto-hero.jpg',
+    style: 'Náutico azul — ancla y olas',
+    palette: ['#F5F7FA', '#2050E0', '#16294A'],
+  },
+  {
+    id: 26,
+    code: 'BSH-CIE-01',
+    name: 'Baby Shower — Benjamín',
+    category: 'baby-shower',
+    plan: 'Premium',
+    price: 77440,
+    color: 'celeste',
+    gradient: 'from-[#7FC7E8] to-[#3E5C76]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/baby-shower/benjamin-celeste/',
+    image: '/demos/baby-shower/benjamin-celeste/foto-hero.jpg',
+    style: 'Cielo celeste — luna y estrellas',
+    palette: ['#F7FAFC', '#7FC7E8', '#3E5C76'],
+  },
+  {
+    id: 27,
+    code: 'BSH-FLO-01',
+    name: 'Baby Shower — Martina',
+    category: 'baby-shower',
+    plan: 'Premium',
+    price: 77440,
+    color: 'rosa',
+    gradient: 'from-[#E8A0BB] to-[#B5638A]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/baby-shower/martina-rosa/',
+    image: '/demos/baby-shower/martina-rosa/foto-hero.jpg',
+    style: 'Floral rosa — papel roto',
+    palette: ['#FDF6F8', '#E8A0BB', '#B5638A'],
+  },
+  {
+    id: 28,
+    code: 'BSH-GIR-01',
+    name: 'Baby Shower — Isabella',
+    category: 'baby-shower',
+    plan: 'Premium',
+    price: 77440,
+    color: 'amarillo',
+    gradient: 'from-[#E8C547] to-[#B98A2E]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/baby-shower/isabella-amarillo/',
+    image: '/demos/baby-shower/isabella-amarillo/foto-hero.jpg',
+    style: 'Girasoles amarillo — sol y flores',
+    palette: ['#FFFBF0', '#E8C547', '#B98A2E'],
+  },
+  {
+    id: 29,
+    code: 'BOD-CAR-01',
+    name: 'Invitación Boda — Renata & Emiliano',
+    category: 'boda',
+    plan: 'Premium',
+    price: 77440,
+    color: 'rojo',
+    gradient: 'from-[#B8935A] to-[#5C1A2B]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/boda/renata-emiliano/',
+    image: '/demos/boda/renata-emiliano/foto-hero.jpg',
+    style: 'Carta lacrada — sobre animado con sello de cera',
+    palette: ['#F7F1E4', '#B8935A', '#5C1A2B'],
+  },
+  {
+    id: 30,
+    code: 'XV-CAR-01',
+    name: 'Invitación XV — Antonella',
+    category: 'xv-anos',
+    plan: 'Premium',
+    price: 77440,
+    color: 'rosa',
+    gradient: 'from-[#C9A24B] to-[#8B4F52]',
+    badge: 'Nuevo',
+    demoUrl: '/demos/xv/antonella-carta/',
+    image: '/demos/xv/antonella-carta/foto-hero.jpg',
+    style: 'Carta lacrada — sobre animado con sello de cera',
+    palette: ['#FBF4EC', '#C9A24B', '#8B4F52'],
   },
 ]

@@ -9,9 +9,30 @@ import {
   waLink,
   GOOGLE_SHEETS_URL,
   MAX_COMPROBANTE_MB,
+  RECAPTCHA_SITE_KEY,
   eventTypeOptions,
   planFeatureFlags,
 } from '../data/site.js'
+
+// Carga el script de reCAPTCHA v3 una sola vez (aunque el usuario vuelva a
+// este paso varias veces) y devuelve una promesa que resuelve cuando
+// `window.grecaptcha` ya está listo para pedir un token.
+let recaptchaScriptPromise = null
+function loadRecaptcha(siteKey) {
+  if (!siteKey) return Promise.resolve(false)
+  if (window.grecaptcha) return Promise.resolve(true)
+  if (!recaptchaScriptPromise) {
+    recaptchaScriptPromise = new Promise((resolve) => {
+      const script = document.createElement('script')
+      script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`
+      script.async = true
+      script.onload = () => window.grecaptcha.ready(() => resolve(true))
+      script.onerror = () => resolve(false)
+      document.head.appendChild(script)
+    })
+  }
+  return recaptchaScriptPromise
+}
 
 const baseStepDefs = [
   { key: 'hosts', label: 'Datos', icon: 'person' },
@@ -99,10 +120,25 @@ ${paidWithMp ? '' : file ? 'Adjunto el comprobante en este mismo chat.' : 'Te ma
     setStatus('sending')
     try {
       const comprobanteBase64 = file ? await fileToBase64(file) : null
+
+      // Token de reCAPTCHA v3 — invisible para quien completa el formulario,
+      // el script de Apps Script lo valida contra Google antes de guardar
+      // nada (ver GOOGLE_APPS_SCRIPT.md). Si no está configurado el site key
+      // todavía, simplemente no se manda y el script del lado del servidor
+      // lo trata como "sin verificar" (ver nota ahí sobre modo de transición).
+      let recaptchaToken = ''
+      if (RECAPTCHA_SITE_KEY) {
+        const ready = await loadRecaptcha(RECAPTCHA_SITE_KEY)
+        if (ready) {
+          recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'submit_order' })
+        }
+      }
+
       const payload = {
         orderRef,
         paymentMethod,
         totalPaid: location.state?.totalPaid ?? '',
+        recaptchaToken,
         // id + code viajan para trazabilidad: permiten saber exactamente qué
         // diseño se compró sin depender de que el nombre no cambie nunca.
         cartSummary: cartSummary.map((i) => ({

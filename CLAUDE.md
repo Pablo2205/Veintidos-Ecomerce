@@ -9,10 +9,10 @@
 
 ## 1. El negocio
 
-**veintidós** es un estudio que vende **invitaciones digitales web** para casamientos y
-fiestas de 15 años en Argentina. El dueño es Pablo Coria (también corre `cr.studio`, su
-estudio de desarrollo web, y trabaja como Systems Engineer en TIVIT/Edenor). veintidós es
-un negocio propio, independiente.
+**veintidós** es un estudio que vende **invitaciones digitales web** para casamientos,
+fiestas de 15 años y baby showers en Argentina. El dueño es Pablo Coria (también corre
+`cr.studio`, su estudio de desarrollo web, y trabaja como Systems Engineer en
+TIVIT/Edenor). veintidós es un negocio propio, independiente.
 
 **Modelo de negocio:** el cliente elige un plan (Essential / Standard / Premium), paga por
 transferencia bancaria, y completa un formulario con los datos de su evento (fecha, lugar,
@@ -20,8 +20,15 @@ dress code, etc.). El equipo arma la invitación a medida en base a esos datos y
 elegido del catálogo. Es un negocio de **productos configurables**, no de invitaciones 100%
 automáticas — cada compra dispara un proceso manual de armado del lado de Pablo.
 
-**Eventos que cubre:** solo **Boda** y **Cumple XV** (deliberadamente acotado, no hay
-cumpleaños genéricos, baby showers, etc. — se sacaron a propósito para simplificar).
+**Eventos que cubre:** **Boda**, **Cumple XV** y **Baby Shower** (con catálogo propio en
+cada uno). Cualquier otra celebración (cumpleaños genérico, aniversario, etc.) cae en
+"Otro evento" y deriva directo a consulta por WhatsApp, sin catálogo — ver `consultOnly`
+en `categories` (`site.js`).
+> Nota histórica: hasta agosto 2026 el negocio cubría deliberadamente solo Boda y Cumple
+> XV ("se sacaron a propósito baby showers, etc. para simplificar"). Se sumó Baby Shower
+> como tercera categoría con catálogo propio a pedido de Pablo — si en algún momento se
+> vuelve a acotar el alcance, esta nota queda como registro de que fue una decisión
+> consciente, no un olvido.
 
 **Contacto real del negocio:**
 - WhatsApp: `+5491139126543`
@@ -97,14 +104,16 @@ grids), nada de WebGL ni librerías de animación pesadas.
 React 18 + Vite 5 + Tailwind CSS 3 + Framer Motion 11 + React Router 6
 ```
 
-Sin backend propio. Todo el "backend" real corre en servicios de terceros:
+Sin backend propio (ningún servidor Node/Express nuestro). Todo el "backend" real corre en
+servicios de terceros administrados:
 - **Google Sheets + Apps Script** — guarda pedidos, sube comprobantes a Drive, manda mails.
+- **Firebase Authentication + Firestore** (agosto 2026) — login/registro con email y
+  contraseña, y el carrito guardado de usuarios logueados. Ver sección 9.
+- **Mercado Pago** — links de pago de monto fijo por plan (`MP_LINKS` en `site.js`), sin
+  integración por API — ver sección 5. Convive con la transferencia bancaria manual como
+  segunda opción de pago.
 - **WhatsApp** (`wa.me` links) — canal de contacto y confirmación en casi todos los CTAs.
 - **Vercel** — hosting + deploy automático desde GitHub.
-
-No hay Mercado Pago ni ningún gateway de pago integrado — **se descartó explícitamente**
-en una etapa temprana (requiere backend propio con token secreto, y se optó por
-transferencia bancaria manual en su lugar, más simple para el volumen del negocio).
 
 ### Correr en local
 ```bash
@@ -155,7 +164,8 @@ veintidos/
     │   └── site.js               ← ⭐⭐⭐ FUENTE DE VERDAD DE TODO EL CONTENIDO (sección 5)
     │
     ├── context/
-    │   └── CartContext.jsx       ← carrito en memoria (NO persiste en localStorage)
+    │   ├── CartContext.jsx       ← carrito; se guarda en Firestore si hay sesión iniciada
+    │   └── AuthContext.jsx       ← sesión de Firebase Authentication (login/registro)
     │
     ├── components/               ← piezas reutilizables (ver sección 6)
     └── pages/                    ← Home, Catalog, Cart, Checkout, Personalize, Contact
@@ -242,7 +252,8 @@ exponer datos bancarios reales a cualquiera navegando el catálogo.
 | `Nav.jsx` | Header en 2 filas: logo centrado (fila 1, con carrito a la derecha y menú hamburguesa a la izquierda en mobile — ambos en columnas separadas de un grid `1fr auto 1fr`, NO position:absolute, para evitar que se superpongan) + links de navegación (fila 2, solo desktop) |
 | `PromoBar.jsx` | Banner fijo arriba de todo con el "30% OFF" — el mes se calcula solo, no hay que actualizarlo a mano |
 | `ErrorBoundary.jsx` | Si algo rompe en una sección, muestra un mensaje con botón en vez de pantalla en blanco. El error real queda en la consola del navegador (F12) |
-| `CartContext.jsx` | Estado del carrito compartido entre Catálogo/Carrito/Checkout. **Vive en memoria — se vacía si el usuario refresca la página.** Persistir en localStorage es un pendiente conocido |
+| `CartContext.jsx` | Estado del carrito compartido entre Catálogo/Carrito/Checkout. Sin sesión iniciada vive solo en memoria (se vacía al refrescar). **Con sesión iniciada se guarda en Firestore** (`carts/{uid}`, debounce de 800ms) y se restaura solo al loguearse — ver sección 9 |
+| `AuthContext.jsx` | Sesión de Firebase Authentication: `user`, `signUp`, `signIn`, `logOut`, `resetPassword`, `resendVerification`. Si Firebase no está configurado (`.env` sin completar) degrada con gracia — ver `firebaseEnabled` |
 | `WhatsAppButton.jsx` / `WhatsAppIcon.jsx` | Componentes reutilizables para CUALQUIER CTA que lleve a WhatsApp — ver "regla de oro" en sección 2 |
 | `PriceTag.jsx` | Muestra precio tachado (+15%, cosmético) + precio real, usado en Planes/Catálogo/Carrito/Checkout |
 | `DemoPreviewModal.jsx` | Modal que muestra una demo (interna o externa) en un iframe dentro de un marco de iPhone plateado dibujado en CSS, sin sacar al usuario del catálogo. Se abre desde el botón "Ver demo" de cada tarjeta |
@@ -303,8 +314,9 @@ existentes) que Pablo va mandando.
 | `alexandra-nicolas/` | Verde oliva/crema — secciones con borde ondulado (SVG wave), "nuestra historia", foto hero con botón de play decorativo | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg`, `foto-3.jpg` |
 | `sofia-tomas/` | Terracota/crema — plan **Essential**: solo hero+countdown, ceremonia/recepción con mapa, RSVP por WhatsApp y regalos. Sin dress code, música ni galería (adrede, para reflejar el plan) | `foto-hero.jpg` |
 | `valentina-ignacio/` | Azul grisáceo/crema — plan **Standard**: Essential + música de fondo, galería, dress code, tips para invitados y "agendar la fecha" (.ics) | `foto-hero.jpg`, `foto-1.jpg` a `foto-4.jpg`, `cancion.mp3` |
+| `renata-emiliano/` | Bordó/dorado — **carta lacrada**: intro de sobre con sello de cera animado (rotateX + perspective) que hay que tocar para abrir, papel con grano SVG sutil (`feTurbulence`), bordes deckle en la tarjeta del hero, secciones que se despliegan al hacer scroll como si la carta se fuera abriendo (`.fold-reveal`, `rotateX` + IntersectionObserver), watermark del monograma con parallax leve | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg` |
 
-Estas 6 últimas replican 4 referencias de Pinterest (`azul clasico.jpg`, `dorado.jpg`,
+Estas 6 últimas (salvo `renata-emiliano`, ago 2026) replican 4 referencias de Pinterest (`azul clasico.jpg`, `dorado.jpg`,
 `marron.jpg`, `verde.jpg`) igual que se hizo con las de XV — mismo criterio: paleta,
 tipografía y secciones fieles a la referencia, nombres de pareja ficticios, fotos en
 placeholder con fallback a degradé. `sofia-tomas` y `valentina-ignacio` no vienen de una
@@ -323,12 +335,37 @@ armadas replicando 5 referencias de Pinterest (una por paleta de color):
 | `marianel-rosa-marron/` | Cream/marrón con rosas, papel roto, padrinos, confirmación por WhatsApp | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg` |
 | `delfina-esencial/` | Coral/crema — plan **Essential**: solo hero+countdown, salón con mapa, RSVP y regalo. Sin dress code, música ni galería | `foto-hero.jpg` |
 | `camila-xv/` | Menta/crema — plan **Standard**: Essential + música de fondo, galería, dress code, tips y "agendar la fecha" (.ics) | `foto-hero.jpg`, `foto-1.jpg` a `foto-4.jpg`, `cancion.mp3` |
+| `antonella-carta/` | Blush/dorado — misma técnica de **carta lacrada** que `renata-emiliano` (boda), adaptada a XV: sobre con sello "A" que se abre al tocarlo, monograma watermark, secciones tipo hoja de carta que se despliegan al scrollear. Suma una foto real de sobres con lacre (`foto-sello.jpg`) como callback visual en la sección de regalos | `foto-hero.jpg`, `foto-1.jpg`, `foto-2.jpg`, `foto-sello.jpg` |
 
-Todas están registradas en `products` (`site.js`, ids 12-16 y 23-24, `category: 'xv-anos'`)
+Todas están registradas en `products` (`site.js`, ids 12-16, 23-24 y 30, `category: 'xv-anos'`)
 — aparecen en el catálogo filtrando por "Cumple XV". El reproductor de música
 (`adriana-celeste`, `mariana-lila`, `ximena-rosa`, `camila-xv`, `valentina-ignacio`) y el
 calendario dinámico (`ximena-rosa`) son técnicas nuevas, no estaban en las demos de boda
 originales — quedan disponibles para reusar.
+
+Las de Baby Shower viven en `public/demos/baby-shower/`, armadas en agosto 2026 como
+muestra inicial de la categoría — 2 con temática de nene y 2 de nena. A diferencia de
+boda/XV (que replican una referencia de Pinterest y comparten técnicas entre sí), cada una
+de estas cuatro tiene su **propio concepto de diseño, tipografía y estructura** — no son la
+misma plantilla repintada:
+
+| Carpeta | Concepto | Tipografías | Fotos (Pexels, licencia libre) |
+|---|---|---|---|
+| `santino-azul/` | "Bitácora de a bordo" — timeline tipo diario de navegación (`.log-entry` con línea punteada), cronómetro circular, fotos en "portholes" redondos, lista de regalos como "manifiesto de carga" | Big Shoulders Display + Karla + Space Mono (coordenadas) | `foto-hero.jpg` (ancla y velero), `foto-1.jpg`/`foto-2.jpg` (sogas y cadenas en cubierta) |
+| `benjamin-celeste/` | "Carta astral" — rueda de countdown tipo planisferio, cada sección es una "constelación" con su propia mini-constelación SVG dibujada a mano, fotos en ventanas circulares tipo atlas estelar | Gloock + Nunito + Space Mono | `foto-hero.jpg` (cielo estrellado), `foto-1.jpg`/`foto-2.jpg` (vía láctea) |
+| `martina-rosa/` | "Herbario botánico" — toda la página como una placa de espécimen prensado, esquinas de plaqueta, etiquetas estilo ficha de catálogo (`Courier Prime`), countdown como "floración estimada" | Cormorant Garamond italic + Karla + Courier Prime | `foto-hero.jpg`/`foto-1.jpg` (peonías rosas) |
+| `isabella-amarillo/` | "Afiche de cosecha" — hero con sol giratorio (`repeating-conic-gradient`) y la foto real recortada como disco solar, secciones numeradas como programa de festival, fotos en "postales" con washi tape | Yeseva One + Mulish | `foto-hero.jpg` (campo de girasoles aéreo), `foto-1.jpg`/`foto-2.jpg` (girasoles en flor) |
+
+Ningún adjetivo de marca compartido entre las 4 — a propósito, para que cada una se sienta
+diseñada a medida y no como reskin de color de una sola plantilla (ver skill
+`frontend-design`). Fotos bajadas de Pexels (licencia gratuita, uso comercial permitido sin
+atribución) con `curl`, sin personas identificables como sujeto — son de attrezzo (ancla,
+cielo, flores, campo), no de la pareja/bebé real, ya que son demos de muestra sin cliente
+real todavía.
+
+Todas registradas en `products` (ids 25-28, `category: 'baby-shower'`), plan Premium,
+sección "¿Qué le regalamos?" con lista de artículos sugeridos (pañales, ropita, etc.) en
+vez del clásico dress code de boda/XV — no aplica a este tipo de evento.
 
 ### Catálogo por plan
 
@@ -337,7 +374,7 @@ mostrarle a un cliente cómo se veía Essential o Standard. Se agregaron 4 demos
 para cubrir eso (`sofia-tomas` y `delfina-esencial` en Essential, `valentina-ignacio` y
 `camila-xv` en Standard), armadas quitando/agregando secciones según `planFeatureFlags`
 en `site.js` y lo documentado en `docs/PLANES-Y-FEATURES.md`. El resto de los productos
-(ids 7-11, 17-20 boda; 12-16 xv) siguen siendo Premium — si se agregan clientes reales con
+(ids 7-11, 17-20, 29 boda; 12-16, 30 xv) siguen siendo Premium — si se agregan clientes reales con
 otros planes, más adelante conviene sumar más ejemplos de Essential/Standard para variar
 la paleta que ve cada visitante del catálogo.
 
@@ -372,6 +409,16 @@ El script (código completo en `GOOGLE_APPS_SCRIPT.md`) hace, en un solo `doPost
 4. Manda un mail de notificación a Pablo avisando que entró un pedido nuevo, con todos los
    datos
 
+**Endurecido en agosto 2026** (era un webhook público sin ninguna validación — cualquiera
+podía postearle datos falsos o usarlo para mandar el mail de "recibimos tu pedido" a un
+tercero): ahora valida el token de **reCAPTCHA v3** contra la API de Google
+(`RECAPTCHA_SECRET_KEY`, ver `GOOGLE_APPS_SCRIPT.md` sección 5), rechaza si faltan campos
+obligatorios o el email tiene formato inválido, y trunca strings a un largo razonable antes
+de guardarlos. El frontend manda el token (`recaptchaToken`) generado con
+`VITE_RECAPTCHA_SITE_KEY` desde `Personalize.jsx`. Mientras `RECAPTCHA_SECRET_KEY` no esté
+configurada en el script, la verificación se salta (no bloquea pedidos reales) — es una
+ventana de riesgo a cerrar cuanto antes, no un estado final.
+
 ### Gotchas ya resueltos (para no repetir)
 - **Guardar el código en Apps Script NO lo publica.** Hay que ir a Implementar → Gestionar
   implementaciones → editar → "Nueva versión" → Implementar, cada vez. Si no, sigue
@@ -387,7 +434,58 @@ El script (código completo en `GOOGLE_APPS_SCRIPT.md`) hace, en un solo `doPost
 
 ---
 
-## 9. Deploy
+## 9. Login y cuentas (Firebase Authentication + Firestore)
+
+Agregado en agosto 2026 a pedido de Pablo, con dos objetivos: que el sitio se vea más
+profesional (cuenta de usuario real, no solo un carrito anónimo) y no perder los datos de
+alguien que agrega una invitación al carrito pero no llega a completar la compra.
+
+**Decisión de arquitectura:** el sitio no tiene backend propio (sección 3), así que manejar
+contraseñas "a mano" (guardarlas, hashearlas, validarlas) hubiera sido tanto mucho trabajo
+como un riesgo de seguridad real si algo salía mal. Se usa **Firebase Authentication** en su
+lugar — las contraseñas nunca tocan nuestro código, las maneja Google. Setup completo paso a
+paso en `docs/FIREBASE-SETUP.md`.
+
+- **`src/lib/firebase.js`** — inicializa Firebase a partir de variables de entorno
+  (`VITE_FIREBASE_*`, ver `.env.example`). Expone `firebaseEnabled`: si el `.env` no está
+  cargado, queda en `false` y toda la app degrada con gracia en vez de romperse (`Login.jsx`
+  muestra un aviso en vez de un formulario roto).
+- **`AuthContext.jsx`** — `user`, `signUp`, `signIn`, `logOut`, `resetPassword`,
+  `resendVerification`. Mensajes de error traducidos (Firebase tira cosas como
+  `auth/email-already-in-use` en inglés técnico; acá se mapean a texto en español para el
+  cliente). Contraseña mínima 8 caracteres (más estricto que el mínimo de 6 de Firebase).
+  Email de verificación se manda solo al registrarse (`sendEmailVerification`).
+- **`Login.jsx`** (ruta `/cuenta`, lazy-loaded — ver nota de performance abajo) — login,
+  registro y "olvidé mi contraseña" en una sola pantalla con tabs. Si ya hay sesión, muestra
+  un panel de cuenta (nombre, verificación de email, cerrar sesión) en vez del formulario.
+- **Carrito guardado (`CartContext.jsx`):** con sesión iniciada, cada cambio al carrito se
+  guarda (debounce 800ms) en Firestore, colección `carts/{uid}`. Al iniciar sesión, si el
+  carrito local está vacío, se restaura el guardado. `Cart.jsx` muestra un banner invitando a
+  loguearse si hay ítems en el carrito y no hay sesión.
+- **`firestore.rules`** (raíz del repo) — cada usuario solo puede leer/escribir su propio
+  documento (`request.auth.uid == uid`). Hay que pegarlo a mano en Firebase Console →
+  Firestore → Reglas (no hay CI que lo despliegue automático todavía). **Nunca** dejar la
+  base en "modo de prueba" (Firestore abierto a cualquiera sin login).
+- **Ícono de cuenta en el Nav** — al lado del carrito, con un punto verde cuando hay sesión
+  iniciada.
+
+### Performance
+
+El SDK de Firebase pesa bastante (~670KB sin comprimir). Dos mitigaciones en
+`vite.config.js`/`App.jsx`:
+1. `manualChunks` separa Firebase en su propio archivo JS — no infla el bundle principal que
+   descarga cualquiera que visite Home/Catálogo sin loguearse.
+2. `Login.jsx` se carga con `React.lazy` — su código (y el de Firebase que importa) recién se
+   pide cuando alguien navega a `/cuenta`.
+
+`AuthContext` y `CartContext` sí importan Firebase de forma estática porque necesitan saber
+si hay sesión iniciada en toda la app (para el punto verde del Nav y la persistencia del
+carrito) — es un costo inherente a que el estado de login sea visible en cualquier página, no
+un descuido.
+
+---
+
+## 10. Deploy
 
 - **Hosting:** Vercel, deploy automático desde GitHub (push a la rama principal → deploy a
   producción)
@@ -401,19 +499,33 @@ El script (código completo en `GOOGLE_APPS_SCRIPT.md`) hace, en un solo `doPost
 
 ---
 
-## 10. Pendientes conocidos (buscar `// TODO` en el código)
+## 11. Pendientes conocidos (buscar `// TODO` en el código)
 
 - `BANK_DATA.alias` y `BANK_DATA.cbu` — todavía placeholders, Pablo los completa a mano
 - `FACEBOOK_URL` y `TIKTOK_URL` — URLs inventadas, no llevan a ningún lado real
 - Productos `id: 1` a `6` del catálogo — sin fotos reales ni demo, solo degradé de color
-- El carrito no persiste en `localStorage` (se pierde al refrescar)
+- **Firebase todavía sin configurar** (`.env` vacío) — `/cuenta` funciona visualmente pero
+  avisa que el login no está activo hasta completar `docs/FIREBASE-SETUP.md`
+- **`RECAPTCHA_SECRET_KEY` sin configurar** en el script de Apps Script — la verificación
+  anti-spam del formulario está en modo "dejar pasar todo" hasta completarla (sección 5 de
+  `GOOGLE_APPS_SCRIPT.md`)
+- **`MP_LINKS` (Mercado Pago) desactualizados tras la baja de precios de agosto 2026** — son
+  links de monto fijo generados en el panel de Mercado Pago; hay que regenerarlos con los
+  montos nuevos de `PLAN_PRICING` antes de que alguien pague por ese medio, si no cobra el
+  precio viejo
+- `react-router-dom` tiene 2 CVEs moderados sin parche disponible dentro del rango `^6.27.0`
+  (arreglo real requiere migrar a v7, un cambio de mayor de versión no trivial) — evaluar
+  la migración como tarea aparte
+- Sin CSP (Content-Security-Policy) en `vercel.json` — se evaluó agregarlo pero se dejó
+  pendiente por el riesgo de romper Google Fonts/Framer Motion sin poder probarlo en un
+  browser real antes de publicar; si se agrega, probar exhaustivo en preview antes de `main`
 - La galería de fotos del formulario post-compra (`Personalize.jsx`) pide un link a Drive/
   Google Fotos en vez de subir archivos directo — está bien para el volumen actual, pero es
   candidato a mejorar si crece el negocio
 
 ---
 
-## 11. Cómo pedirle cambios a este proyecto (para Claude Code)
+## 12. Cómo pedirle cambios a este proyecto (para Claude Code)
 
 - Siempre correr `npm run build` antes de dar algo por terminado — varias veces apareció
   contenido duplicado o desincronizado entre lo que el asistente tenía en memoria y lo que

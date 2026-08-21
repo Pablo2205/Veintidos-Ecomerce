@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { useEffect, lazy, Suspense } from 'react'
+import { useEffect } from 'react'
 import Nav from './components/Nav.jsx'
 import Footer from './components/Footer.jsx'
 import WaFab from './components/WaFab.jsx'
@@ -10,12 +10,10 @@ import Home from './pages/Home.jsx'
 import Catalog from './pages/Catalog.jsx'
 import Cart from './pages/Cart.jsx'
 import Checkout from './pages/Checkout.jsx'
+import CheckoutReturn from './pages/CheckoutReturn.jsx'
 import Personalize from './pages/Personalize.jsx'
 import Contact from './pages/Contact.jsx'
-
-// Lazy: arrastra el SDK de Firebase (pesado) — que solo lo descarguen las
-// visitas que entran a /cuenta, no todo el mundo que abre la Home.
-const Login = lazy(() => import('./pages/Login.jsx'))
+import Terms from './pages/Terms.jsx'
 
 function ScrollManager() {
   const { pathname, hash } = useLocation()
@@ -48,17 +46,11 @@ export default function App() {
           <Route path="/catalogo" element={<Catalog />} />
           <Route path="/carrito" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout/retorno" element={<CheckoutReturn />} />
           <Route path="/personalizar" element={<Personalize />} />
           <Route path="/completar-datos" element={<Personalize />} />
           <Route path="/contacto" element={<Contact />} />
-          <Route
-            path="/cuenta"
-            element={
-              <Suspense fallback={<div className="wrap py-24 text-center font-sans text-onSurfaceVariant">Cargando...</div>}>
-                <Login />
-              </Suspense>
-            }
-          />
+          <Route path="/terminos" element={<Terms />} />
         </Routes>
       </main>
       <Footer />

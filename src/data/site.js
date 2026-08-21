@@ -1,21 +1,23 @@
-export const WA_NUMBER = '5491139126543'
+// PLAN_PRICING y el cupón viven en shared/pricing.js — ver nota más abajo,
+// junto al re-export, sobre por qué está separado de este archivo.
+import { PLAN_PRICING, TRANSFER_DISCOUNT_PERCENT, DISCOUNT_CODE, DISCOUNT_CODE_PERCENT } from '../../shared/pricing.js'
+
+export const WA_NUMBER = '5491151067238'
 export const waLink = (msg) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`
 export const CONTACT_EMAIL = 'veintidos.invitaciones@gmail.com'
 export const CONTACT_LOCATION = 'Buenos Aires, Argentina'
 
 // --- Redes sociales --------------------------------------------------------
-// Instagram ya es el real (el mismo que estaba en el footer). Facebook y
-// TikTok son placeholders — reemplazalos por tus URLs reales antes de publicar.
-export const INSTAGRAM_URL = 'https://instagram.com/veintidos.invitaciones'
-export const FACEBOOK_URL = 'https://facebook.com/veintidos.invitaciones' // TODO: reemplazar por tu página real
-export const TIKTOK_URL = 'https://tiktok.com/@veintidos.invitaciones' // TODO: reemplazar por tu usuario real
+// Solo Instagram (real). Facebook y TikTok se sacaron del sitio (no había
+// cuentas reales todavía) — si en algún momento se abren, agregar de nuevo
+// acá y los íconos correspondientes en Footer.jsx/Contact.jsx.
+export const INSTAGRAM_URL = 'https://instagram.com/veintidos_invitaciones'
 
 // --- Datos de pago (transferencia) -------------------------------------
-// Completá con tus datos reales antes de publicar. Se muestran tal cual
-// en el checkout, con botón de copiar.
+// Datos reales — se muestran tal cual en el checkout, con botón de copiar.
 export const BANK_DATA = {
-  alias: 'veintidos.pagos', // TODO: reemplazar por tu alias real
-  cbu: '0000000000000000000000', // TODO: reemplazar por tu CBU real
+  alias: 'VEINTIDOS.INVITACION',
+  cbu: '0140198703507950254279',
   titular: 'Pablo Daniel Coria',
 }
 
@@ -27,13 +29,15 @@ export const BANK_DATA = {
 // en cada link en el panel de Mercado Pago tiene que coincidir con
 // `PLAN_PRICING[plan].price` de acá abajo.
 //
-// ⚠️ TODO (baja de precios agosto 2026): estos 3 links todavía tienen
-// configurado el monto VIEJO (antes del -20%). Hay que entrar al panel de
-// Mercado Pago y regenerarlos (o editar el monto, si el panel lo permite)
-// para que coincidan con los `price` nuevos de `PLAN_PRICING` de abajo —
-// si no, alguien que pague por Mercado Pago va a pagar de más respecto a
-// lo que el sitio le muestra. Esto NO se puede arreglar desde el código,
-// es una acción manual en cuenta.mercadopago.com.
+// ⚠️ TODO (baja de precios agosto 2026, segunda ronda -30%): estos 3 links
+// todavía tienen configurado el monto VIEJO (de la baja anterior del -20%).
+// Hay que entrar al panel de Mercado Pago y regenerarlos (o editar el monto,
+// si el panel lo permite) para que coincidan con los `price` nuevos de
+// `PLAN_PRICING` de abajo — si no, alguien que pague por Mercado Pago va a
+// pagar de más respecto a lo que el sitio le muestra. Esto NO se puede
+// arreglar desde el código, es una acción manual en cuenta.mercadopago.com.
+// Montos nuevos a configurar: Essential $34.496 · Standard $48.048 ·
+// Premium $54.208.
 export const MP_LINKS = {
   Essential: 'https://mpago.la/1tCkbgb',
   Standard: 'https://mpago.la/2YhQAwA',
@@ -66,9 +70,11 @@ export const currentMonthLabel = () => {
 }
 
 // --- Lista de precios real por plan --------------------------------------
-// Estos tres números por plan son la lista de precios real del negocio (no
-// se derivan matemáticamente unos de otros con una fórmula única, aunque en
-// la UI se comuniquen como "-30% del mes de lanzamiento" y "-10% transferencia"):
+// Los números en sí viven en `shared/pricing.js` (no acá) porque también los
+// necesitan las funciones serverless de `/api/mercadopago` para recalcular
+// el monto del lado del servidor — y ese código no puede importar este
+// archivo (usa `import.meta.env`, que no existe en el runtime de Node de
+// las funciones). Si cambiás un precio, cambialo en `shared/pricing.js`.
 //
 // - `original`: precio sin ningún descuento — es el precio TACHADO en toda
 //   la web (Planes, Catálogo, Carrito, Checkout). Nunca se cobra.
@@ -77,17 +83,7 @@ export const currentMonthLabel = () => {
 //   Mercado Pago. `plans[].price` y `products[].price` usan este valor.
 // - `transfer`: precio pagando por transferencia bancaria — con el 10% de
 //   descuento adicional ya aplicado.
-export const PLAN_PRICING = {
-  Essential: { original: 63984, price: 49280, transfer: 44776 },
-  Standard: { original: 89232, price: 68640, transfer: 62376 },
-  Premium: { original: 100672, price: 77440, transfer: 70376 },
-}
-export const TRANSFER_DISCOUNT_PERCENT = 10 // etiqueta de marketing (el número exacto varía un poco por plan)
-
-// --- Cupón de descuento del Carrito (a prueba) ---------------------------
-// El código se compara sin importar mayúsculas/espacios — ver Cart.jsx.
-export const DISCOUNT_CODE = 'VEINTIDOS'
-export const DISCOUNT_CODE_PERCENT = 5
+export { PLAN_PRICING, TRANSFER_DISCOUNT_PERCENT, DISCOUNT_CODE, DISCOUNT_CODE_PERCENT }
 
 const pricingRowByPrice = (price) => Object.values(PLAN_PRICING).find((row) => row.price === price)
 
@@ -162,8 +158,10 @@ export const categories = [
     slug: 'baby-shower',
     name: 'Baby Shower',
     desc: 'Tiernas y coloridas, para celebrar la llegada de un bebé con familia y amigos.',
-    // TODO: sin foto real todavía — mientras tanto cae al degradé de color
-    // (ver fallback `onError` en CategoryPanel, Categories.jsx).
+    // Foto real (Pexels, licencia libre para uso comercial, sin atribución
+    // requerida — mismo criterio que las fotos prop de los demos de esta
+    // categoría, ver CLAUDE.md sección de Baby Shower).
+    image: '/images/BABY-SHOWER.jpg',
   },
   {
     slug: 'otro',
@@ -199,7 +197,7 @@ export const plans = [
   {
     name: 'Essential',
     tagline: 'Lo esencial, con estilo',
-    price: 49280,
+    price: 34496,
     items: [
       'Diseño adaptado a tu evento',
       'Cuenta regresiva',
@@ -214,7 +212,7 @@ export const plans = [
     name: 'Standard',
     tagline: 'La experiencia completa',
     highlight: 'Más elegida',
-    price: 68640,
+    price: 48048,
     items: [
       'Todo lo del plan Essential',
       'Música de fondo a elección',
@@ -229,7 +227,7 @@ export const plans = [
   {
     name: 'Premium',
     tagline: 'Para que no falte nada',
-    price: 77440,
+    price: 54208,
     items: [
       'Todo lo del plan Standard',
       'Panel de confirmaciones en tiempo real',
@@ -307,7 +305,7 @@ export const products = [
     name: 'Invitación Boda — Pablo & Lucila',
     category: 'boda',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'verde',
     gradient: 'from-[#3C5F41] to-[#1F2E1C]',
     badge: 'Demo real',
@@ -320,7 +318,7 @@ export const products = [
     name: 'Invitación Boda — Lucía & Juan',
     category: 'boda',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'marron',
     gradient: 'from-[#C79A6B] to-[#8A7A5E]',
     badge: 'Nuevo',
@@ -335,7 +333,7 @@ export const products = [
     name: 'Invitación Boda — Olivia & Ralph',
     category: 'boda',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'azul',
     gradient: 'from-[#5B7FA6] to-[#20375C]',
     badge: 'Nuevo',
@@ -350,7 +348,7 @@ export const products = [
     name: 'Invitación Boda — Juan & Ana',
     category: 'boda',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'rojo',
     gradient: 'from-[#6E1B26] to-[#4E1119]',
     badge: 'Nuevo',
@@ -365,7 +363,7 @@ export const products = [
     name: 'Invitación Boda — Lorena & Gustavo',
     category: 'boda',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'verde',
     gradient: 'from-[#8FA07A] to-[#3F4A34]',
     badge: 'Nuevo',
@@ -380,7 +378,7 @@ export const products = [
     name: 'Invitación XV — Katherina',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'azul',
     gradient: 'from-[#8FAEC9] to-[#3E5C76]',
     badge: 'Nuevo',
@@ -395,7 +393,7 @@ export const products = [
     name: 'Invitación XV — Adriana',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'celeste',
     gradient: 'from-[#6E93B5] to-[#243447]',
     badge: 'Nuevo',
@@ -410,7 +408,7 @@ export const products = [
     name: 'Invitación XV — Mariana',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'lila',
     gradient: 'from-[#A57FC4] to-[#7C5A9C]',
     badge: 'Nuevo',
@@ -425,7 +423,7 @@ export const products = [
     name: 'Invitación XV — Ximena',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'rosa',
     gradient: 'from-[#D8899A] to-[#B65F73]',
     badge: 'Nuevo',
@@ -440,7 +438,7 @@ export const products = [
     name: 'Invitación XV — Marianel',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'marron',
     gradient: 'from-[#B08A5E] to-[#7A5C3E]',
     badge: 'Nuevo',
@@ -455,7 +453,7 @@ export const products = [
     name: 'Invitación Boda — Lauren & Marco',
     category: 'boda',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'azul',
     gradient: 'from-[#1F3252] to-[#16233A]',
     badge: 'Nuevo',
@@ -470,7 +468,7 @@ export const products = [
     name: 'Invitación Boda — Valeria & Eugenio',
     category: 'boda',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'amarillo',
     gradient: 'from-[#B8935A] to-[#8C6B3B]',
     badge: 'Nuevo',
@@ -485,7 +483,7 @@ export const products = [
     name: 'Invitación Boda — Camila & Sebastián',
     category: 'boda',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'rojo',
     gradient: 'from-[#6B1F2E] to-[#4A121D]',
     badge: 'Nuevo',
@@ -500,7 +498,7 @@ export const products = [
     name: 'Invitación Boda — Alexandra & Nicolás',
     category: 'boda',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'verde',
     gradient: 'from-[#6B7350] to-[#4B5138]',
     badge: 'Nuevo',
@@ -515,7 +513,7 @@ export const products = [
     name: 'Invitación Boda — Sofía & Tomás',
     category: 'boda',
     plan: 'Essential',
-    price: 49280,
+    price: 34496,
     color: 'naranja',
     gradient: 'from-[#C17A5D] to-[#9A5B41]',
     badge: 'Nuevo',
@@ -530,7 +528,7 @@ export const products = [
     name: 'Invitación Boda — Valentina & Ignacio',
     category: 'boda',
     plan: 'Standard',
-    price: 68640,
+    price: 48048,
     color: 'azul',
     gradient: 'from-[#7B93AB] to-[#4F657E]',
     badge: 'Nuevo',
@@ -545,7 +543,7 @@ export const products = [
     name: 'Invitación XV — Delfina',
     category: 'xv-anos',
     plan: 'Essential',
-    price: 49280,
+    price: 34496,
     color: 'naranja',
     gradient: 'from-[#E2A278] to-[#B5713F]',
     badge: 'Nuevo',
@@ -560,7 +558,7 @@ export const products = [
     name: 'Invitación XV — Camila',
     category: 'xv-anos',
     plan: 'Standard',
-    price: 68640,
+    price: 48048,
     color: 'verde',
     gradient: 'from-[#8FB8A8] to-[#4E7A67]',
     badge: 'Nuevo',
@@ -575,7 +573,7 @@ export const products = [
     name: 'Baby Shower — Santino',
     category: 'baby-shower',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'azul',
     gradient: 'from-[#2050E0] to-[#16294A]',
     badge: 'Nuevo',
@@ -590,7 +588,7 @@ export const products = [
     name: 'Baby Shower — Benjamín',
     category: 'baby-shower',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'celeste',
     gradient: 'from-[#7FC7E8] to-[#3E5C76]',
     badge: 'Nuevo',
@@ -605,7 +603,7 @@ export const products = [
     name: 'Baby Shower — Martina',
     category: 'baby-shower',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'rosa',
     gradient: 'from-[#E8A0BB] to-[#B5638A]',
     badge: 'Nuevo',
@@ -620,7 +618,7 @@ export const products = [
     name: 'Baby Shower — Isabella',
     category: 'baby-shower',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'amarillo',
     gradient: 'from-[#E8C547] to-[#B98A2E]',
     badge: 'Nuevo',
@@ -635,7 +633,7 @@ export const products = [
     name: 'Invitación Boda — Renata & Emiliano',
     category: 'boda',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'rojo',
     gradient: 'from-[#B8935A] to-[#5C1A2B]',
     badge: 'Nuevo',
@@ -650,7 +648,7 @@ export const products = [
     name: 'Invitación XV — Antonella',
     category: 'xv-anos',
     plan: 'Premium',
-    price: 77440,
+    price: 54208,
     color: 'rosa',
     gradient: 'from-[#C9A24B] to-[#8B4F52]',
     badge: 'Nuevo',

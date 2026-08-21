@@ -107,11 +107,10 @@ React 18 + Vite 5 + Tailwind CSS 3 + Framer Motion 11 + React Router 6
 Sin backend propio (ningún servidor Node/Express nuestro). Todo el "backend" real corre en
 servicios de terceros administrados:
 - **Google Sheets + Apps Script** — guarda pedidos, sube comprobantes a Drive, manda mails.
-- **Firebase Authentication + Firestore** (agosto 2026) — login/registro con email y
-  contraseña, y el carrito guardado de usuarios logueados. Ver sección 9.
-- **Mercado Pago** — links de pago de monto fijo por plan (`MP_LINKS` en `site.js`), sin
-  integración por API — ver sección 5. Convive con la transferencia bancaria manual como
-  segunda opción de pago.
+- **Mercado Pago** — API real de Checkout Pro (funciones serverless en `/api/mercadopago/`,
+  ver sección 9) con fallback automático a los links fijos de monto por plan (`MP_LINKS` en
+  `site.js`) si el Access Token todavía no está configurado. Convive con la transferencia
+  bancaria manual como segunda opción de pago.
 - **WhatsApp** (`wa.me` links) — canal de contacto y confirmación en casi todos los CTAs.
 - **Vercel** — hosting + deploy automático desde GitHub.
 
@@ -140,11 +139,20 @@ veintidos/
 ├── GOOGLE_APPS_SCRIPT.md       ← código completo del backend en Apps Script
 ├── README.md                   ← guía rápida de uso (versión corta de este documento)
 │
+├── api/
+│   └── mercadopago/             ← funciones serverless de Vercel (sección 9)
+│       ├── create-preference.js
+│       ├── payment-status.js
+│       └── webhook.js
+│
+├── shared/
+│   └── pricing.js               ← PLAN_PRICING/cupón — lo importan tanto site.js como /api
+│
 ├── public/
-│   ├── favicon.svg
+│   ├── favicon.png / apple-touch-icon.png  ← isotipo "V" de la marca
 │   ├── images/
-│   │   ├── BODA.jpg            ← foto real de la categoría "Boda" en la Home
-│   │   └── XV.jpg               ← foto real de la categoría "Cumple XV" en la Home
+│   │   ├── BODA.jpg / XV.jpg / BABY-SHOWER.jpg  ← fotos reales de cada categoría en la Home
+│   │   └── OG-IMAGE.jpg         ← imagen al compartir el link (og:image/twitter:image)
 │   └── demos/                  ← ⭐ ver sección 7, el sistema de demos de invitaciones
 │       ├── lucia-juan/
 │       ├── olivia-ralph/
@@ -164,11 +172,11 @@ veintidos/
     │   └── site.js               ← ⭐⭐⭐ FUENTE DE VERDAD DE TODO EL CONTENIDO (sección 5)
     │
     ├── context/
-    │   ├── CartContext.jsx       ← carrito; se guarda en Firestore si hay sesión iniciada
-    │   └── AuthContext.jsx       ← sesión de Firebase Authentication (login/registro)
+    │   └── CartContext.jsx       ← carrito; vive solo en memoria (sin login, se pierde al refrescar)
     │
     ├── components/               ← piezas reutilizables (ver sección 6)
-    └── pages/                    ← Home, Catalog, Cart, Checkout, Personalize, Contact
+    └── pages/                    ← Home, Catalog, Cart, Checkout, CheckoutReturn, Personalize,
+                                     Contact, Terms
 ```
 
 ### ⚠️ Sobre `vercel.json` — MUY IMPORTANTE
@@ -252,13 +260,12 @@ exponer datos bancarios reales a cualquiera navegando el catálogo.
 | `Nav.jsx` | Header en 2 filas: logo centrado (fila 1, con carrito a la derecha y menú hamburguesa a la izquierda en mobile — ambos en columnas separadas de un grid `1fr auto 1fr`, NO position:absolute, para evitar que se superpongan) + links de navegación (fila 2, solo desktop) |
 | `PromoBar.jsx` | Banner fijo arriba de todo con el "30% OFF" — el mes se calcula solo, no hay que actualizarlo a mano |
 | `ErrorBoundary.jsx` | Si algo rompe en una sección, muestra un mensaje con botón en vez de pantalla en blanco. El error real queda en la consola del navegador (F12) |
-| `CartContext.jsx` | Estado del carrito compartido entre Catálogo/Carrito/Checkout. Sin sesión iniciada vive solo en memoria (se vacía al refrescar). **Con sesión iniciada se guarda en Firestore** (`carts/{uid}`, debounce de 800ms) y se restaura solo al loguearse — ver sección 9 |
-| `AuthContext.jsx` | Sesión de Firebase Authentication: `user`, `signUp`, `signIn`, `logOut`, `resetPassword`, `resendVerification`. Si Firebase no está configurado (`.env` sin completar) degrada con gracia — ver `firebaseEnabled` |
+| `CartContext.jsx` | Estado del carrito compartido entre Catálogo/Carrito/Checkout. Vive solo en memoria (se vacía al refrescar) — no hay login ni persistencia entre dispositivos (se probó con Firebase y se sacó, ago 2026) |
 | `WhatsAppButton.jsx` / `WhatsAppIcon.jsx` | Componentes reutilizables para CUALQUIER CTA que lleve a WhatsApp — ver "regla de oro" en sección 2 |
 | `PriceTag.jsx` | Muestra precio tachado (+15%, cosmético) + precio real, usado en Planes/Catálogo/Carrito/Checkout |
 | `DemoPreviewModal.jsx` | Modal que muestra una demo (interna o externa) en un iframe dentro de un marco de iPhone plateado dibujado en CSS, sin sacar al usuario del catálogo. Se abre desde el botón "Ver demo" de cada tarjeta |
 | `Reveal.jsx` | Wrapper de animación de scroll-reveal (fade + slide), y `Stagger` para animar listas en cascada. Respeta `prefers-reduced-motion` |
-| `SocialIcon.jsx` | Logos de Instagram/Facebook/TikTok dibujados a mano en SVG (no existen en Material Symbols) |
+| `SocialIcon.jsx` | Logos de redes dibujados a mano en SVG (no existen en Material Symbols). Solo se usa `instagram` (Facebook/TikTok se sacaron del sitio, ago 2026 — no había cuentas reales) |
 
 ### Páginas (`src/pages/`)
 - **Home.jsx** — ensambla Hero, Categories, HowItWorks, Features, Plans, Faq, CtaFinal
@@ -434,54 +441,40 @@ ventana de riesgo a cerrar cuanto antes, no un estado final.
 
 ---
 
-## 9. Login y cuentas (Firebase Authentication + Firestore)
+## 9. Mercado Pago — API real (Checkout Pro) + fallback a links fijos
 
-Agregado en agosto 2026 a pedido de Pablo, con dos objetivos: que el sitio se vea más
-profesional (cuenta de usuario real, no solo un carrito anónimo) y no perder los datos de
-alguien que agrega una invitación al carrito pero no llega a completar la compra.
+Agregado en agosto 2026. Antes, Mercado Pago solo funcionaba con 3 links de pago de monto
+fijo (`MP_LINKS` en `site.js`, uno por plan) — no soportaban combinar planes ni cantidades,
+había que regenerarlos a mano en el panel de MP con cada baja de precio, y el checkout no
+verificaba el pago (el cliente apretaba "Ya pagué, continuar" de buena fe).
 
-**Decisión de arquitectura:** el sitio no tiene backend propio (sección 3), así que manejar
-contraseñas "a mano" (guardarlas, hashearlas, validarlas) hubiera sido tanto mucho trabajo
-como un riesgo de seguridad real si algo salía mal. Se usa **Firebase Authentication** en su
-lugar — las contraseñas nunca tocan nuestro código, las maneja Google. Setup completo paso a
-paso en `docs/FIREBASE-SETUP.md`.
+**Cómo funciona ahora** — ver `MERCADOPAGO-SETUP.md` para la guía paso a paso de activación:
 
-- **`src/lib/firebase.js`** — inicializa Firebase a partir de variables de entorno
-  (`VITE_FIREBASE_*`, ver `.env.example`). Expone `firebaseEnabled`: si el `.env` no está
-  cargado, queda en `false` y toda la app degrada con gracia en vez de romperse (`Login.jsx`
-  muestra un aviso en vez de un formulario roto).
-- **`AuthContext.jsx`** — `user`, `signUp`, `signIn`, `logOut`, `resetPassword`,
-  `resendVerification`. Mensajes de error traducidos (Firebase tira cosas como
-  `auth/email-already-in-use` en inglés técnico; acá se mapean a texto en español para el
-  cliente). Contraseña mínima 8 caracteres (más estricto que el mínimo de 6 de Firebase).
-  Email de verificación se manda solo al registrarse (`sendEmailVerification`).
-- **`Login.jsx`** (ruta `/cuenta`, lazy-loaded — ver nota de performance abajo) — login,
-  registro y "olvidé mi contraseña" en una sola pantalla con tabs. Si ya hay sesión, muestra
-  un panel de cuenta (nombre, verificación de email, cerrar sesión) en vez del formulario.
-- **Carrito guardado (`CartContext.jsx`):** con sesión iniciada, cada cambio al carrito se
-  guarda (debounce 800ms) en Firestore, colección `carts/{uid}`. Al iniciar sesión, si el
-  carrito local está vacío, se restaura el guardado. `Cart.jsx` muestra un banner invitando a
-  loguearse si hay ítems en el carrito y no hay sesión.
-- **`firestore.rules`** (raíz del repo) — cada usuario solo puede leer/escribir su propio
-  documento (`request.auth.uid == uid`). Hay que pegarlo a mano en Firebase Console →
-  Firestore → Reglas (no hay CI que lo despliegue automático todavía). **Nunca** dejar la
-  base en "modo de prueba" (Firestore abierto a cualquiera sin login).
-- **Ícono de cuenta en el Nav** — al lado del carrito, con un punto verde cuando hay sesión
-  iniciada.
-
-### Performance
-
-El SDK de Firebase pesa bastante (~670KB sin comprimir). Dos mitigaciones en
-`vite.config.js`/`App.jsx`:
-1. `manualChunks` separa Firebase en su propio archivo JS — no infla el bundle principal que
-   descarga cualquiera que visite Home/Catálogo sin loguearse.
-2. `Login.jsx` se carga con `React.lazy` — su código (y el de Firebase que importa) recién se
-   pide cuando alguien navega a `/cuenta`.
-
-`AuthContext` y `CartContext` sí importan Firebase de forma estática porque necesitan saber
-si hay sesión iniciada en toda la app (para el punto verde del Nav y la persistencia del
-carrito) — es un costo inherente a que el estado de login sea visible en cualquier página, no
-un descuido.
+- **`api/mercadopago/create-preference.js`** (función serverless de Vercel) — crea una
+  preferencia de pago real vía la API de Mercado Pago, con el monto recalculado del lado del
+  servidor a partir de `shared/pricing.js` (nunca se confía en el precio que manda el
+  cliente). Usa `process.env.MERCADOPAGO_ACCESS_TOKEN` — **nunca** con prefijo `VITE_`,
+  porque es secreto y solo lo puede ver el servidor.
+- **`api/mercadopago/payment-status.js`** — consulta el estado real de un pago, por
+  `payment_id` o por `order_ref` (nuestro `external_reference`, vía la Search API de MP). Es
+  lo que llama el botón "Ya pagué, continuar" de `Checkout.jsx` antes de dejar avanzar al
+  formulario — ya no es un auto-reporte.
+- **`api/mercadopago/webhook.js`** — notificación asíncrona opcional (configurar en el panel
+  de MP → Webhooks); por ahora solo loguea (`vercel logs`), es una red de seguridad extra,
+  no algo de lo que dependa el flujo principal.
+- **`shared/pricing.js`** — vive fuera de `src/` a propósito: es la única fuente de
+  `PLAN_PRICING`/cupón que pueden importar tanto el frontend (`site.js` la re-exporta) como
+  las funciones de `/api` (que no pueden importar `site.js` directo porque usa
+  `import.meta.env`, algo que no existe en el runtime de Node de las funciones).
+- **Fallback automático:** mientras `MERCADOPAGO_ACCESS_TOKEN` no esté cargado en Vercel (o
+  si la API falla por cualquier motivo), `Checkout.jsx` cae solo al link fijo viejo de
+  `MP_LINKS` — pero solo funciona si el carrito tiene un único plan en cantidad 1 (la misma
+  limitación de siempre de los links fijos). Con el token cargado, esa limitación
+  desaparece: la API soporta cualquier combinación de planes/cantidades.
+- **`CheckoutReturn.jsx`** (ruta `/checkout/retorno`) — página de aterrizaje de los
+  `back_urls` de la preferencia. Como el pago se abre en una pestaña **nueva** (no navega
+  afuera de la SPA, así no se pierde el carrito en memoria), esta página es solo informativa
+  — quien confirma el pago de verdad es la pestaña original, al tocar "Ya pagué, continuar".
 
 ---
 
@@ -501,18 +494,19 @@ un descuido.
 
 ## 11. Pendientes conocidos (buscar `// TODO` en el código)
 
-- `BANK_DATA.alias` y `BANK_DATA.cbu` — todavía placeholders, Pablo los completa a mano
-- `FACEBOOK_URL` y `TIKTOK_URL` — URLs inventadas, no llevan a ningún lado real
 - Productos `id: 1` a `6` del catálogo — sin fotos reales ni demo, solo degradé de color
-- **Firebase todavía sin configurar** (`.env` vacío) — `/cuenta` funciona visualmente pero
-  avisa que el login no está activo hasta completar `docs/FIREBASE-SETUP.md`
 - **`RECAPTCHA_SECRET_KEY` sin configurar** en el script de Apps Script — la verificación
   anti-spam del formulario está en modo "dejar pasar todo" hasta completarla (sección 5 de
   `GOOGLE_APPS_SCRIPT.md`)
-- **`MP_LINKS` (Mercado Pago) desactualizados tras la baja de precios de agosto 2026** — son
-  links de monto fijo generados en el panel de Mercado Pago; hay que regenerarlos con los
-  montos nuevos de `PLAN_PRICING` antes de que alguien pague por ese medio, si no cobra el
-  precio viejo
+- **`MERCADOPAGO_ACCESS_TOKEN` sin configurar en Vercel** — hasta que Pablo lo cargue (ver
+  `MERCADOPAGO-SETUP.md`), Mercado Pago sigue funcionando con los links fijos viejos de
+  `MP_LINKS`, con la limitación de siempre (un plan, cantidad 1) y sin verificación real de
+  pago
+- **Login/cuentas (Firebase) — se probó y se sacó (ago 2026):** a pedido de Pablo se removió
+  toda la integración (`AuthContext`, `Login.jsx`, `firestore.rules`, dependencia `firebase`
+  del `package.json`, persistencia del carrito en Firestore). El carrito volvió a vivir solo
+  en memoria. Si en algún momento se quiere retomar, está en el historial de git (buscar el
+  commit de esta baja) — no reinventar desde cero.
 - `react-router-dom` tiene 2 CVEs moderados sin parche disponible dentro del rango `^6.27.0`
   (arreglo real requiere migrar a v7, un cambio de mayor de versión no trivial) — evaluar
   la migración como tarea aparte

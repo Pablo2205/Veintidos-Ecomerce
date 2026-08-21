@@ -9,6 +9,16 @@ import { BANK_DATA, MP_LINKS, TRANSFER_DISCOUNT_PERCENT, DISCOUNT_CODE_PERCENT, 
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 
+// Mensajes legibles para los estados que puede devolver Mercado Pago —
+// ver `/api/mercadopago/payment-status.js`.
+const VERIFY_MESSAGES = {
+  pending: 'Todavía no vemos el pago acreditado (puede tardar unos minutos, sobre todo en efectivo/rapipago). Esperá un toque y volvé a tocar el botón.',
+  in_process: 'Mercado Pago todavía está procesando el pago. Esperá un momento y volvé a intentar.',
+  rejected: 'Mercado Pago rechazó el pago. Podés intentar de nuevo o pagar por transferencia.',
+  not_found: 'Todavía no encontramos tu pago. Si ya pagaste, esperá unos segundos y volvé a tocar el botón — a veces Mercado Pago tarda en confirmar.',
+  error: 'No pudimos verificar el pago en este momento. Probá de nuevo en unos segundos.',
+}
+
 function CopyField({ label, value }) {
   const [copied, setCopied] = useState(false)
   const copy = async () => {
@@ -38,14 +48,22 @@ function CopyField({ label, value }) {
 }
 
 export default function Checkout() {
-  const { items, subtotal, promoApplied, applyPromoToTotal } = useCart()
+  const { items, subtotal, promoApplied, promoCode, applyPromoToTotal } = useCart()
   const navigate = useNavigate()
   const [method, setMethod] = useState('mercadopago')
+
+  // Estado del pago con Mercado Pago — ver handleMpPay/handleVerifyAndContinue.
+  const [mpLoading, setMpLoading] = useState(false)
   const [mpConfirming, setMpConfirming] = useState(false)
+  const [mpMode, setMpMode] = useState(null) // 'dynamic' (API real) | 'legacy' (link fijo)
+  const [mpError, setMpError] = useState('')
+  const [verifying, setVerifying] = useState(false)
+  const [verifyStatus, setVerifyStatus] = useState(null)
 
   // Se genera una sola vez por sesión de checkout (no en cada render) para que
   // la referencia que el cliente ve y copia sea siempre la misma que viaja al
-  // formulario y a la planilla — es la clave para cruzar pagos con pedidos.
+  // formulario, a la planilla y ahora también a la preferencia de Mercado
+  // Pago (external_reference) — es la clave para cruzar pagos con pedidos.
   const orderRef = useMemo(() => `VD-${Date.now().toString().slice(-6)}`, [])
 
   if (items.length === 0) {
@@ -59,13 +77,13 @@ export default function Checkout() {
     )
   }
 
-  // Los links de pago de Mercado Pago son de monto fijo por plan: no soportan
-  // cantidad ni combinar varios ítems. Solo se ofrecen cuando el carrito trae
-  // un único plan en cantidad 1 — para cualquier otro caso, solo transferencia.
+  // Los links de pago fijos (legacy) son de monto único por plan: no soportan
+  // cantidad ni combinar varios ítems. La API dinámica (Preferences) sí, así
+  // que solo necesitamos esta restricción como fallback cuando el Access
+  // Token de Mercado Pago todavía no está configurado en Vercel.
   const singleItem = items.length === 1 ? items[0] : null
-  const mpEligible = Boolean(singleItem && (singleItem.qty || 1) === 1)
-  const mpLink = mpEligible ? MP_LINKS[singleItem.plan] : null
-  const activeMethod = mpEligible ? method : 'transferencia'
+  const legacyMpEligible = Boolean(singleItem && (singleItem.qty || 1) === 1)
+  const activeMethod = method
 
   // Se suma por ítem (no transferPrice(subtotal) directo) para que el
   // descuento se aplique correctamente incluso si el carrito llegara a tener
@@ -86,9 +104,75 @@ export default function Checkout() {
   const goToForm = (paymentMethod, totalPaid) =>
     navigate('/completar-datos', { state: { orderRef, cartSummary: items, paymentMethod, totalPaid } })
 
-  const handleMpPay = () => {
-    window.open(mpLink, '_blank', 'noopener,noreferrer')
-    setMpConfirming(true)
+  // Intenta primero la API real de Mercado Pago (monto exacto, soporta
+  // cualquier combinación de ítems). Si el Access Token todavía no está
+  // configurado en Vercel (o hay cualquier error de red), cae sola al link
+  // fijo viejo — pero solo si el carrito califica (un plan, cantidad 1).
+  const handleMpPay = async () => {
+    setMpError('')
+    setVerifyStatus(null)
+    setMpLoading(true)
+    const mpLink = legacyMpEligible ? MP_LINKS[singleItem.plan] : null
+    try {
+      const res = await fetch('/api/mercadopago/create-preference', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderRef,
+          discountCode: promoApplied ? promoCode : '',
+          items: items.map((i) => ({ id: i.id, name: i.name, plan: i.plan, quantity: i.qty || 1 })),
+        }),
+      })
+      const data = await res.json()
+      if (data.ok && data.initPoint) {
+        setMpMode('dynamic')
+        window.open(data.initPoint, '_blank', 'noopener,noreferrer')
+        setMpConfirming(true)
+      } else if (mpLink) {
+        setMpMode('legacy')
+        window.open(mpLink, '_blank', 'noopener,noreferrer')
+        setMpConfirming(true)
+      } else {
+        setMpError('Mercado Pago no está disponible en este momento para más de un plan por pedido. Probá con transferencia o escribinos por WhatsApp.')
+      }
+    } catch {
+      if (mpLink) {
+        setMpMode('legacy')
+        window.open(mpLink, '_blank', 'noopener,noreferrer')
+        setMpConfirming(true)
+      } else {
+        setMpError('No pudimos conectar con Mercado Pago. Probá con transferencia o escribinos por WhatsApp.')
+      }
+    } finally {
+      setMpLoading(false)
+    }
+  }
+
+  // "Ya pagué, continuar": con la API real (mpMode === 'dynamic') esto ya NO
+  // es un auto-reporte — consulta a Mercado Pago si el pago está realmente
+  // aprobado antes de dejar avanzar al formulario. Con el link fijo viejo
+  // (mpMode === 'legacy', o si el token nunca se configuró) no hay forma de
+  // verificar desde acá, así que se mantiene el comportamiento de siempre.
+  const handleVerifyAndContinue = async () => {
+    if (mpMode !== 'dynamic') {
+      goToForm('mercadopago', mpTotal)
+      return
+    }
+    setVerifying(true)
+    setVerifyStatus(null)
+    try {
+      const res = await fetch(`/api/mercadopago/payment-status?order_ref=${encodeURIComponent(orderRef)}`)
+      const data = await res.json()
+      if (data.ok && data.status === 'approved') {
+        goToForm('mercadopago', data.transactionAmount || mpTotal)
+      } else {
+        setVerifyStatus(data.ok ? data.status : 'error')
+      }
+    } catch {
+      setVerifyStatus('error')
+    } finally {
+      setVerifying(false)
+    }
   }
 
   return (
@@ -110,43 +194,29 @@ export default function Checkout() {
             </div>
           </Reveal>
 
-          {mpEligible && (
-            <Reveal delay={0.02}>
-              <div className="inline-flex bg-creamSurface border border-outlineVariant/40 rounded-full p-1 gap-1">
-                <button
-                  onClick={() => setMethod('mercadopago')}
-                  className={`px-6 py-2.5 rounded-full font-sans text-label transition-colors ${
-                    activeMethod === 'mercadopago' ? 'bg-primary text-onPrimary' : 'text-onSurfaceVariant hover:text-primary'
-                  }`}
-                >
-                  Mercado Pago
-                </button>
-                <button
-                  onClick={() => setMethod('transferencia')}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-sans text-label transition-colors ${
-                    activeMethod === 'transferencia' ? 'bg-primary text-onPrimary' : 'text-onSurfaceVariant hover:text-primary'
-                  }`}
-                >
-                  Transferencia
-                  <span className="text-discount text-[11px] font-bold">
-                    -{TRANSFER_DISCOUNT_PERCENT}%
-                  </span>
-                </button>
-              </div>
-            </Reveal>
-          )}
-
-          {!mpEligible && (
-            <Reveal delay={0.02}>
-              <div className="flex items-start gap-3 bg-creamSurface border border-secondaryFixed rounded-xl p-5">
-                <Icon name="info" className="text-secondary flex-shrink-0 mt-0.5" />
-                <p className="font-sans text-sm text-onSurfaceVariant">
-                  Mercado Pago solo está disponible para un plan por pedido. Para más de una invitación o cantidad,
-                  completá la compra por transferencia o escribinos por WhatsApp.
-                </p>
-              </div>
-            </Reveal>
-          )}
+          <Reveal delay={0.02}>
+            <div className="inline-flex bg-creamSurface border border-outlineVariant/40 rounded-full p-1 gap-1">
+              <button
+                onClick={() => setMethod('mercadopago')}
+                className={`px-6 py-2.5 rounded-full font-sans text-label transition-colors ${
+                  activeMethod === 'mercadopago' ? 'bg-primary text-onPrimary' : 'text-onSurfaceVariant hover:text-primary'
+                }`}
+              >
+                Mercado Pago
+              </button>
+              <button
+                onClick={() => setMethod('transferencia')}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-sans text-label transition-colors ${
+                  activeMethod === 'transferencia' ? 'bg-primary text-onPrimary' : 'text-onSurfaceVariant hover:text-primary'
+                }`}
+              >
+                Transferencia
+                <span className="text-discount text-[11px] font-bold">
+                  -{TRANSFER_DISCOUNT_PERCENT}%
+                </span>
+              </button>
+            </div>
+          </Reveal>
 
           {activeMethod === 'mercadopago' ? (
             <Reveal delay={0.05}>
@@ -157,29 +227,52 @@ export default function Checkout() {
                 <div className="flex items-start gap-3 bg-creamSurface border border-secondaryFixed rounded-xl p-5">
                   <Icon name="info" className="text-secondary flex-shrink-0 mt-0.5" />
                   <p className="font-sans text-sm text-onSurfaceVariant">
-                    Te vamos a redirigir a Mercado Pago para completar el pago del plan{' '}
-                    <strong className="text-primary">{singleItem.plan}</strong>. Cuando termines, volvé a esta
-                    pestaña y tocá <strong>"Ya pagué, continuar"</strong> para cargar los datos de tu evento.
+                    Te vamos a redirigir a Mercado Pago para completar el pago
+                    {singleItem ? (
+                      <>
+                        {' '}del plan <strong className="text-primary">{singleItem.plan}</strong>
+                      </>
+                    ) : (
+                      ' de tu pedido'
+                    )}
+                    . Cuando termines, volvé a esta pestaña y tocá <strong>"Ya pagué, continuar"</strong> para
+                    que confirmemos el pago y cargues los datos de tu evento.
                   </p>
                 </div>
+
+                {mpError && (
+                  <div className="flex items-start gap-3 bg-error/10 border border-error/30 rounded-xl p-5">
+                    <Icon name="error" className="text-error flex-shrink-0 mt-0.5" />
+                    <p className="font-sans text-sm text-onSurfaceVariant">{mpError}</p>
+                  </div>
+                )}
 
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   onClick={handleMpPay}
-                  className="w-full md:w-auto btn-primary px-10 py-4 flex items-center justify-center gap-2"
+                  disabled={mpLoading}
+                  className="w-full md:w-auto btn-primary px-10 py-4 flex items-center justify-center gap-2 disabled:opacity-60"
                 >
-                  Pagar con Mercado Pago <Icon name="open_in_new" />
+                  {mpLoading ? 'Conectando con Mercado Pago…' : 'Pagar con Mercado Pago'}
+                  {!mpLoading && <Icon name="open_in_new" />}
                 </motion.button>
 
                 {mpConfirming && (
-                  <Reveal>
+                  <Reveal className="space-y-3">
                     <motion.button
                       whileTap={{ scale: 0.97 }}
-                      onClick={() => goToForm('mercadopago', mpTotal)}
-                      className="w-full md:w-auto border-2 border-primary text-primary font-sans font-bold rounded-full px-10 py-4 flex items-center justify-center gap-2 hover:bg-primary hover:text-onPrimary transition-colors"
+                      onClick={handleVerifyAndContinue}
+                      disabled={verifying}
+                      className="w-full md:w-auto border-2 border-primary text-primary font-sans font-bold rounded-full px-10 py-4 flex items-center justify-center gap-2 hover:bg-primary hover:text-onPrimary transition-colors disabled:opacity-60"
                     >
-                      Ya pagué, continuar <Icon name="arrow_forward" />
+                      {verifying ? 'Verificando pago…' : 'Ya pagué, continuar'}
+                      {!verifying && <Icon name="arrow_forward" />}
                     </motion.button>
+                    {verifyStatus && verifyStatus !== 'approved' && (
+                      <p className="font-sans text-sm text-discount">
+                        {VERIFY_MESSAGES[verifyStatus] || VERIFY_MESSAGES.error}
+                      </p>
+                    )}
                   </Reveal>
                 )}
 
@@ -305,11 +398,12 @@ export default function Checkout() {
                   </p>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 bg-creamSurface border border-outlineVariant/40 rounded-xl px-4 py-3">
-                  <Icon name="info" className="text-discount text-base flex-shrink-0" />
-                  <p className="font-sans text-xs text-onSurfaceVariant">
-                    Con transferencia pagás <strong className="text-discount">{money(mpTotal - transferTotal)} menos</strong>.
+                <div className="flex items-center justify-between gap-2 bg-creamSurface border border-outlineVariant/40 rounded-xl px-4 py-3">
+                  <p className="font-sans text-xs text-onSurfaceVariant flex items-center gap-2">
+                    <Icon name="info" className="text-discount text-base flex-shrink-0" />
+                    Precio con transferencia
                   </p>
+                  <p className="font-sans text-sm font-bold text-discount whitespace-nowrap">{money(transferTotal)}</p>
                 </div>
               )}
 

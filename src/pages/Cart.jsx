@@ -5,8 +5,7 @@ import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
 import ProductCover from '../components/ProductCover.jsx'
 import { useCart } from '../context/CartContext.jsx'
-import { useAuth } from '../context/AuthContext.jsx'
-import { originalPrice, TRANSFER_DISCOUNT_PERCENT, DISCOUNT_CODE_PERCENT } from '../data/site.js'
+import { originalPrice, transferPrice, DISCOUNT_CODE_PERCENT } from '../data/site.js'
 
 const money = (n) => `$${n.toLocaleString('es-AR')}`
 const savingsPercent = (price) => Math.round(100 - (price / originalPrice(price)) * 100)
@@ -24,15 +23,23 @@ export default function Cart() {
     updatePromoCode,
     applyPromoToTotal,
   } = useCart()
-  const { user, firebaseEnabled } = useAuth() || {}
 
   const originalSubtotal = useMemo(
     () => items.reduce((sum, i) => sum + originalPrice(i.price) * (i.qty || 1), 0),
     [items]
   )
 
+  // Mismo cálculo que usa Checkout.jsx: se suma por ítem (no
+  // transferPrice(subtotal) directo) porque cada plan tiene su propio valor
+  // de transferencia fijo, no es un % parejo sobre el total.
+  const transferSubtotal = useMemo(
+    () => items.reduce((sum, i) => sum + transferPrice(i.price) * (i.qty || 1), 0),
+    [items]
+  )
+
   const promoDiscount = applyPromoToTotal(subtotal)
   const total = subtotal - promoDiscount
+  const transferTotal = transferSubtotal - applyPromoToTotal(transferSubtotal)
 
   return (
     <div className="wrap py-12 md:py-20 flex flex-col md:flex-row gap-gutter">
@@ -50,18 +57,6 @@ export default function Cart() {
             <div className="h-px flex-grow bg-outlineVariant/30 ml-4" />
           </div>
         </Reveal>
-
-        {firebaseEnabled && !user && items.length > 0 && (
-          <Reveal delay={0.04} className="mt-8 flex items-center gap-4 p-4 rounded-xl bg-secondaryContainer/30 border border-secondaryContainer">
-            <Icon name="bookmark" className="text-secondary flex-shrink-0" />
-            <p className="font-sans text-sm text-onSurfaceVariant flex-grow">
-              <Link to="/cuenta" state={{ from: '/carrito' }} className="font-semibold text-primary hover:underline">
-                Iniciá sesión o creá una cuenta
-              </Link>{' '}
-              para guardar este carrito y retomarlo después, sin perderlo.
-            </p>
-          </Reveal>
-        )}
 
         <div className="space-y-6 mt-10">
           <AnimatePresence initial={false}>
@@ -215,11 +210,12 @@ export default function Cart() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 bg-discount/10 border border-discount/30 rounded-xl px-4 py-3">
-                <Icon name="local_offer" className="text-discount flex-shrink-0" />
-                <p className="font-sans text-xs text-onSurfaceVariant">
-                  Pagando por transferencia bancaria obtenés <strong className="text-discount">-{TRANSFER_DISCOUNT_PERCENT}%</strong> de descuento adicional.
+              <div className="flex items-center justify-between gap-2 bg-discount/10 border border-discount/30 rounded-xl px-4 py-3">
+                <p className="font-sans text-xs text-onSurfaceVariant flex items-center gap-2">
+                  <Icon name="local_offer" className="text-discount flex-shrink-0" />
+                  Precio con transferencia
                 </p>
+                <p className="font-sans text-sm font-bold text-discount whitespace-nowrap">{money(transferTotal)}</p>
               </div>
 
               <Link

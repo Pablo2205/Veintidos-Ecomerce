@@ -34,17 +34,4 @@ const serveDemos = {
 
 export default defineConfig({
   plugins: [react(), serveDemos],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // Firebase (Auth + Firestore, para /cuenta y la persistencia del
-          // carrito) pesa bastante y solo lo necesitan las visitas que usan
-          // login — separado en su propio chunk no bloquea el JS principal
-          // que carga Home/Catálogo para todos los demás visitantes.
-          firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore'],
-        },
-      },
-    },
-  },
 })

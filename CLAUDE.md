@@ -56,8 +56,10 @@ con fondo transparente:
   champagne) con fondo transparente, pensada para usarla algún día sobre fondos oscuros
   (todavía sin uso activo en el sitio).
 
-El favicon (`public/favicon.svg`) es un cuadrado verde oscuro con una "v" dorada en
-itálica — coherente con la paleta real del logo.
+El favicon (`public/favicon.png` + `public/apple-touch-icon.png`, ago 2026) es el isotipo
+real "V" de la marca (verde `#182317` sobre fondo crema), recortado de una foto que mandó
+Pablo. La misma imagen se usa como `og:image`/`twitter:image` (`public/images/OG-IMAGE.jpg`)
+para que se vea al compartir el link por WhatsApp/redes — ver `index.html`.
 
 ### Paleta de colores (Tailwind, ver `tailwind.config.js`)
 

@@ -1,19 +1,14 @@
 import { motion, useReducedMotion } from 'framer-motion'
 
-// Composición de 3 dispositivos superpuestos (compu, tablet, celular) mostrando
-// la MISMA invitación real, cada uno con su pantalla scrolleando sola en loop
-// — la idea es transmitir "tu invitación, perfecta en cualquier pantalla" en
-// vez de solo mostrar una captura estática. Las imágenes son full-page
-// screenshots reales (bajadas de la demo en vivo), no mockups genéricos.
-// Los 3 dispositivos se muestran SIEMPRE, en todos los tamaños de pantalla
-// (achicados en mobile) — nada se oculta.
+// Composición de 3 dispositivos mostrando la MISMA invitación real, cada
+// pantalla con un paneo vertical sutil en loop. Estructura calcada de la
+// referencia (Paste): laptop al centro casi sin rotar, celular superpuesto
+// adelante, tablet apenas asomando atrás — un solo objeto prolijo, no un
+// collage de mockups tirados con rotaciones fuertes. Las imágenes son
+// screenshots reales recortados a la parte más prolija de la demo (el
+// hero), no la página completa — evita que el paneo cruce por secciones
+// oscuras/densas que se ven mal en un mockup chico.
 
-// Paneo vertical dentro de cada pantalla, ida y vuelta en loop infinito.
-// `repeatType="mirror"` hace que frene suave en cada punta (no un salto seco
-// al reiniciar). `duration` = tiempo de UN solo recorrido (ida); el ciclo
-// completo dura el doble. Cada dispositivo tiene su propia duración a
-// propósito — si laten sincronizados se siente mecánico en vez de tres
-// pantallas scrolleando solas y a su propio ritmo.
 function ScrollingScreen({ image, panPx, duration, delay = 0, className = '' }) {
   const reduce = useReducedMotion()
   return (
@@ -35,49 +30,46 @@ function ScrollingScreen({ image, panPx, duration, delay = 0, className = '' }) 
 
 export default function DeviceShowcase({ desktopImage, tabletImage, phoneImage }) {
   return (
-    <div className="relative w-[240px] h-[260px] sm:w-[400px] sm:h-[360px] lg:w-[500px] lg:h-[420px]">
-      {/* Compu — ancla de la composición, atrás-izquierda. Chica en mobile
-          pero siempre presente, nunca oculta. */}
-      <div className="absolute left-0 top-2 sm:top-6 lg:top-8 w-[150px] sm:w-[270px] lg:w-[350px] drop-shadow-2xl">
-        <div className="rounded-t-lg bg-gradient-to-b from-[#eceef0] to-[#c9cdd3] p-[5px] pb-[3px] sm:p-[9px] sm:pb-[5px]">
+    <div className="relative w-[230px] h-[190px] sm:w-[390px] sm:h-[280px] lg:w-[470px] lg:h-[320px]">
+      {/* Tablet — atrás, apenas asomando del lado izquierdo. Solo aporta
+          profundidad ("ecosistema"), no compite por atención. */}
+      <div className="absolute left-0 top-3 sm:top-4 w-[62px] sm:w-[105px] lg:w-[125px] rotate-[3deg] drop-shadow-lg">
+        <div className="rounded-[0.5rem] sm:rounded-[0.9rem] bg-[#e8e8ea] p-[4px] sm:p-[6px]">
+          <ScrollingScreen
+            image={tabletImage}
+            panPx={135}
+            duration={13}
+            delay={0.4}
+            className="rounded-[0.25rem] sm:rounded-[0.5rem] aspect-[3/4]"
+          />
+        </div>
+      </div>
+
+      {/* Laptop — el ancla de la composición, centrada, casi sin rotar. */}
+      <div className="absolute left-[13%] sm:left-[9%] top-0 w-[150px] sm:w-[280px] lg:w-[345px] drop-shadow-2xl">
+        <div className="rounded-t-md bg-[#e8e8ea] p-[6px] pb-[3px] sm:p-[9px] sm:pb-[5px]">
           <ScrollingScreen
             image={desktopImage}
-            panPx={2000}
-            duration={40}
+            panPx={190}
+            duration={15}
             className="rounded-[2px] aspect-[16/10]"
           />
         </div>
-        <div className="relative h-[5px] sm:h-[9px] bg-gradient-to-b from-[#c9cdd3] to-[#9ea3aa] rounded-b-[3px]">
-          <div className="absolute left-1/2 -translate-x-1/2 top-0 w-[15%] h-[3px] sm:h-[4px] bg-[#9ea3aa] rounded-b-[3px]" />
-        </div>
+        <div className="h-[5px] sm:h-[8px] bg-[#c7c8cb] rounded-b-[3px]" />
       </div>
 
-      {/* Tablet — atrás-derecha, separada del celu para que se lea como
-          dispositivo propio y no como un recorte detrás del teléfono. */}
-      <div className="absolute right-0 top-0 w-[68px] sm:w-[120px] lg:w-[150px] rotate-[7deg] drop-shadow-xl">
-        <div className="rounded-[0.6rem] sm:rounded-[1.15rem] bg-gradient-to-br from-[#eceef0] via-[#c9cdd3] to-[#9ea3aa] p-[4px] sm:p-[7px]">
-          <ScrollingScreen
-            image={tabletImage}
-            panPx={1300}
-            duration={34}
-            delay={0.6}
-            className="rounded-[0.3rem] sm:rounded-[0.6rem] aspect-[3/4]"
-          />
-        </div>
-      </div>
-
-      {/* Celular — al frente y al medio, en la costura entre compu y
-          tablet — protagonista de la composición. */}
-      <div className="absolute left-1/2 -translate-x-1/2 sm:left-[46%] lg:left-[44%] bottom-0 w-[92px] sm:w-[145px] lg:w-[160px] rotate-[-5deg] drop-shadow-2xl">
-        <div className="relative rounded-[1.4rem] sm:rounded-[2.4rem] bg-gradient-to-br from-[#eceef0] via-[#c9cdd3] to-[#9ea3aa] p-[4px] sm:p-[7px]">
+      {/* Celular — al frente, superpuesto sobre la esquina de la laptop,
+          apenas inclinado. Protagonista de la composición. */}
+      <div className="absolute right-0 bottom-0 w-[78px] sm:w-[125px] lg:w-[142px] rotate-[-3deg] drop-shadow-2xl">
+        <div className="relative rounded-[1.1rem] sm:rounded-[1.8rem] bg-[#e8e8ea] p-[4px] sm:p-[6px]">
           <ScrollingScreen
             image={phoneImage}
-            panPx={2800}
-            duration={42}
-            delay={0.3}
-            className="rounded-[1.1rem] sm:rounded-[2rem] aspect-[9/19.5]"
+            panPx={480}
+            duration={20}
+            delay={0.2}
+            className="rounded-[0.85rem] sm:rounded-[1.5rem] aspect-[9/19.5]"
           />
-          <div className="absolute top-[6px] sm:top-[10px] left-1/2 -translate-x-1/2 w-[34%] h-[9px] sm:h-[16px] bg-black rounded-full z-10" />
+          <div className="absolute top-[6px] sm:top-[9px] left-1/2 -translate-x-1/2 w-[32%] h-[8px] sm:h-[14px] bg-black rounded-full z-10" />
         </div>
       </div>
     </div>

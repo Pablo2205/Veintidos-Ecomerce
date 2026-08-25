@@ -10,7 +10,7 @@ export default function Features() {
       <div className="wrap">
         <Reveal className="flex flex-col lg:flex-row justify-between items-end mb-14 gap-8">
           <div className="max-w-2xl">
-            <p className="font-sans text-label text-promoGold uppercase tracking-widest mb-4">Todo en un solo link</p>
+            <p className="font-mono text-label text-promoGold uppercase tracking-widest mb-4">Todo en un solo link</p>
             <h2
               className="font-serif italic font-normal text-primaryFixed leading-[0.98]"
               style={{ fontSize: 'clamp(2.25rem, 5vw, 4rem)' }}

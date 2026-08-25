@@ -10,7 +10,7 @@ export default function HowItWorks() {
       <div className="wrap">
         <Reveal className="text-center mb-16">
           <p aria-hidden="true" className="ornament mb-4 text-sm">✦</p>
-          <p className="font-sans text-label text-secondary uppercase tracking-widest mb-4">Paso a paso</p>
+          <p className="font-mono text-label text-secondary uppercase tracking-widest mb-4">Paso a paso</p>
           <h2
             className="font-serif italic font-normal text-primary leading-[0.98]"
             style={{ fontSize: 'clamp(2.25rem, 5vw, 4rem)' }}

@@ -48,6 +48,8 @@ export default {
       fontFamily: {
         serif: ['Fraunces', 'serif'],
         sans: ['Archivo', 'sans-serif'],
+        // Acento editorial para eyebrows/kickers de sección — ver nota en index.html
+        mono: ['Space Mono', 'monospace'],
       },
       spacing: {
         gutter: '24px',

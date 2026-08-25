@@ -112,7 +112,7 @@ export default function Categories() {
       <div className="wrap">
         <Reveal className="text-center pt-16 pb-12">
           <p aria-hidden="true" className="ornament mb-4 text-sm">✦</p>
-          <p className="font-sans text-label text-secondary uppercase tracking-widest mb-4">¿Qué vas a festejar?</p>
+          <p className="font-mono text-label text-secondary uppercase tracking-widest mb-4">¿Qué vas a festejar?</p>
           <h2
             className="font-serif italic font-normal text-primary"
             style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}

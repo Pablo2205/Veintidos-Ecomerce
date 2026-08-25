@@ -70,7 +70,7 @@ export default function Hero() {
             animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
           >
-            <motion.span variants={item} className="inline-flex items-center gap-3 font-sans text-label text-secondary tracking-widest mb-5 uppercase">
+            <motion.span variants={item} className="inline-flex items-center gap-3 font-mono text-label text-secondary tracking-widest mb-5 uppercase">
               <span className="h-px w-8 bg-promoGold" aria-hidden="true" />
               Invitaciones digitales
             </motion.span>
@@ -164,7 +164,7 @@ export default function Hero() {
             ['QR listo', 'Para imprimir'],
           ].map(([label, value]) => (
             <div key={label} className="text-center px-4">
-              <p className="font-sans text-[10px] uppercase tracking-widest text-primaryFixed/45 mb-0.5">{label}</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-primaryFixed/45 mb-0.5">{label}</p>
               <p
                 className="font-serif italic font-normal text-primaryFixed leading-tight"
                 style={{ fontSize: 'clamp(1rem, 1.8vw, 1.25rem)' }}

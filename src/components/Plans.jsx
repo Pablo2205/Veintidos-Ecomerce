@@ -12,7 +12,7 @@ export default function Plans() {
       <div className="wrap relative z-10">
         <Reveal className="text-center mb-16">
           <p aria-hidden="true" className="ornament mb-4 text-sm">✦</p>
-          <p className="font-sans text-label text-secondary uppercase tracking-widest mb-4">Nuestros Planes</p>
+          <p className="font-mono text-label text-secondary uppercase tracking-widest mb-4">Nuestros Planes</p>
           <h2
             className="font-serif italic font-normal text-primary leading-[0.98]"
             style={{ fontSize: 'clamp(2.25rem, 5.5vw, 4.5rem)' }}
@@ -101,7 +101,7 @@ export default function Plans() {
 
         <Reveal delay={0.15} className="mt-14">
           <div className="max-w-3xl mx-auto rounded-2xl border-2 border-dashed border-promoGold/50 bg-creamSurface px-8 py-10 text-center">
-            <p className="font-sans text-label text-promoGold uppercase tracking-widest mb-3">
+            <p className="font-mono text-label text-promoGold uppercase tracking-widest mb-3">
               ✦ A tu medida ✦
             </p>
             <h3

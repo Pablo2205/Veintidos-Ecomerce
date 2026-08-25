@@ -43,7 +43,7 @@ Mensaje: ${form.message || '-'}`
 
       {/* Redes — debajo del título, arriba de todo lo demás */}
       <Reveal delay={0.03} className="mb-14">
-        <p className="font-sans text-label text-primary uppercase tracking-widest mb-4">Seguinos</p>
+        <p className="font-mono text-label text-primary uppercase tracking-widest mb-4">Seguinos</p>
         <div className="flex items-center gap-3">
           <a
             href={INSTAGRAM_URL}

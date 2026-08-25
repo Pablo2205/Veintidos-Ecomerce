@@ -3,6 +3,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { Link } from 'react-router-dom'
 import { waLink } from '../data/site.js'
 import WhatsAppButton from './WhatsAppButton.jsx'
+import DeviceShowcase from './DeviceShowcase.jsx'
 
 const item = {
   hidden: { opacity: 0, y: 26 },
@@ -125,10 +126,12 @@ export default function Hero() {
               initial={reduce ? false : { opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-              className="flex gap-6 md:gap-8 items-start"
             >
-              <IPhoneMock rotate="-6deg" image="/demos/boda/olivia-ralph/foto-hero.jpg" />
-              <IPhoneMock rotate="6deg" marginTop="mt-14" image="/demos/boda/lucia-juan/foto-hero.jpg" />
+              <DeviceShowcase
+                desktopImage="/hero-devices/desktop.jpg"
+                tabletImage="/hero-devices/tablet.jpg"
+                phoneImage="/hero-devices/phone.jpg"
+              />
             </motion.div>
           </motion.div>
         </div>
@@ -176,24 +179,5 @@ export default function Hero() {
         </div>
       </motion.div>
     </section>
-  )
-}
-
-function IPhoneMock({ rotate, marginTop = '', image }) {
-  return (
-    <div
-      style={{ transform: `rotate(${rotate})` }}
-      className={`relative w-[148px] sm:w-[168px] aspect-[9/19.5] flex-shrink-0 ${marginTop} transition-transform hover:rotate-0 duration-700`}
-    >
-      <div className="absolute inset-0 rounded-[2.4rem] bg-gradient-to-br from-[#e7e9ec] via-[#c9cdd3] to-[#9ea3aa] shadow-xl" />
-      <div className="absolute inset-[3px] rounded-[2.25rem] bg-black" />
-      <div className="absolute inset-[7px] rounded-[2rem] overflow-hidden bg-black">
-        <img src={image} alt="Demo invitación de boda" className="w-full h-full object-cover" />
-        <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[34%] h-[18px] bg-black rounded-full z-10" />
-      </div>
-      <div className="absolute -left-[2px] top-[26%] w-[3px] h-[22px] bg-[#9ea3aa] rounded-l" />
-      <div className="absolute -left-[2px] top-[38%] w-[3px] h-[36px] bg-[#9ea3aa] rounded-l" />
-      <div className="absolute -right-[2px] top-[30%] w-[3px] h-[46px] bg-[#9ea3aa] rounded-r" />
-    </div>
   )
 }

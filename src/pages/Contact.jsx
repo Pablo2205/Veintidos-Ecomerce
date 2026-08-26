@@ -4,6 +4,7 @@ import Icon from '../components/Icon.jsx'
 import WhatsAppIcon from '../components/WhatsAppIcon.jsx'
 import WhatsAppButton from '../components/WhatsAppButton.jsx'
 import SocialIcon from '../components/SocialIcon.jsx'
+import InertSocialIcon from '../components/InertSocialIcon.jsx'
 import {
   WA_NUMBER,
   CONTACT_EMAIL,
@@ -11,22 +12,6 @@ import {
   INSTAGRAM_URL,
   waLink,
 } from '../data/site.js'
-
-// TikTok y Facebook todavía no tienen cuenta real de veintidós (ver
-// CLAUDE.md) — se muestran igual acá como "viene pronto", pero como ícono
-// inerte (no `<a>`, no redirige a ningún lado) en vez de sacarlos del todo.
-// Instagram y WhatsApp sí son reales y funcionan como link normal.
-function InertSocialIcon({ name, label }) {
-  return (
-    <span
-      aria-label={`${label} — próximamente`}
-      title={`${label} — próximamente`}
-      className="w-11 h-11 rounded-full bg-secondaryContainer/20 flex items-center justify-center text-onSurfaceVariant/40 cursor-default"
-    >
-      <SocialIcon name={name} className="w-5 h-5" />
-    </span>
-  )
-}
 
 const initialForm = { name: '', email: '', phone: '', message: '' }
 
@@ -57,7 +42,9 @@ Mensaje: ${form.message || '-'}`
         </h1>
       </Reveal>
 
-      {/* Redes — debajo del título, arriba de todo lo demás */}
+      {/* Redes — debajo del título, arriba de todo lo demás. WhatsApp no va
+          acá: ya tiene su propio renglón, botón y el formulario más abajo —
+          repetirlo en "Seguinos" era demasiado (ver feedback de Pablo). */}
       <Reveal delay={0.03} className="mb-14">
         <p className="font-mono text-label text-primary uppercase tracking-widest mb-4">Seguinos</p>
         <div className="flex items-center gap-3">
@@ -69,15 +56,6 @@ Mensaje: ${form.message || '-'}`
             className="w-11 h-11 rounded-full bg-secondaryContainer/50 flex items-center justify-center text-secondary hover:bg-secondary hover:text-white transition-colors"
           >
             <SocialIcon name="instagram" className="w-5 h-5" />
-          </a>
-          <a
-            href={waLink('Hola! Te escribo desde la web de veintidós.')}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="WhatsApp"
-            className="w-11 h-11 rounded-full bg-whatsapp/10 flex items-center justify-center text-whatsapp hover:bg-whatsapp hover:text-white transition-colors"
-          >
-            <WhatsAppIcon className="w-5 h-5" />
           </a>
           <InertSocialIcon name="facebook" label="Facebook" />
           <InertSocialIcon name="tiktok" label="TikTok" />

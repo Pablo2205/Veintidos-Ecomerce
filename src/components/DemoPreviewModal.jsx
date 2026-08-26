@@ -8,6 +8,16 @@ import Icon from './Icon.jsx'
 // "Pantalla completa" agranda el mismo iframe dentro del modal en vez de
 // navegar a la URL real de la demo — así nunca se expone el origen externo
 // (ej. *.framer.app) en la barra de direcciones ni en un link visible.
+//
+// El badge "Made in Framer" ya NO hace falta taparlo desde acá: cada proyecto
+// Framer del catálogo tiene un Custom Code propio (`#__framer-badge-container
+// { display: none }`, pegado por Pablo en el editor de cada sitio) que lo saca
+// de raíz del lado de Framer. Hubo una capa `FramerBadgeShield` acá (ago 2026)
+// mientras esa solución no estaba en las 8 demos — se sacó una vez confirmado
+// que las 8 ya tenían el Custom Code aplicado. Si en algún momento se suma una
+// demo Framer nueva sin el Custom Code, va a mostrar el badge real hasta que
+// se le pegue el mismo snippet en su editor (ver `project_veintidos` memory).
+
 export default function DemoPreviewModal({ url, name, onClose }) {
   const [fullscreen, setFullscreen] = useState(false)
 

@@ -150,12 +150,6 @@ export default function Catalog() {
   // filtra de verdad — antes el radio no hacía nada.
   const filtered = useMemo(() => {
     return products.filter((p) => {
-      // Temporal (ago 2026, a pedido de Pablo): mientras se migra el catálogo
-      // a demos armadas en Framer, solo se muestran esas — las HTML hechas a
-      // mano quedan ocultas del catálogo (no se borran de site.js, siguen
-      // ahí para cuando se levante este filtro).
-      const isFramerDemo = typeof p.demoUrl === 'string' && p.demoUrl.includes('framer.app')
-      if (!isFramerDemo) return false
       const categoryMatch = activeCats.includes(p.category)
       const colorMatch = activeColors.length === 0 || activeColors.includes(p.color)
       const planMatch = activePlan === 'Todos' || p.plan === activePlan

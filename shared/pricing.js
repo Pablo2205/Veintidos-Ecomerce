@@ -9,10 +9,13 @@
 //
 // Si cambiás un precio, cambialo ACÁ (no en site.js) — services/create-preference
 // y el frontend leen de acá.
+// Standard y Premium subieron +30% (ago 2026, a pedido de Pablo) al pasar a
+// ser exclusivamente las demos armadas en Framer — Essential quedó igual,
+// ahora es el tier de las demos HTML hechas a mano.
 export const PLAN_PRICING = {
   Essential: { original: 44789, price: 34496, transfer: 31343 },
-  Standard: { original: 62462, price: 48048, transfer: 43663 },
-  Premium: { original: 70470, price: 54208, transfer: 49263 },
+  Standard: { original: 81201, price: 62462, transfer: 56762 },
+  Premium: { original: 91611, price: 70470, transfer: 64042 },
 }
 
 export const TRANSFER_DISCOUNT_PERCENT = 10 // etiqueta de marketing (el número exacto varía un poco por plan)

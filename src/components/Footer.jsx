@@ -53,12 +53,28 @@ export default function Footer() {
         <p className="font-sans text-label text-onSurfaceVariant opacity-60">
           © 2026 veintidós · Diseñado y desarrollado por CR Studio
         </p>
-        <Link
-          to="/terminos"
-          className="font-sans text-label text-onSurfaceVariant opacity-60 hover:opacity-100 hover:text-primary transition-opacity"
-        >
-          Términos y condiciones
-        </Link>
+        <div className="flex items-center gap-4 flex-wrap justify-center">
+          <Link
+            to="/terminos"
+            className="font-sans text-label text-onSurfaceVariant opacity-60 hover:opacity-100 hover:text-primary transition-opacity"
+          >
+            Términos y condiciones
+          </Link>
+          <span className="text-onSurfaceVariant opacity-30" aria-hidden="true">·</span>
+          <Link
+            to="/privacidad"
+            className="font-sans text-label text-onSurfaceVariant opacity-60 hover:opacity-100 hover:text-primary transition-opacity"
+          >
+            Privacidad
+          </Link>
+          <span className="text-onSurfaceVariant opacity-30" aria-hidden="true">·</span>
+          <Link
+            to="/propiedad-intelectual"
+            className="font-sans text-label text-onSurfaceVariant opacity-60 hover:opacity-100 hover:text-primary transition-opacity"
+          >
+            Propiedad intelectual
+          </Link>
+        </div>
       </div>
     </footer>
   )

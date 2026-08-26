@@ -1,0 +1,5 @@
+# /demos/ son invitaciones de muestra del catálogo (diseños que vendemos) —
+# no queremos que Google las indexe ni que aparezcan sueltas en resultados de
+# búsqueda por fuera del sitio. El resto del sitio sí se puede indexar.
+User-agent: *
+Disallow: /demos/

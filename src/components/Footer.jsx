@@ -36,8 +36,16 @@ export default function Footer() {
         </div>
         <div>
           <h5 className="font-sans text-label text-primary uppercase tracking-widest mb-6">Pagos</h5>
-          <div className="flex flex-wrap gap-3 text-sm font-sans text-onSurfaceVariant">
+          <div className="flex flex-wrap gap-3 text-sm font-sans text-onSurfaceVariant mb-5">
             <span className="px-3 py-1 border border-outlineVariant rounded">Transferencia bancaria</span>
+          </div>
+          {/* Logos de medios de pago (ver PaymentIcon.jsx para fuente/licencia
+              de cada uno). */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+            <PaymentIcon name="mercadopago" className="h-5 w-auto opacity-70" />
+            <PaymentIcon name="naranjax" className="h-4 w-auto opacity-70" />
+            <PaymentIcon name="visa" className="h-5 w-auto opacity-70" />
+            <PaymentIcon name="mastercard" className="h-5 w-auto opacity-70" />
           </div>
         </div>
       </div>
@@ -67,15 +75,6 @@ export default function Footer() {
             Propiedad intelectual
           </Link>
         </div>
-      </div>
-
-      {/* Logos de medios de pago — al final de todo, a pedido de Pablo (ver
-          PaymentIcon.jsx para fuente/licencia de cada uno). */}
-      <div className="wrap mt-8 pt-8 border-t border-outlineVariant/10 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-        <PaymentIcon name="mercadopago" className="h-6 w-auto opacity-70" />
-        <PaymentIcon name="naranjax" className="h-5 w-auto opacity-70" />
-        <PaymentIcon name="visa" className="h-6 w-auto opacity-70" />
-        <PaymentIcon name="mastercard" className="h-6 w-auto opacity-70" />
       </div>
     </footer>
   )

@@ -14,6 +14,8 @@ import CheckoutReturn from './pages/CheckoutReturn.jsx'
 import Personalize from './pages/Personalize.jsx'
 import Contact from './pages/Contact.jsx'
 import Terms from './pages/Terms.jsx'
+import Privacy from './pages/Privacy.jsx'
+import IntellectualProperty from './pages/IntellectualProperty.jsx'
 
 function ScrollManager() {
   const { pathname, hash } = useLocation()
@@ -51,6 +53,8 @@ export default function App() {
           <Route path="/completar-datos" element={<Personalize />} />
           <Route path="/contacto" element={<Contact />} />
           <Route path="/terminos" element={<Terms />} />
+          <Route path="/privacidad" element={<Privacy />} />
+          <Route path="/propiedad-intelectual" element={<IntellectualProperty />} />
         </Routes>
       </main>
       <Footer />

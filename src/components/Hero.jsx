@@ -94,8 +94,8 @@ export default function Hero() {
             </motion.h1>
 
             <motion.p variants={item} className="font-sans text-onSurfaceVariant text-base leading-relaxed max-w-md mb-10">
-              Bodas, XV años y baby showers. Creamos una web única para tu evento con cuenta
-              regresiva, confirmación y música — todo en un link.
+              Invitaciones digitales para bodas. Creamos una web única para tu evento con
+              cuenta regresiva, confirmación y música — todo en un link.
             </motion.p>
 
             <motion.div variants={item} className="flex flex-col sm:flex-row gap-4">
@@ -127,8 +127,8 @@ export default function Hero() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
               className="flex gap-6 md:gap-8 items-start"
             >
-              <IPhoneMock rotate="-6deg" image="/demos/boda/olivia-ralph/foto-hero.jpg" />
-              <IPhoneMock rotate="6deg" marginTop="mt-14" image="/demos/boda/lucia-juan/foto-hero.jpg" />
+              <IPhoneMock rotate="-6deg" image="/demos/boda/walter-rocio/foto-hero.png" />
+              <IPhoneMock rotate="6deg" marginTop="mt-14" image="/demos/boda/delfina-lautaro/foto-hero.jpg" />
             </motion.div>
           </motion.div>
         </div>

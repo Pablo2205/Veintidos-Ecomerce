@@ -12,10 +12,16 @@
 // Standard y Premium subieron +30% (ago 2026, a pedido de Pablo) al pasar a
 // ser exclusivamente las demos armadas en Framer — Essential quedó igual,
 // ahora es el tier de las demos HTML hechas a mano.
+//
+// Premium subió de nuevo (mismo día, más tarde): el salto Standard->Premium
+// había quedado en apenas +13% ($62.462 -> $70.470), muy chico para lo que
+// Premium suma de verdad (canciones, álbum, video, personalización,
+// prioridad). A pedido de Pablo se agrandó a +35% sobre Standard en vez de
+// dejarlo como "nudge" de pricing.
 export const PLAN_PRICING = {
   Essential: { original: 44789, price: 34496, transfer: 31343 },
   Standard: { original: 81201, price: 62462, transfer: 56762 },
-  Premium: { original: 91611, price: 70470, transfer: 64042 },
+  Premium: { original: 109621, price: 84324, transfer: 76614 },
 }
 
 export const TRANSFER_DISCOUNT_PERCENT = 10 // etiqueta de marketing (el número exacto varía un poco por plan)

@@ -29,15 +29,13 @@ export const BANK_DATA = {
 // en cada link en el panel de Mercado Pago tiene que coincidir con
 // `PLAN_PRICING[plan].price` de acá abajo.
 //
-// ⚠️ TODO (baja de precios agosto 2026, segunda ronda -30%): estos 3 links
-// todavía tienen configurado el monto VIEJO (de la baja anterior del -20%).
-// Hay que entrar al panel de Mercado Pago y regenerarlos (o editar el monto,
-// si el panel lo permite) para que coincidan con los `price` nuevos de
-// `PLAN_PRICING` de abajo — si no, alguien que pague por Mercado Pago va a
-// pagar de más respecto a lo que el sitio le muestra. Esto NO se puede
-// arreglar desde el código, es una acción manual en cuenta.mercadopago.com.
-// Montos nuevos a configurar: Essential $34.496 · Standard $48.048 ·
-// Premium $54.208.
+// ⚠️ TODO: estos 3 links tienen el monto de una ronda de precios anterior
+// grabado del lado de Mercado Pago (no del código). No es urgente porque hoy
+// el checkout usa la API real de Checkout Pro (`MERCADOPAGO_ACCESS_TOKEN` ya
+// configurado en Vercel) y estos links quedaron como fallback muerto — pero
+// conviene regenerarlos en cuenta.mercadopago.com para que la red de
+// seguridad esté al día. Montos actuales a configurar (ago 2026): Essential
+// $34.496 · Standard $62.462 · Premium $84.324.
 export const MP_LINKS = {
   Essential: 'https://mpago.la/1tCkbgb',
   Standard: 'https://mpago.la/2YhQAwA',
@@ -160,15 +158,10 @@ export const categories = [
     name: 'Cumple XV',
     desc: 'Diseños llenos de magia y brillo para una noche que se recuerda toda la vida.',
     image: '/images/XV.jpg',
-  },
-  {
-    slug: 'baby-shower',
-    name: 'Baby Shower',
-    desc: 'Tiernas y coloridas, para celebrar la llegada de un bebé con familia y amigos.',
-    // Foto real (Pexels, licencia libre para uso comercial, sin atribución
-    // requerida — mismo criterio que las fotos prop de los demos de esta
-    // categoría, ver CLAUDE.md sección de Baby Shower).
-    image: '/images/BABY-SHOWER.jpg',
+    // Pausado ago 2026 (a pedido de Pablo): se muestra la categoría pero
+    // grisada y sin CTAs, como adelanto de que se viene — sin catálogo
+    // disponible todavía. Ver `comingSoon` en Categories.jsx.
+    comingSoon: true,
   },
   {
     slug: 'otro',
@@ -242,7 +235,7 @@ export const plans = [
   {
     name: 'Premium',
     tagline: 'Nuestra propuesta más completa',
-    price: 70470,
+    price: 84324,
     items: [
       'Todo lo del plan Standard',
       'Sugerencia de canciones de los invitados',
@@ -313,19 +306,6 @@ export const faqs = [
 // `submitToSheets` en Personalize.jsx y GOOGLE_APPS_SCRIPT.md) — así se sabe
 // exactamente qué diseño compró cada cliente sin tener que abrir el link.
 export const products = [
-  {
-    id: 7,
-    code: 'BOD-VIP-01',
-    name: 'Invitación Boda — Pablo & Lucila',
-    category: 'boda',
-    plan: 'Essential',
-    price: 34496,
-    color: 'verde',
-    gradient: 'from-[#3C5F41] to-[#1F2E1C]',
-    badge: 'Demo real',
-    demoUrl: 'https://boda-rosy-alpha.vercel.app/?vip=true',
-    image: '/demos/boda/pablo-lucila/foto-hero.jpg',
-  },
   {
     id: 8,
     code: 'BOD-EDI-01',
@@ -492,21 +472,6 @@ export const products = [
     palette: ['#F6F8FA', '#7B93AB', '#4F657E'],
   },
   {
-    id: 25,
-    code: 'BSH-NAU-01',
-    name: 'Baby Shower — Santino',
-    category: 'baby-shower',
-    plan: 'Essential',
-    price: 34496,
-    color: 'azul',
-    gradient: 'from-[#2050E0] to-[#16294A]',
-    badge: 'Nuevo',
-    demoUrl: '/demos/baby-shower/santino-azul/',
-    image: '/demos/baby-shower/santino-azul/foto-hero.jpg',
-    style: 'Náutico azul — ancla y olas',
-    palette: ['#F5F7FA', '#2050E0', '#16294A'],
-  },
-  {
     id: 29,
     code: 'BOD-CAR-01',
     name: 'Invitación Boda — Renata & Emiliano',
@@ -542,7 +507,7 @@ export const products = [
     name: 'Invitación Boda — Ornella & Diego',
     category: 'boda',
     plan: 'Premium',
-    price: 70470,
+    price: 84324,
     color: 'verde',
     gradient: 'from-[#8C9B7C] to-[#404B37]',
     badge: 'Nuevo',
@@ -572,7 +537,7 @@ export const products = [
     name: 'Invitación Boda — Milagros & Tomás',
     category: 'boda',
     plan: 'Premium',
-    price: 70470,
+    price: 84324,
     color: 'marrón',
     gradient: 'from-[#B5613F] to-[#5C2A1A]',
     badge: 'Nuevo',
@@ -602,7 +567,7 @@ export const products = [
     name: 'Invitación Boda — Camila & Rodrigo',
     category: 'boda',
     plan: 'Premium',
-    price: 70470,
+    price: 84324,
     color: 'beige',
     gradient: 'from-[#D9C7A8] to-[#3A332A]',
     badge: 'Nuevo',
@@ -632,7 +597,7 @@ export const products = [
     name: 'Invitación Boda — Delfina & Lautaro',
     category: 'boda',
     plan: 'Premium',
-    price: 70470,
+    price: 84324,
     color: 'verde',
     gradient: 'from-[#2C3329] to-[#F7F6F2]',
     badge: 'Nuevo',

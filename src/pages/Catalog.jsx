@@ -1,5 +1,4 @@
 import { useMemo, useState, useEffect, useRef } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Reveal from '../components/Reveal.jsx'
 import Icon from '../components/Icon.jsx'
@@ -9,11 +8,11 @@ import ProductCover from '../components/ProductCover.jsx'
 import { products, productColors, originalPrice, waLink } from '../data/site.js'
 import { useCart } from '../context/CartContext.jsx'
 
-const categoryLabels = {
-  boda: 'Boda',
-  'xv-anos': 'Cumple XV',
-  'baby-shower': 'Baby Shower',
-}
+// Único tipo de evento con catálogo activo hoy (ago 2026, a pedido de
+// Pablo) — Cumple XV quedó "próximamente" (sin catálogo, ver Categories.jsx)
+// y Baby Shower se sacó del todo. Si se reactiva otro evento, sumar de
+// vuelta el filtro de "Tipo de evento" que había acá antes (ver git history).
+const ACTIVE_CATEGORY = 'boda'
 
 const planOptions = ['Todos', 'Essential', 'Standard', 'Premium']
 
@@ -24,28 +23,9 @@ const money = (n) => `$${n.toLocaleString('es-AR')}`
 
 // Grupos de filtro factorizados para no duplicar el JSX entre la versión
 // siempre visible de desktop y la colapsable de mobile (ver <Catalog>).
-function FilterGroups({ activeCats, toggleCat, activeColors, toggleColor, activePlan, setActivePlan }) {
+function FilterGroups({ activeColors, toggleColor, activePlan, setActivePlan }) {
   return (
     <>
-      <div>
-        <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Tipo de evento</h3>
-        <div className="space-y-2">
-          {Object.entries(categoryLabels).map(([slug, label]) => (
-            <label key={slug} className="flex items-center gap-3 cursor-pointer group">
-              <input
-                type="checkbox"
-                checked={activeCats.includes(slug)}
-                onChange={() => toggleCat(slug)}
-                className="rounded border-outline text-primary focus:ring-primary w-4 h-4"
-              />
-              <span className="font-sans text-onSurfaceVariant group-hover:text-primary transition-colors">
-                {label}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
       <div>
         <h3 className="font-sans text-label text-primary mb-4 uppercase tracking-widest">Color</h3>
         <div className="flex flex-wrap gap-3">
@@ -116,14 +96,6 @@ function FilterGroups({ activeCats, toggleCat, activeColors, toggleColor, active
 }
 
 export default function Catalog() {
-  const [searchParams] = useSearchParams()
-  // Si se llegó desde "Ver demos" de una categoría puntual en la Home
-  // (?evento=boda, ?evento=xv-anos o ?evento=baby-shower), arrancar el filtro
-  // solo con esa categoría marcada. Si no, mostrar todo como siempre.
-  const [activeCats, setActiveCats] = useState(() => {
-    const evento = searchParams.get('evento')
-    return evento && evento in categoryLabels ? [evento] : Object.keys(categoryLabels)
-  })
   const [activeColors, setActiveColors] = useState([])
   const [activePlan, setActivePlan] = useState('Todos')
   // Filtros escondidos por default en mobile/tablet — se expanden al tocar
@@ -138,28 +110,24 @@ export default function Catalog() {
 
   useEffect(() => () => clearTimeout(timeoutRef.current), [])
 
-  const toggleCat = (cat) =>
-    setActiveCats((prev) => (prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]))
-
   const toggleColor = (color) =>
     setActiveColors((prev) => (prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]))
 
-  // Filtro corregido: categoría y color son "cualquiera de los marcados"
-  // (si no hay ninguno marcado, no filtra por esa dimensión salvo categoría,
-  // que si se desmarcan todas no debería mostrar nada). El plan ahora sí
-  // filtra de verdad — antes el radio no hacía nada.
+  // Filtro corregido: color es "cualquiera de los marcados" (si no hay
+  // ninguno marcado, no filtra por esa dimensión). El plan sí filtra de
+  // verdad. Categoría ya no es un filtro elegible — el catálogo hoy solo
+  // muestra Boda (ver ACTIVE_CATEGORY arriba).
   const filtered = useMemo(() => {
     return products.filter((p) => {
-      const categoryMatch = activeCats.includes(p.category)
+      const categoryMatch = p.category === ACTIVE_CATEGORY
       const colorMatch = activeColors.length === 0 || activeColors.includes(p.color)
       const planMatch = activePlan === 'Todos' || p.plan === activePlan
       return categoryMatch && colorMatch && planMatch
     })
-  }, [activeCats, activeColors, activePlan])
+  }, [activeColors, activePlan])
 
   // Cuántos filtros no-default hay activos, para el badge del botón mobile.
-  const activeFilterCount =
-    activeColors.length + (activePlan !== 'Todos' ? 1 : 0) + (activeCats.length < 2 ? 1 : 0)
+  const activeFilterCount = activeColors.length + (activePlan !== 'Todos' ? 1 : 0)
 
   const handleAdd = (p) => {
     add(p)
@@ -220,8 +188,6 @@ export default function Catalog() {
               >
                 <div className="space-y-8 bg-creamSurface/50 rounded-xl border border-outlineVariant/30 p-6 mt-3">
                   <FilterGroups
-                    activeCats={activeCats}
-                    toggleCat={toggleCat}
                     activeColors={activeColors}
                     toggleColor={toggleColor}
                     activePlan={activePlan}
@@ -235,8 +201,6 @@ export default function Catalog() {
           {/* Desktop: siempre visible, como antes */}
           <div className="hidden lg:block space-y-8 lg:bg-creamSurface/50 lg:rounded-2xl lg:p-6 lg:border lg:border-outlineVariant/30">
             <FilterGroups
-              activeCats={activeCats}
-              toggleCat={toggleCat}
               activeColors={activeColors}
               toggleColor={toggleColor}
               activePlan={activePlan}

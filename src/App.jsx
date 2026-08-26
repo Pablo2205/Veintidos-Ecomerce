@@ -2,7 +2,6 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import Nav from './components/Nav.jsx'
 import Footer from './components/Footer.jsx'
-import WaFab from './components/WaFab.jsx'
 import PromoBar from './components/PromoBar.jsx'
 import ScrollProgress from './components/ScrollProgress.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
@@ -58,7 +57,6 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
-      <WaFab />
     </ErrorBoundary>
   )
 }

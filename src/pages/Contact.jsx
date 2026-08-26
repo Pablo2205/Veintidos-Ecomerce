@@ -12,6 +12,22 @@ import {
   waLink,
 } from '../data/site.js'
 
+// TikTok y Facebook todavía no tienen cuenta real de veintidós (ver
+// CLAUDE.md) — se muestran igual acá como "viene pronto", pero como ícono
+// inerte (no `<a>`, no redirige a ningún lado) en vez de sacarlos del todo.
+// Instagram y WhatsApp sí son reales y funcionan como link normal.
+function InertSocialIcon({ name, label }) {
+  return (
+    <span
+      aria-label={`${label} — próximamente`}
+      title={`${label} — próximamente`}
+      className="w-11 h-11 rounded-full bg-secondaryContainer/20 flex items-center justify-center text-onSurfaceVariant/40 cursor-default"
+    >
+      <SocialIcon name={name} className="w-5 h-5" />
+    </span>
+  )
+}
+
 const initialForm = { name: '', email: '', phone: '', message: '' }
 
 export default function Contact() {
@@ -54,6 +70,17 @@ Mensaje: ${form.message || '-'}`
           >
             <SocialIcon name="instagram" className="w-5 h-5" />
           </a>
+          <a
+            href={waLink('Hola! Te escribo desde la web de veintidós.')}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+            className="w-11 h-11 rounded-full bg-whatsapp/10 flex items-center justify-center text-whatsapp hover:bg-whatsapp hover:text-white transition-colors"
+          >
+            <WhatsAppIcon className="w-5 h-5" />
+          </a>
+          <InertSocialIcon name="facebook" label="Facebook" />
+          <InertSocialIcon name="tiktok" label="TikTok" />
         </div>
       </Reveal>
 

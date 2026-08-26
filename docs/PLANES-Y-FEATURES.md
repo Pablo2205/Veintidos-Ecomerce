@@ -22,7 +22,13 @@ para copiarlas directo.
 > coincida con lo que las demos existentes ya muestran. Standard y Premium pasaron a ser
 > exclusivamente las demos armadas en Framer; lo que las distingue entre sí ya no es texto
 > de HTML (Framer no se arma con este flujo) sino el trabajo de diseño/animación en Framer
-> mismo (Standard) más las features de Premium de abajo (panel en tiempo real, video, etc.)
+> mismo (Standard) más las features de Premium de abajo (sugerencia de canciones, video, etc.)
+>
+> **Sacado ago 2026** (a pedido de Pablo): "Panel de confirmaciones en tiempo real" salió
+> de la oferta de Premium — era la única feature que de verdad necesitaba backend propio
+> (no algo que Framer resuelva con un componente), así que no valía la pena sostenerla
+> como promesa de venta. Si en algún momento se retoma, es un desarrollo aparte a
+> presupuestar, no algo que ya esté incluido en ningún plan.
 
 ## 1. Essential — demos HTML hechas a mano
 
@@ -52,7 +58,6 @@ repo. Ver conversación pendiente sobre marca de agua/redirect de Framer (`DemoP
 
 | Incluye | Cómo se implementa |
 |---|---|
-| Panel de confirmaciones en tiempo real | ⚠️ **Sin demo de referencia todavía — hay que construirlo por pedido.** Reusar el mismo patrón que ya usamos para pedidos: un `doPost` de Apps Script que guarda cada confirmación en una fila de Sheets, y una página simple (puede ser otro HTML standalone, con contraseña básica o URL no listada) que lee esa hoja vía otro endpoint del mismo script y muestra el conteo. No es trivial — presupuestar tiempo extra la primera vez que se venda. |
 | Sugerencia de canciones de los invitados | Botón/link a una playlist colaborativa real de Spotify, o a un Google Form. **Ojo:** en `lucia-juan/index.html:279` el botón "Agregar canción" hoy apunta a `href="#"` (placeholder) — para el cliente real hay que reemplazarlo por el link real antes de entregar. |
 | Álbum compartido con QR para las mesas | Mismo mecanismo de QR que en Standard, pero apuntando a un destino de carga (carpeta de Google Drive/Fotos compartida con permiso de "cualquiera con el link puede subir", o un form simple) en vez de a la invitación. |
 | Sección de video | `<video>` con el archivo, o `<iframe>` embebiendo YouTube/Vimeo — la fuente sale del campo `videoLink` que se carga en el formulario post-compra (`Personalize.jsx`). |
@@ -90,6 +95,5 @@ un cliente real**:
 
 1. El botón de RSVP en `juan-ana` no manda nada a ningún lado (solo animación).
 2. El botón "Agregar canción" en `lucia-juan` apunta a `href="#"`.
-3. "Música de fondo" (Standard) y "Panel de confirmaciones en tiempo real" (Premium) no
-   tienen ninguna demo que los implemente todavía — la primera vez que se vendan, van a
-   llevar más tiempo de armado de lo habitual.
+3. "Música de fondo" (Standard) no tiene ninguna demo que la implemente todavía — la
+   primera vez que se venda, va a llevar más tiempo de armado de lo habitual.

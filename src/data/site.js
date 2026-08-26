@@ -192,7 +192,6 @@ export const features = [
   ['redeem', 'Sección de regalos', 'Alias y CBU con botón de copiar, o tu lista de deseos.'],
   ['event', 'Agendar la fecha', 'El invitado suma el evento a su calendario con un toque.'],
   ['queue_music', 'Sugerencia de canciones', 'Tus invitados proponen los temas que no pueden faltar.'],
-  ['bar_chart', 'Panel de confirmaciones', 'Mirá quién confirmó en tiempo real, desde tu celular.'],
   ['collections', 'Álbum compartido', 'Un QR en las mesas para que todos suban sus fotos de la fiesta.'],
   ['videocam', 'Sección de video', 'Sumá un video especial dentro de la invitación.'],
 ]
@@ -246,7 +245,6 @@ export const plans = [
     price: 70470,
     items: [
       'Todo lo del plan Standard',
-      'Panel de confirmaciones en tiempo real',
       'Sugerencia de canciones de los invitados',
       'Álbum compartido con QR para las mesas',
       'Sección de video',
@@ -280,7 +278,7 @@ export const faqs = [
   },
   {
     q: '¿Qué diferencia hay entre los planes?',
-    a: 'Essential: lo esencial — cuenta regresiva, fecha, lugar, mapa, confirmación por WhatsApp y sección de regalos. Standard: suma música, galería de fotos, dress code, tips para invitados, agendar la fecha y QR para imprimir. Premium: agrega panel de confirmaciones en tiempo real, sugerencia de canciones, álbum compartido, video y personalización avanzada.',
+    a: 'Essential: lo esencial — cuenta regresiva, fecha, lugar, mapa, confirmación por WhatsApp y sección de regalos. Standard: suma música, galería de fotos, dress code, tips para invitados, agendar la fecha y QR para imprimir. Premium: agrega sugerencia de canciones, álbum compartido, video y personalización avanzada.',
   },
   {
     q: '¿Puedo personalizar el diseño?',
@@ -288,7 +286,7 @@ export const faqs = [
   },
   {
     q: '¿Cómo confirman asistencia mis invitados?',
-    a: 'Depende del plan: por WhatsApp con un mensaje prearmado (Essential y Standard), o directamente desde la invitación con un panel privado donde ves los confirmados en tiempo real (Premium).',
+    a: 'Por WhatsApp, con un mensaje prearmado que se envía directamente desde la invitación, en todos los planes.',
   },
   {
     q: '¿Cuánto tiempo queda online?',

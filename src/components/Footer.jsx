@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import SocialIcon from './SocialIcon.jsx'
+import WhatsAppIcon from './WhatsAppIcon.jsx'
+import InertSocialIcon from './InertSocialIcon.jsx'
 import PaymentIcon from './PaymentIcon.jsx'
 import logoWordmark from '../assets/brand/veintidos-logo-on-light.png'
-import { CONTACT_EMAIL, CONTACT_LOCATION, INSTAGRAM_URL } from '../data/site.js'
+import { CONTACT_EMAIL, CONTACT_LOCATION, INSTAGRAM_URL, waLink } from '../data/site.js'
 
 export default function Footer() {
   return (
@@ -32,12 +34,31 @@ export default function Footer() {
             >
               <SocialIcon name="instagram" className="w-4 h-4" />
             </a>
+            <a
+              href={waLink('Hola! Quiero información sobre las invitaciones digitales.')}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+              className="w-9 h-9 rounded-full bg-whatsapp/10 flex items-center justify-center text-whatsapp hover:bg-whatsapp hover:text-white transition-colors"
+            >
+              <WhatsAppIcon className="w-4 h-4" />
+            </a>
+            <InertSocialIcon name="facebook" label="Facebook" size="w-9 h-9" iconSize="w-4 h-4" />
+            <InertSocialIcon name="tiktok" label="TikTok" size="w-9 h-9" iconSize="w-4 h-4" />
           </div>
         </div>
         <div>
           <h5 className="font-sans text-label text-primary uppercase tracking-widest mb-6">Pagos</h5>
-          <div className="flex flex-wrap gap-3 text-sm font-sans text-onSurfaceVariant">
+          <div className="flex flex-wrap gap-3 text-sm font-sans text-onSurfaceVariant mb-5">
             <span className="px-3 py-1 border border-outlineVariant rounded">Transferencia bancaria</span>
+          </div>
+          {/* Logos de medios de pago (ver PaymentIcon.jsx para fuente/licencia
+              de cada uno). */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+            <PaymentIcon name="mercadopago" className="h-5 w-auto opacity-70" />
+            <PaymentIcon name="naranjax" className="h-4 w-auto opacity-70" />
+            <PaymentIcon name="visa" className="h-5 w-auto opacity-70" />
+            <PaymentIcon name="mastercard" className="h-5 w-auto opacity-70" />
           </div>
         </div>
       </div>
@@ -67,15 +88,6 @@ export default function Footer() {
             Propiedad intelectual
           </Link>
         </div>
-      </div>
-
-      {/* Logos de medios de pago — al final de todo, a pedido de Pablo (ver
-          PaymentIcon.jsx para fuente/licencia de cada uno). */}
-      <div className="wrap mt-8 pt-8 border-t border-outlineVariant/10 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-        <PaymentIcon name="mercadopago" className="h-6 w-auto opacity-70" />
-        <PaymentIcon name="naranjax" className="h-5 w-auto opacity-70" />
-        <PaymentIcon name="visa" className="h-6 w-auto opacity-70" />
-        <PaymentIcon name="mastercard" className="h-6 w-auto opacity-70" />
       </div>
     </footer>
   )

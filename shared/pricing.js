@@ -18,10 +18,16 @@
 // Premium suma de verdad (canciones, álbum, video, personalización,
 // prioridad). A pedido de Pablo se agrandó a +35% sobre Standard en vez de
 // dejarlo como "nudge" de pricing.
+//
+// Aumento general +5% (26 ago 2026, a pedido de Pablo): se multiplicaron los
+// tres campos (original / price / transfer) de cada plan por 1,05 y se
+// redondeó — así todos los ratios de marketing (tachado, % transferencia)
+// quedan iguales. Base previa: Essential 44789/34496/31343 ·
+// Standard 81201/62462/56762 · Premium 109621/84324/76614.
 export const PLAN_PRICING = {
-  Essential: { original: 44789, price: 34496, transfer: 31343 },
-  Standard: { original: 81201, price: 62462, transfer: 56762 },
-  Premium: { original: 109621, price: 84324, transfer: 76614 },
+  Essential: { original: 47028, price: 36221, transfer: 32910 },
+  Standard: { original: 85261, price: 65585, transfer: 59600 },
+  Premium: { original: 115102, price: 88540, transfer: 80445 },
 }
 
 export const TRANSFER_DISCOUNT_PERCENT = 10 // etiqueta de marketing (el número exacto varía un poco por plan)

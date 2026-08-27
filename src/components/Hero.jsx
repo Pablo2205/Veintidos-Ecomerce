@@ -24,16 +24,18 @@ const word = {
 }
 
 // Portadas reales que pasan por detrás del celular central. El celular va
-// mostrando la que está pasando (mismo orden). Capturas en
-// `public/hero-frames/` (~560px de ancho) — regenerar con el mismo recorte.
+// mostrando la que está pasando (mismo orden). Solo demos Standard y Premium
+// (las armadas en Framer) — a pedido de Pablo. Capturas recortadas a 9:19.5
+// en `public/hero-frames/` — regenerar con el mismo recorte.
 const frames = [
-  { key: 'lucia-juan', src: '/hero-frames/lucia-juan.jpg' },
   { key: 'walter-rocio', src: '/hero-frames/walter-rocio.jpg' },
-  { key: 'olivia-ralph', src: '/hero-frames/olivia-ralph.jpg' },
   { key: 'julieta-mateo', src: '/hero-frames/julieta-mateo.jpg' },
-  { key: 'lorena-gustavo', src: '/hero-frames/lorena-gustavo.jpg' },
-  { key: 'ornella-diego', src: '/hero-frames/ornella-diego.jpg' },
+  { key: 'josefina-ignacio', src: '/hero-frames/josefina-ignacio.jpg' },
+  { key: 'camila-rodrigo', src: '/hero-frames/camila-rodrigo.jpg' },
   { key: 'valentina-franco', src: '/hero-frames/valentina-franco.jpg' },
+  { key: 'ornella-diego', src: '/hero-frames/ornella-diego.jpg' },
+  { key: 'agustina-bruno', src: '/hero-frames/agustina-bruno.jpg' },
+  { key: 'delfina-lautaro', src: '/hero-frames/delfina-lautaro.jpg' },
 ]
 
 // El celular cambia de invitación cada STEP ms; la cinta de atrás tarda
@@ -191,12 +193,14 @@ function PhoneStage({ reduce }) {
   const loopSeconds = (STEP / 1000) * frames.length
 
   return (
-    <div ref={stageRef} className="relative flex items-center justify-center min-h-[440px] sm:min-h-[520px]">
-      {/* Cinta de invitaciones que pasa por detrás */}
-      <div className="absolute inset-0 flex items-center overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_14%,black_86%,transparent)]">
+    <div ref={stageRef} className="relative flex items-center justify-center min-h-[460px] sm:min-h-[560px]">
+      {/* Cinta de invitaciones que pasa por detrás — cada tarjeta tiene el
+          mismo tamaño y proporción que el celular, así "lo completa" cuando
+          pasa por el centro. */}
+      <div className="absolute inset-0 flex items-center overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
         <motion.div
           ref={stripRef}
-          className="flex gap-5 sm:gap-7 will-change-transform"
+          className="flex gap-6 sm:gap-8 will-change-transform"
           animate={reduce ? undefined : { x: ['0%', '-33.3333%'] }}
           transition={{ duration: loopSeconds, ease: 'linear', repeat: Infinity }}
         >
@@ -204,7 +208,7 @@ function PhoneStage({ reduce }) {
             <div
               key={f.key + i}
               data-frame={i % frames.length}
-              className="relative w-[128px] sm:w-[150px] aspect-[9/16] flex-shrink-0 rounded-2xl overflow-hidden shadow-lg shadow-primary/10 opacity-50"
+              className="relative w-[184px] sm:w-[224px] aspect-[9/19.5] flex-shrink-0 rounded-[2.2rem] overflow-hidden shadow-xl shadow-primary/10 opacity-40"
             >
               <img
                 src={f.src}

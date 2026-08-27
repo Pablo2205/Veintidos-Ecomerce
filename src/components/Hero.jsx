@@ -78,7 +78,7 @@ export default function Hero() {
             <motion.h1
               variants={{ hidden: {}, show: { transition: { staggerChildren: 0.045, delayChildren: 0.1 } } }}
               className="font-serif italic font-normal text-primary leading-[0.98] tracking-tight mb-6"
-              style={{ fontSize: 'clamp(3.25rem, 8.5vw, 7.5rem)' }}
+              style={{ fontSize: 'clamp(2.5rem, 5.2vw, 4.75rem)' }}
             >
               {headlineLines.map((line, li) => (
                 <span key={li} className={`block overflow-hidden ${line.accent ? 'text-secondary' : ''}`}>

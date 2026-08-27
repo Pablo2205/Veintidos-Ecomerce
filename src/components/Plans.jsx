@@ -66,60 +66,103 @@ export default function Plans() {
 }
 
 function PlanRow({ plan, phoneRight }) {
+  // El verde de la marca vive acá: Standard sobre verde oscuro (`bg-primary`),
+  // Premium sobre el verde un tono más claro (`bg-primaryContainer`), Essential
+  // en claro. Mismo criterio de color que tenían las tarjetas viejas.
+  const onDark = plan.variant === 'highlight' || plan.variant === 'dark'
+  const panel =
+    plan.variant === 'highlight'
+      ? 'bg-primary'
+      : plan.variant === 'dark'
+        ? 'bg-primaryContainer'
+        : 'bg-white border border-outlineVariant'
+
   return (
     <Reveal>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-        {/* Celular — siempre arriba en mobile; alterna lado en desktop */}
-        <div className={`flex justify-center ${phoneRight ? 'lg:order-2' : 'lg:order-1'}`}>
+      <div className={`rounded-[2rem] ${panel} px-6 py-10 sm:px-10 sm:py-12`}>
+        <div
+          className={`flex flex-col items-center gap-9 lg:gap-16 lg:justify-center ${
+            phoneRight ? 'lg:flex-row-reverse' : 'lg:flex-row'
+          }`}
+        >
           <PlanPhone image={planPhone[plan.name]} name={plan.name} tilt={phoneRight ? 4 : -4} />
-        </div>
 
-        {/* Texto — detalle + precio */}
-        <div className={`${phoneRight ? 'lg:order-1' : 'lg:order-2'}`}>
-          <div className="flex items-center gap-3 mb-3">
-            <span className="font-mono text-label text-secondary uppercase tracking-widest">Plan</span>
-            {plan.highlight && (
-              <span className="bg-promoGold text-primary px-3 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase font-sans">
-                {plan.highlight}
-              </span>
-            )}
-          </div>
-
-          <h3
-            className="font-serif italic font-normal text-primary leading-tight mb-2"
-            style={{ fontSize: 'clamp(2rem, 3.6vw, 2.9rem)' }}
-          >
-            {plan.name}
-          </h3>
-          <p className="font-sans text-onSurfaceVariant text-base mb-6">{plan.tagline}</p>
-
-          <div className="mb-7">
-            <PriceTag price={plan.price} size="text-4xl sm:text-5xl" />
-          </div>
-
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 mb-8">
-            {plan.items.map((it, idx) => (
-              <li
-                key={it}
-                className={`flex items-start gap-2.5 font-sans text-sm ${
-                  idx === 0 && it.startsWith('Todo lo') ? 'text-secondary font-semibold sm:col-span-2' : 'text-onSurfaceVariant'
+          {/* Texto — pegado al celular */}
+          <div className="w-full max-w-lg">
+            <div className="flex items-center gap-3 mb-3">
+              <span
+                className={`font-mono text-label uppercase tracking-widest ${
+                  onDark ? 'text-promoGold/80' : 'text-secondary'
                 }`}
               >
-                <Icon
-                  name={idx === 0 && it.startsWith('Todo lo') ? 'add' : 'check'}
-                  className="scale-[0.7] flex-shrink-0 text-secondary mt-0.5"
-                />
-                <span>{it}</span>
-              </li>
-            ))}
-          </ul>
+                Plan
+              </span>
+              {plan.highlight && (
+                <span className="bg-promoGold text-primary px-3 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase font-sans">
+                  {plan.highlight}
+                </span>
+              )}
+            </div>
 
-          <Link
-            to="/catalogo"
-            className="btn-outline inline-flex px-8 py-3.5 text-center"
-          >
-            Ver invitaciones {plan.name}
-          </Link>
+            <h3
+              className={`font-serif italic font-normal leading-tight mb-2 ${
+                onDark ? 'text-primaryFixed' : 'text-primary'
+              }`}
+              style={{ fontSize: 'clamp(2rem, 3.6vw, 2.9rem)' }}
+            >
+              {plan.name}
+            </h3>
+            <p className={`font-sans text-base mb-6 ${onDark ? 'text-primaryFixed/60' : 'text-onSurfaceVariant'}`}>
+              {plan.tagline}
+            </p>
+
+            <div className="mb-7">
+              <PriceTag price={plan.price} dark={onDark} size="text-4xl sm:text-5xl" />
+            </div>
+
+            <ul
+              className={`mb-8 ${
+                plan.items.length > 6
+                  ? 'grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3'
+                  : 'space-y-3'
+              }`}
+            >
+              {plan.items.map((it, idx) => {
+                const isCumulative = idx === 0 && it.startsWith('Todo lo')
+                return (
+                  <li
+                    key={it}
+                    className={`flex items-start gap-2.5 font-sans text-sm ${
+                      isCumulative
+                        ? onDark
+                          ? 'text-promoGold font-semibold'
+                          : 'text-primary font-semibold'
+                        : onDark
+                          ? 'text-primaryFixed/80'
+                          : 'text-onSurfaceVariant'
+                    }`}
+                  >
+                    <Icon
+                      name={isCumulative ? 'add' : 'check'}
+                      className={`scale-[0.7] flex-shrink-0 mt-0.5 ${onDark ? 'text-promoGold/70' : 'text-secondary'}`}
+                    />
+                    <span>{it}</span>
+                  </li>
+                )
+              })}
+            </ul>
+
+            <Link
+              to="/catalogo"
+              className={`inline-flex px-8 py-3.5 rounded-full font-sans text-sm font-semibold transition-colors ${
+                onDark
+                  ? 'bg-primaryFixed text-primary hover:bg-white'
+                  : 'btn-outline'
+              }`}
+            >
+              Ver invitaciones {plan.name}
+            </Link>
+          </div>
         </div>
       </div>
     </Reveal>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { waLink } from '../data/site.js'
@@ -24,13 +24,12 @@ const word = {
 }
 
 // Las tres invitaciones que se muestran en el abanico de celulares del Hero.
-// Capturas full-page en `public/hero-scroll/` (~440px de ancho). El del medio
-// va al frente; los de los costados quedan rotados detrás. Duraciones
-// desincronizadas para que no laten juntos.
+// Capturas de la portada de cada demo en `public/hero-scroll/`. El del medio
+// va al frente; los de los costados quedan rotados detrás.
 const fanPhones = [
-  { image: '/hero-scroll/walter-rocio.jpg', duration: 46, side: 'left' },
-  { image: '/hero-scroll/delfina-lautaro.jpg', duration: 40, side: 'center' },
-  { image: '/hero-scroll/julieta-mateo.jpg', duration: 52, side: 'right' },
+  { image: '/hero-scroll/walter-rocio.jpg', side: 'left' },
+  { image: '/hero-scroll/delfina-lautaro.jpg', side: 'center' },
+  { image: '/hero-scroll/julieta-mateo.jpg', side: 'right' },
 ]
 
 export default function Hero() {
@@ -119,8 +118,8 @@ export default function Hero() {
         </motion.div>
 
         {/* Abanico de celulares — el del medio al frente, los de los costados
-            rotados detrás. Cada pantalla recorre una invitación real. El
-            abanico baja hasta cruzar el borde de la banda verde de abajo. */}
+            rotados detrás. Cada pantalla muestra la portada de una invitación
+            real. El abanico baja hasta cruzar el borde de la banda verde. */}
         <motion.div
           className="relative z-10 mt-10 lg:mt-12 -mb-16 lg:-mb-24 flex items-end justify-center"
           style={reduce ? undefined : { y: phonesY, scale: phonesScale }}
@@ -135,15 +134,6 @@ export default function Hero() {
               <PhoneMock key={p.image} {...p} />
             ))}
           </motion.div>
-
-          {/* Chips flotantes, guiño a la propuesta de valor — se apoyan sobre
-              las esquinas superiores del abanico, tipo las stats del ref. */}
-          <FloatingChip className="-top-3 -left-4 sm:-left-10 lg:-left-16" icon="check_circle">
-            Confirmación automática
-          </FloatingChip>
-          <FloatingChip className="top-12 -right-4 sm:-right-10 lg:-right-16" icon="bolt">
-            Entrega en 3–5 días
-          </FloatingChip>
         </motion.div>
       </div>
 
@@ -178,7 +168,8 @@ export default function Hero() {
 }
 
 // Un celular del abanico. `side` decide rotación, solapamiento y profundidad.
-function PhoneMock({ image, duration, side }) {
+// La pantalla muestra la portada de la demo, fija (`object-top`).
+function PhoneMock({ image, side }) {
   const isCenter = side === 'center'
   const layout =
     side === 'left'
@@ -197,89 +188,16 @@ function PhoneMock({ image, duration, side }) {
       <div className="absolute inset-0 rounded-[2.4rem] bg-gradient-to-br from-[#e7e9ec] via-[#c9cdd3] to-[#9ea3aa] shadow-2xl" />
       <div className="absolute inset-[3px] rounded-[2.25rem] bg-black" />
       <div className="absolute inset-[7px] rounded-[2rem] overflow-hidden bg-black">
-        <PanningShot image={image} duration={duration} />
+        <img
+          src={image}
+          alt="Portada de una invitación de boda"
+          draggable={false}
+          className="absolute inset-0 h-full w-full object-cover object-top select-none pointer-events-none"
+        />
         <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[34%] h-[16px] bg-black rounded-full z-10" />
       </div>
       <div className="absolute -left-[2px] top-[30%] w-[3px] h-[38px] bg-[#9ea3aa] rounded-l" />
       <div className="absolute -right-[2px] top-[26%] w-[3px] h-[46px] bg-[#9ea3aa] rounded-r" />
-    </div>
-  )
-}
-
-function FloatingChip({ children, className = '', icon }) {
-  const reduce = useReducedMotion()
-  return (
-    <motion.div
-      aria-hidden="true"
-      initial={reduce ? false : { opacity: 0, scale: 0.9 }}
-      animate={
-        reduce
-          ? { opacity: 1 }
-          : { opacity: 1, scale: 1, y: [0, -6, 0] }
-      }
-      transition={
-        reduce
-          ? { duration: 0.4, delay: 0.6 }
-          : {
-              opacity: { duration: 0.5, delay: 0.6 },
-              scale: { duration: 0.5, delay: 0.6 },
-              y: { duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.6 },
-            }
-      }
-      className={`absolute z-30 hidden sm:flex items-center gap-2 whitespace-nowrap rounded-full bg-white/90 backdrop-blur-sm border border-outlineVariant/40 shadow-lg px-3.5 py-2 font-sans text-xs text-primary ${className}`}
-    >
-      <span className="icon !text-[16px] text-secondary">{icon}</span>
-      {children}
-    </motion.div>
-  )
-}
-
-// La pantalla del celular muestra una captura larga (full-page) de la demo
-// real recorriéndose sola en vertical, ida y vuelta, en loop lento — da la
-// sensación de estar viendo la invitación en vivo sin cargar un iframe en el
-// hero. Las capturas viven en `public/hero-scroll/` (~440px de ancho, ver
-// memoria para regenerarlas). Respeta `prefers-reduced-motion`: si está
-// activo, queda fija arriba de todo.
-function PanningShot({ image, duration }) {
-  const boxRef = useRef(null)
-  const imgRef = useRef(null)
-  const reduce = useReducedMotion()
-  const [travel, setTravel] = useState(0)
-
-  const measure = useCallback(() => {
-    const box = boxRef.current
-    const img = imgRef.current
-    if (!box || !img || !img.complete || !img.naturalHeight) return
-    const t = img.offsetHeight - box.clientHeight
-    setTravel(t > 0 ? Math.round(t) : 0)
-  }, [])
-
-  useEffect(() => {
-    measure()
-    const box = boxRef.current
-    if (!box) return
-    const ro = new ResizeObserver(measure)
-    ro.observe(box)
-    return () => ro.disconnect()
-  }, [measure])
-
-  return (
-    <div ref={boxRef} className="absolute inset-0 overflow-hidden bg-white">
-      <motion.img
-        ref={imgRef}
-        src={image}
-        alt="Recorrido por una invitación de boda"
-        onLoad={measure}
-        draggable={false}
-        className="w-full h-auto block select-none pointer-events-none"
-        animate={reduce || !travel ? undefined : { y: [0, -travel, -travel, 0, 0] }}
-        transition={{
-          duration,
-          times: [0, 0.45, 0.5, 0.95, 1],
-          ease: 'easeInOut',
-          repeat: Infinity,
-        }}
-      />
     </div>
   )
 }

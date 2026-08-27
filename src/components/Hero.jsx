@@ -1,5 +1,5 @@
-import { useRef } from 'react'
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
+import { useRef, useState } from 'react'
+import { AnimatePresence, motion, useAnimationFrame, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { waLink } from '../data/site.js'
 import WhatsAppButton from './WhatsAppButton.jsx'
@@ -23,38 +23,41 @@ const word = {
   show: { opacity: 1, y: '0%', transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 }
 
-// Las tres invitaciones que se muestran en el abanico de celulares del Hero.
-// Capturas de la portada de cada demo en `public/hero-scroll/`. El del medio
-// va al frente; los de los costados quedan rotados detrás.
-const fanPhones = [
-  { image: '/hero-scroll/walter-rocio.jpg', side: 'left' },
-  { image: '/hero-scroll/delfina-lautaro.jpg', side: 'center' },
-  { image: '/hero-scroll/julieta-mateo.jpg', side: 'right' },
+// Portadas reales que pasan por detrás del celular central. El celular va
+// mostrando la que está pasando (mismo orden). Solo demos Standard y Premium
+// (las armadas en Framer) — a pedido de Pablo. Capturas recortadas a 9:19.5
+// en `public/hero-frames/` — regenerar con el mismo recorte.
+const frames = [
+  { key: 'walter-rocio', src: '/hero-frames/walter-rocio.jpg' },
+  { key: 'julieta-mateo', src: '/hero-frames/julieta-mateo.jpg' },
+  { key: 'josefina-ignacio', src: '/hero-frames/josefina-ignacio.jpg' },
+  { key: 'camila-rodrigo', src: '/hero-frames/camila-rodrigo.jpg' },
+  { key: 'valentina-franco', src: '/hero-frames/valentina-franco.jpg' },
+  { key: 'ornella-diego', src: '/hero-frames/ornella-diego.jpg' },
+  { key: 'agustina-bruno', src: '/hero-frames/agustina-bruno.jpg' },
+  { key: 'delfina-lautaro', src: '/hero-frames/delfina-lautaro.jpg' },
 ]
+
+// El celular cambia de invitación cada STEP ms; la cinta de atrás tarda
+// `STEP * frames.length` en dar una vuelta, así una tarjeta cruza el centro
+// justo cuando el celular la muestra.
+const STEP = 3600
 
 export default function Hero() {
   const reduce = useReducedMotion()
   const sectionRef = useRef(null)
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] })
 
-  // Parallax real ligado al scroll: el "22" de fondo baja más lento que el
-  // contenido (sensación de profundidad), el abanico de celulares sube y se
-  // achica un poco al salir del viewport. Framer Motion ya es dependencia del
-  // proyecto — no se suma ninguna librería nueva para esto.
   const numberY = useTransform(scrollYProgress, [0, 1], [0, 220])
   const numberRotate = useTransform(scrollYProgress, [0, 1], [0, 6])
-  const phonesY = useTransform(scrollYProgress, [0, 1], [0, -70])
-  const phonesScale = useTransform(scrollYProgress, [0, 1], [1, 0.94])
+  const stageY = useTransform(scrollYProgress, [0, 1], [0, -70])
+  const stageScale = useTransform(scrollYProgress, [0, 1], [1, 0.94])
 
   return (
     <section ref={sectionRef} className="relative flex flex-col bg-background">
       <div className="relative flex flex-col items-center pt-14 lg:pt-16">
-        {/* Capa de fondo (recortada) — la marca de agua "22", el halo y la
-            grilla punteada. Aparte del contenido para que los chips flotantes
-            del abanico puedan salirse sin quedar cortados. */}
+        {/* Capa de fondo (recortada) — marca de agua "22", halo y grilla. */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* "22" — firma visual de la marca, con parallax propio. Se repite
-              (más chico) en CtaFinal y Footer. */}
           <motion.span
             aria-hidden="true"
             style={{ fontSize: '40vw', ...(reduce ? {} : { y: numberY, rotate: numberRotate }) }}
@@ -62,15 +65,13 @@ export default function Hero() {
           >
             22
           </motion.span>
-          {/* Halo suave detrás del abanico */}
-          <div className="absolute left-1/2 top-[48%] -translate-x-1/2 -translate-y-1/2 w-[78vw] max-w-[720px] aspect-square rounded-full bg-secondaryContainer/25 blur-3xl" />
-          {/* Grilla punteada, muy sutil, centrada bajo el título */}
-          <div className="absolute inset-x-0 top-0 h-[62%] dot-grid text-outlineVariant/40 [mask-image:radial-gradient(ellipse_at_center,black,transparent_72%)]" />
+          <div className="absolute left-1/2 top-[52%] -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-[760px] aspect-square rounded-full bg-secondaryContainer/25 blur-3xl" />
+          <div className="absolute inset-x-0 top-0 h-[58%] dot-grid text-outlineVariant/40 [mask-image:radial-gradient(ellipse_at_center,black,transparent_72%)]" />
         </div>
 
         {/* Texto centrado */}
         <motion.div
-          className="wrap relative z-10 flex flex-col items-center text-center"
+          className="wrap relative z-20 flex flex-col items-center text-center"
           initial={reduce ? false : 'hidden'}
           animate="show"
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
@@ -117,28 +118,18 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Abanico de celulares — el del medio al frente, los de los costados
-            rotados detrás. Cada pantalla muestra la portada de una invitación
-            real. El abanico baja hasta cruzar el borde de la banda verde. */}
+        {/* Escenario: un celular centrado con las invitaciones pasando por
+            detrás. El celular va mostrando la que cruza el centro. */}
         <motion.div
-          className="relative z-10 mt-10 lg:mt-12 -mb-16 lg:-mb-24 flex items-end justify-center"
-          style={reduce ? undefined : { y: phonesY, scale: phonesScale }}
+          className="relative z-10 mt-8 lg:mt-10 -mb-16 lg:-mb-24 w-full"
+          style={reduce ? undefined : { y: stageY, scale: stageScale }}
         >
-          <motion.div
-            initial={reduce ? false : { opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-            className="flex items-end justify-center"
-          >
-            {fanPhones.map((p) => (
-              <PhoneMock key={p.image} {...p} />
-            ))}
-          </motion.div>
+          <PhoneStage reduce={reduce} />
         </motion.div>
       </div>
 
-      {/* Stats band — banda verde oscura, elemento firma. Los celulares se
-          apoyan sobre su borde superior (de ahí el pt grande). */}
+      {/* Stats band — banda verde oscura, elemento firma. El celular se apoya
+          sobre su borde superior (de ahí el pt grande). */}
       <motion.div
         className="relative bg-primary pt-24 lg:pt-32"
         initial={reduce ? false : { opacity: 0 }}
@@ -167,37 +158,93 @@ export default function Hero() {
   )
 }
 
-// Un celular del abanico. `side` decide rotación, solapamiento y profundidad.
-// La pantalla muestra la portada de la demo, fija (`object-top`).
-function PhoneMock({ image, side }) {
-  const isCenter = side === 'center'
-  const layout =
-    side === 'left'
-      ? '-rotate-[19deg] origin-bottom translate-y-10 -mr-[4.5rem] sm:-mr-24 z-0'
-      : side === 'right'
-        ? 'rotate-[19deg] origin-bottom translate-y-10 -ml-[4.5rem] sm:-ml-24 z-0'
-        : 'z-20'
-  const size = isCenter ? 'w-[156px] sm:w-[210px]' : 'w-[140px] sm:w-[184px]'
+function PhoneStage({ reduce }) {
+  const [active, setActive] = useState(0)
+  const stageRef = useRef(null)
+  const stripRef = useRef(null)
+  const lastCheck = useRef(0)
+
+  // El celular muestra la invitación cuya tarjeta está pasando por el centro
+  // en este instante. Se mide (robusto a cualquier ancho de viewport) en vez
+  // de asumir un offset fijo, con throttle a ~8 lecturas por segundo.
+  useAnimationFrame((t) => {
+    if (reduce || t - lastCheck.current < 120) return
+    lastCheck.current = t
+    const stage = stageRef.current
+    const strip = stripRef.current
+    if (!stage || !strip) return
+    const stageRect = stage.getBoundingClientRect()
+    const centerX = stageRect.left + stageRect.width / 2
+    let best = 0
+    let bestDist = Infinity
+    for (const child of strip.children) {
+      const r = child.getBoundingClientRect()
+      const d = Math.abs(r.left + r.width / 2 - centerX)
+      if (d < bestDist) {
+        bestDist = d
+        best = Number(child.dataset.frame)
+      }
+    }
+    setActive((prev) => (prev === best ? prev : best))
+  })
+
+  // La cinta lleva 3 copias seguidas y se anima un tercio de su ancho, así
+  // siempre cubre el ancho del contenedor y el loop es invisible.
+  const loopSeconds = (STEP / 1000) * frames.length
 
   return (
-    <div
-      className={`relative aspect-[9/19.5] flex-shrink-0 ${size} ${layout} ${
-        isCenter ? '' : 'opacity-95'
-      }`}
-    >
-      <div className="absolute inset-0 rounded-[2.4rem] bg-gradient-to-br from-[#e7e9ec] via-[#c9cdd3] to-[#9ea3aa] shadow-2xl" />
-      <div className="absolute inset-[3px] rounded-[2.25rem] bg-black" />
-      <div className="absolute inset-[7px] rounded-[2rem] overflow-hidden bg-black">
-        <img
-          src={image}
-          alt="Portada de una invitación de boda"
-          draggable={false}
-          className="absolute inset-0 h-full w-full object-cover object-top select-none pointer-events-none"
-        />
-        <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[34%] h-[16px] bg-black rounded-full z-10" />
+    <div ref={stageRef} className="relative flex items-center justify-center min-h-[460px] sm:min-h-[560px]">
+      {/* Cinta de invitaciones que pasa por detrás — cada tarjeta tiene el
+          mismo tamaño y proporción que el celular, así "lo completa" cuando
+          pasa por el centro. */}
+      <div className="absolute inset-0 flex items-center overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
+        <motion.div
+          ref={stripRef}
+          className="flex gap-6 sm:gap-8 will-change-transform"
+          animate={reduce ? undefined : { x: ['0%', '-33.3333%'] }}
+          transition={{ duration: loopSeconds, ease: 'linear', repeat: Infinity }}
+        >
+          {[...frames, ...frames, ...frames].map((f, i) => (
+            <div
+              key={f.key + i}
+              data-frame={i % frames.length}
+              className="relative w-[184px] sm:w-[224px] aspect-[9/19.5] flex-shrink-0 rounded-[2.2rem] overflow-hidden shadow-xl shadow-primary/10 opacity-40"
+            >
+              <img
+                src={f.src}
+                alt=""
+                aria-hidden="true"
+                draggable={false}
+                className="absolute inset-0 h-full w-full object-cover object-top select-none pointer-events-none"
+              />
+            </div>
+          ))}
+        </motion.div>
       </div>
-      <div className="absolute -left-[2px] top-[30%] w-[3px] h-[38px] bg-[#9ea3aa] rounded-l" />
-      <div className="absolute -right-[2px] top-[26%] w-[3px] h-[46px] bg-[#9ea3aa] rounded-r" />
+
+      {/* Celular central — muestra la invitación que está pasando */}
+      <div className="relative z-10 w-[196px] sm:w-[236px] aspect-[9/19.5] flex-shrink-0">
+        <div className="absolute inset-0 rounded-[2.6rem] bg-gradient-to-br from-[#e7e9ec] via-[#c9cdd3] to-[#9ea3aa] shadow-2xl" />
+        <div className="absolute inset-[3px] rounded-[2.45rem] bg-black" />
+        <div className="absolute inset-[7px] rounded-[2.2rem] overflow-hidden bg-black">
+          <AnimatePresence initial={false}>
+            <motion.img
+              key={frames[active].key}
+              src={frames[active].src}
+              alt="Invitación de boda de ejemplo"
+              draggable={false}
+              initial={reduce ? false : { opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-0 h-full w-full object-cover object-top select-none pointer-events-none"
+            />
+          </AnimatePresence>
+          <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[32%] h-[17px] bg-black rounded-full z-10" />
+        </div>
+        <div className="absolute -left-[2px] top-[30%] w-[3px] h-[38px] bg-[#9ea3aa] rounded-l" />
+        <div className="absolute -right-[2px] top-[26%] w-[3px] h-[46px] bg-[#9ea3aa] rounded-r" />
+      </div>
     </div>
   )
 }

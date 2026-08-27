@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { waLink } from '../data/site.js'
@@ -127,8 +127,8 @@ export default function Hero() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
               className="flex gap-6 md:gap-8 items-start"
             >
-              <IPhoneMock rotate="-6deg" image="/demos/boda/walter-rocio/foto-hero.png" />
-              <IPhoneMock rotate="6deg" marginTop="mt-14" image="/demos/boda/delfina-lautaro/foto-hero.jpg" />
+              <IPhoneMock rotate="-6deg" image="/hero-scroll/walter-rocio.jpg" duration={40} />
+              <IPhoneMock rotate="6deg" marginTop="mt-14" image="/hero-scroll/delfina-lautaro.jpg" duration={50} />
             </motion.div>
           </motion.div>
         </div>
@@ -179,7 +179,7 @@ export default function Hero() {
   )
 }
 
-function IPhoneMock({ rotate, marginTop = '', image }) {
+function IPhoneMock({ rotate, marginTop = '', image, duration = 40 }) {
   return (
     <div
       style={{ transform: `rotate(${rotate})` }}
@@ -188,12 +188,62 @@ function IPhoneMock({ rotate, marginTop = '', image }) {
       <div className="absolute inset-0 rounded-[2.4rem] bg-gradient-to-br from-[#e7e9ec] via-[#c9cdd3] to-[#9ea3aa] shadow-xl" />
       <div className="absolute inset-[3px] rounded-[2.25rem] bg-black" />
       <div className="absolute inset-[7px] rounded-[2rem] overflow-hidden bg-black">
-        <img src={image} alt="Demo invitación de boda" className="w-full h-full object-cover" />
+        <PanningShot image={image} duration={duration} />
         <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[34%] h-[18px] bg-black rounded-full z-10" />
       </div>
       <div className="absolute -left-[2px] top-[26%] w-[3px] h-[22px] bg-[#9ea3aa] rounded-l" />
       <div className="absolute -left-[2px] top-[38%] w-[3px] h-[36px] bg-[#9ea3aa] rounded-l" />
       <div className="absolute -right-[2px] top-[30%] w-[3px] h-[46px] bg-[#9ea3aa] rounded-r" />
+    </div>
+  )
+}
+
+// La pantalla del celular muestra una captura larga (full-page) de la demo
+// real recorriéndose sola en vertical, ida y vuelta, en loop lento — da la
+// sensación de estar viendo la invitación en vivo sin cargar un iframe en el
+// hero. Las capturas viven en `public/hero-scroll/` (~440px de ancho, ver
+// `scripts`/memoria para regenerarlas). Respeta `prefers-reduced-motion`:
+// si está activo, queda fija arriba de todo.
+function PanningShot({ image, duration }) {
+  const boxRef = useRef(null)
+  const imgRef = useRef(null)
+  const reduce = useReducedMotion()
+  const [travel, setTravel] = useState(0)
+
+  const measure = useCallback(() => {
+    const box = boxRef.current
+    const img = imgRef.current
+    if (!box || !img || !img.complete || !img.naturalHeight) return
+    const t = img.offsetHeight - box.clientHeight
+    setTravel(t > 0 ? Math.round(t) : 0)
+  }, [])
+
+  useEffect(() => {
+    measure()
+    const box = boxRef.current
+    if (!box) return
+    const ro = new ResizeObserver(measure)
+    ro.observe(box)
+    return () => ro.disconnect()
+  }, [measure])
+
+  return (
+    <div ref={boxRef} className="absolute inset-0 overflow-hidden bg-white">
+      <motion.img
+        ref={imgRef}
+        src={image}
+        alt="Recorrido por una invitación de boda"
+        onLoad={measure}
+        draggable={false}
+        className="w-full h-auto block select-none pointer-events-none"
+        animate={reduce || !travel ? undefined : { y: [0, -travel, -travel, 0, 0] }}
+        transition={{
+          duration,
+          times: [0, 0.45, 0.5, 0.95, 1],
+          ease: 'easeInOut',
+          repeat: Infinity,
+        }}
+      />
     </div>
   )
 }
